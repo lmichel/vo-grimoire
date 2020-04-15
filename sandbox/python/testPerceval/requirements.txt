@@ -1,0 +1,14 @@
+beautifulsoup4==4.9.0
+certifi==2020.4.5.1
+chardet==3.0.4
+dulwich==0.18.6
+feedparser==5.2.1
+grimoirelab-toolkit==0.1.10
+idna==2.9
+perceval==0.12.24
+pkg-resources==0.0.0
+python-dateutil==2.8.1
+requests==2.23.0
+six==1.14.0
+soupsieve==2.0
+urllib3==1.25.8
