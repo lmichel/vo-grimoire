@@ -1,3 +1,6 @@
+"""
+This module is doing this and that...
+"""
 import perceval.backends.core
 import sys
 if __name__ == "__main__":
