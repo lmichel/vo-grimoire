@@ -10,22 +10,25 @@ class analyzePerceval(object):
 
     def downloadMails(self):
         base_path = os.path.dirname(os.path.realpath(__file__))
-        # sys.path.append(base_path+'/data/')
-        if path.exists(base_path + '/mails.mbox') is False:
+        print(base_path)
+        mbox_path = base_path.replace("/python/testPerceval/classes","/data/mbox")
+        if path.exists(mbox_path + '/mails.mbox') is False:
             print("\nBeginning Download...")
             url = 'http://mail.ivoa.net/pipermail/dm.mbox/dm.mbox'
-            urllib.request.urlretrieve(url, base_path + '/mails.mbox', reporthook=self.showProgress)
+            urllib.request.urlretrieve(url, mbox_path + '/mails.mbox', reporthook=self.showProgress)
             print("\nDownload Finished !")
         else:
             print("\nArchive already downloaded !")
+        return mbox_path
 
     def showProgress(self, count, bloc_size, total_size):
         percent = int(count * bloc_size * 100 / total_size)
         sys.stdout.write("\r" + "...%d%%" % percent)
 
-    def createRepo(self):
+    def createRepo(self,dir):
+        print(dir)
         mbox_uri = 'dm@iova.net'
-        mbox_dir = '../mails'
+        mbox_dir = dir
         repo = MBox(uri=mbox_uri, dirpath=mbox_dir)
         return repo
 
@@ -128,11 +131,3 @@ class analyzePerceval(object):
             if int(res) not in options:
                 print("\nNot an action, please retry")
                 res = 0
-
-
-if __name__ == "__main__":
-    per = analyzePerceval()
-    per.intro()
-    per.downloadMails()
-    repo = per.createRepo()
-    per.run(repo)
