@@ -1,9 +1,11 @@
 import json
-import os.path
+import os
 import sys
 import urllib.request
+import elasticsearch
 from os import path
-
+from downloader import downloader
+from jsonBuilder import jsonBuilder
 from perceval.backends.core.mbox import MBox
 
 '''
@@ -21,18 +23,39 @@ class analyzePerceval(object):
     # Method who download the archive and stores it in ../data/mbox
     # If the archive is already downloaded, it will not redownload-it
     # The path is relative
-    def downloadMails(self):
-        base_path = os.path.dirname(os.path.realpath(__file__))
-        mbox_path = base_path.replace("/python/testPerceval/classes", "/data/mbox")
-        if path.exists(mbox_path + '/mails.mbox') is False:
-            print("\nBeginning Download...")
-            url = 'http://mail.ivoa.net/pipermail/dm.mbox/dm.mbox'
-            urllib.request.urlretrieve(url, mbox_path + '/mails.mbox', reporthook=self.showProgress)
-            print("\nDownload Finished !")
-        else:
-            print("\nArchive already downloaded !")
-        print("\nThe archive is located at : " + mbox_path)
-        return mbox_path
+    # def downloadMails(self):
+    #     base_path = os.path.dirname(os.path.realpath(__file__))
+    #     mbox_path = base_path.replace("/python/testPerceval/classes", "/data/mbox")
+    #     if path.exists(mbox_path + '/mails.mbox') is False:
+    #         print("\nBeginning Download...")
+    #         # url = 'http://mail.ivoa.net/pipermail/dm.mbox/dm.mbox'
+    #         url = 'http://mail.iova.net/pipermail/edu.mbox/edu.mbox'
+    #         urllib.request.urlretrieve(url, mbox_path + '/mails.mbox', reporthook=self.showProgress)
+    #         print("\nDownload Finished !")
+    #     else:
+    #         print("\nArchive already downloaded !")
+    #     print("\nThe archive is located at : " + mbox_path)
+    #     return mbox_path
+
+    def saveToElastic(self,repo):
+        es = elasticsearch.Elasticsearch(['http://localhost:9200'])
+        es.indices.create('mails')
+        for message in repo.fetch():
+            try:
+                item = {'from' : message['data']['From'],
+                        'data' : message['data']['body']['plain']}
+                # print(item)
+                es.index(index='mails', doc_type='message', body=item)
+            except Exception:
+                print('There\'s a mistake')
+
+    def searchElastic(self):
+        es = elasticsearch.Elasticsearch(['http://localhost:9200'])
+        es_result = es.search(index='mails', doc_type='message', body={
+            'query': {'match': {'data' : 'this'}}
+        })
+        for message in es_result['hits']['hits']:
+            print(message['_source']['from'])
 
     # This method allow you to see in the terminal the progress of the download
     def showProgress(self, count, bloc_size, total_size):
@@ -42,8 +65,10 @@ class analyzePerceval(object):
     # This method create the repository for Perceval to work
     # You will need to specify the target mailing list
     # and the path where the archives are
-    def createRepo(self, dir):
-        mbox_uri = 'dm@iova.net'
+    def createRepo(self, dir, mailList):
+        # mbox_uri = 'dm@iova.net'
+        print(mailList)
+        mbox_uri = mailList+'@iova.net'
         mbox_dir = dir
         repo = MBox(uri=mbox_uri, dirpath=mbox_dir)
         return repo
@@ -113,22 +138,22 @@ class analyzePerceval(object):
             print('\n')
 
     # This method build a json with N messages
-    def buildJSON(self, repo):
-        base_path = os.path.dirname(os.path.realpath(__file__))
-        json_path = base_path.replace("/python/testPerceval/classes", "/data/json/")
-        n = input("\nType the number of messages you want to be saved : ")
-        n = int(n)
-        tab = list(repo.fetch())
-        index = 0
-        tabRes = []
-        for index in range(0, n):
-            index = index + 1
-            tabRes.append(tab[index])
-        index = 0
-        with open(json_path + 'json_' + str(n) + '_messages.json', 'w', encoding='utf-8') as f:
-            for index in range(0, n):
-                json.dump(tabRes[index], f, ensure_ascii=False, indent=4)
-        print("\nJSON created.")
+    # def buildJSON(self, repo):
+    #     base_path = os.path.dirname(os.path.realpath(__file__))
+    #     json_path = base_path.replace("/python/testPerceval/classes", "/data/json/")
+    #     n = input("\nType the number of messages you want to be saved : ")
+    #     n = int(n)
+    #     tab = list(repo.fetch())
+    #     index = 0
+    #     tabRes = []
+    #     for index in range(0, n):
+    #         index = index + 1
+    #         tabRes.append(tab[index])
+    #     index = 0
+    #     with open(json_path + 'json_' + str(n) + '_messages.json', 'w', encoding='utf-8') as f:
+    #         for index in range(0, n):
+    #             json.dump(tabRes[index], f, ensure_ascii=False, indent=4)
+    #     print("\nJSON created.")
 
     # Introduction of the program
     def intro(self):
@@ -136,9 +161,12 @@ class analyzePerceval(object):
         print("\nYou will be asked to type a number corresponding of the action you want to do.")
         print("\nThe program will start to download the archive if not already downloaded.")
 
+    def deleteElastic(self):
+        os.system("curl -XDELETE http://localhost:9200/mails")
+
     # Method who let the user choose an action
     def run(self, repo):
-        options = [0, 1, 2, 3, 4, 5, 10]
+        options = [0, 1, 2, 3, 4, 5, 6, 7, 8, 10]
         res = 0
         while res == 0:
             print("\nType the number of action you want to do.")
@@ -148,6 +176,10 @@ class analyzePerceval(object):
             print("3 : Print the 5 firsts messages")
             print("4 : Search a keyword")
             print("5 : Build a JSON with N messages")
+            print("6 : Save the mails to Elastic")
+            print("7 : Display all the senders of mails (ElasticSearch)")
+            print("8 : Delete indexes in ElasticSearch")
+            print("9 : Print Info on how to launch ElasticSearch")
             print("10 : Stop the program")
             res = input("\nYour choice : ")
             if int(res) == 1:
@@ -171,7 +203,21 @@ class analyzePerceval(object):
                     self.keyword(repo, key)
                 res = 0
             if int(res) == 5:
-                self.buildJSON(repo)
+                jsonBuilder().buildJSON(repo=repo)
+                # self.buildJSON(repo)
+                res = 0
+            if int(res) == 6:
+                self.saveToElastic(repo)
+                res = 0
+            if int(res) == 7:
+                self.searchElastic()
+                res = 0
+            if int(res) == 8:
+                self.deleteElastic()
+                res = 0
+            if int(res) == 9:
+                print("\nEnable ElasticSearch service : sudo /bin/systemctl enable elasticsearch.service")
+                print("Start ElasticSearch service : sudo systemctl start elasticsearch.service")
                 res = 0
             if int(res) == 10:
                 print("\nEND")
