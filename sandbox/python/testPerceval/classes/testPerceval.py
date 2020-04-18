@@ -40,6 +40,7 @@ class analyzePerceval(object):
     def saveToElastic(self,repo):
         es = elasticsearch.Elasticsearch(['http://localhost:9200'])
         es.indices.create('mails')
+        nbErreurs = 0
         for message in repo.fetch():
             try:
                 item = {'from' : message['data']['From'],
@@ -47,7 +48,7 @@ class analyzePerceval(object):
                 # print(item)
                 es.index(index='mails', doc_type='message', body=item)
             except Exception:
-                print('There\'s a mistake')
+                nbErreurs += 1
 
     def searchElastic(self):
         es = elasticsearch.Elasticsearch(['http://localhost:9200'])
@@ -101,13 +102,14 @@ class analyzePerceval(object):
     def getMessageCounterName(self, repo, nom):
         print("\nWORK IN PROGRESS !")
         compteur = 0
-        try:
-            for message in repo.fetch():
+        nbErreurs = 0
+        for message in repo.fetch():
+            try:
                 if nom.lower() in message['data']['From'].lower():
                     compteur = compteur + 1
-            print("\nNumber of mails send by  " + nom + " : " + str(compteur))
-        except:
-            print('\n')
+            except:
+                nbErreurs += 1
+        print("\nNumber of mails send by  " + nom + " : " + str(compteur))
 
     # This method print all the messages with the specified keyword in it
     def keyword(self, repo, keyword):
