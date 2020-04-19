@@ -1,2 +1,4 @@
 *.mbox
 .idea
+*.pyc
+__pycache__
