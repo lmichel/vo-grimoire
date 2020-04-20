@@ -7,6 +7,7 @@ from os import path
 from downloader import downloader
 from jsonBuilder import jsonBuilder
 from perceval.backends.core.mbox import MBox
+from datetime import datetime
 
 '''
 This program is build to test GrimoireLab : Perceval and especially Perceval on .mbox files
@@ -20,43 +21,46 @@ You will be able to :
 
 class analyzePerceval(object):
 
-    # Method who download the archive and stores it in ../data/mbox
-    # If the archive is already downloaded, it will not redownload-it
-    # The path is relative
-    # def downloadMails(self):
-    #     base_path = os.path.dirname(os.path.realpath(__file__))
-    #     mbox_path = base_path.replace("/python/testPerceval/classes", "/data/mbox")
-    #     if path.exists(mbox_path + '/mails.mbox') is False:
-    #         print("\nBeginning Download...")
-    #         # url = 'http://mail.ivoa.net/pipermail/dm.mbox/dm.mbox'
-    #         url = 'http://mail.iova.net/pipermail/edu.mbox/edu.mbox'
-    #         urllib.request.urlretrieve(url, mbox_path + '/mails.mbox', reporthook=self.showProgress)
-    #         print("\nDownload Finished !")
-    #     else:
-    #         print("\nArchive already downloaded !")
-    #     print("\nThe archive is located at : " + mbox_path)
-    #     return mbox_path
-
+    # This method will save all the mails get by Perceval to elastic search
     def saveToElastic(self,repo):
         es = elasticsearch.Elasticsearch(['http://localhost:9200'])
         es.indices.create('mails')
         nbErreurs = 0
         for message in repo.fetch():
             try:
-                item = {'from' : message['data']['From'],
-                        'data' : message['data']['body']['plain']}
-                # print(item)
+                item = {'from':'none',
+                        'body':'none',
+                        'in-reply-to':'none',
+                        'timestamp' : 'none',
+                        'id':'none',
+                        'thread-topic':'none',
+                        'thread-index':'none',
+                        'references':'none'}
+                item['from'] = message['data']['From']
+                item['timestamp'] = self.returnTimestamp(message)
+                item['body'] = message['data']['body']
+                item['id'] = message['data']['Message-ID']
+                item['references'] = message['data']['References']
+                if 'In-Reply-To' in message['data']:
+                    item['in-reply-to'] = message['data']['In-Reply-To']
+                if 'Thread-Topic' in message['data']:
+                    item['thread-topic'] = message['data']['thread-topic']
+                if 'Thread-Index' in message['data']:
+                    item['thread-index'] = message['data']['thread-topic']
                 es.index(index='mails', doc_type='message', body=item)
-            except Exception:
+            except:
                 nbErreurs += 1
 
+    # Little test about queries on elastic search
     def searchElastic(self):
         es = elasticsearch.Elasticsearch(['http://localhost:9200'])
-        es_result = es.search(index='mails', doc_type='message', body={
-            'query': {'match': {'data' : 'this'}}
+        es_result = es.search(index='mails', doc_type='message', body ={
+            'query':{
+                'match':{'thread-topic':'none'}
+            }
         })
         for message in es_result['hits']['hits']:
-            print(message['_source']['from'])
+            print("\n" + json.dumps(message['_source']))
 
     # This method allow you to see in the terminal the progress of the download
     def showProgress(self, count, bloc_size, total_size):
@@ -67,8 +71,6 @@ class analyzePerceval(object):
     # You will need to specify the target mailing list
     # and the path where the archives are
     def createRepo(self, dir, mailList):
-        # mbox_uri = 'dm@iova.net'
-        print(mailList)
         mbox_uri = mailList+'@iova.net'
         mbox_dir = dir
         repo = MBox(uri=mbox_uri, dirpath=mbox_dir)
@@ -122,12 +124,12 @@ class analyzePerceval(object):
 
     # This method build an array with the first five messages of the archive
     def divideMbox(self, repo):
-        index = 0
         tab = list(repo.fetch())
         tabRes = []
-        for index in range(0, 4):
-            index = index + 1
-            tabRes.append(tab[:index])
+        for index in range(4):
+            tabRes.append(tab[index])
+            print("Ajout")
+            index += 1
         return tabRes
 
     # This method print an array in JSON format
@@ -135,27 +137,28 @@ class analyzePerceval(object):
         print("\nWORK IN PROGRESS !")
         try:
             for message in arr:
-                print(json.dumps(message, indent=4))
+                print("\n"+json.dumps(message, indent=4))
+                date = daytime.strptime(message['data']['Date'],'%a, %w %b %Y %H:%M:%S %z')
+                print(date)
         except:
             print('\n')
 
-    # This method build a json with N messages
-    # def buildJSON(self, repo):
-    #     base_path = os.path.dirname(os.path.realpath(__file__))
-    #     json_path = base_path.replace("/python/testPerceval/classes", "/data/json/")
-    #     n = input("\nType the number of messages you want to be saved : ")
-    #     n = int(n)
-    #     tab = list(repo.fetch())
-    #     index = 0
-    #     tabRes = []
-    #     for index in range(0, n):
-    #         index = index + 1
-    #         tabRes.append(tab[index])
-    #     index = 0
-    #     with open(json_path + 'json_' + str(n) + '_messages.json', 'w', encoding='utf-8') as f:
-    #         for index in range(0, n):
-    #             json.dump(tabRes[index], f, ensure_ascii=False, indent=4)
-    #     print("\nJSON created.")
+    def afficherPremiers(self,repo):
+        print("DATE IS PRINTED")
+        compteur = 0
+        for message in repo.fetch():
+            print("\n" + json.dumps(message, indent=4))
+            date_string = message['data']['Date']
+            date = datetime.strptime(date_string.strip(),'%a, %d %b %Y %H:%M:%S %z')
+            print(date.timestamp())
+            compteur += 1
+            if compteur not in range(4):
+                break
+
+    def returnTimestamp(self,message):
+        date_string = message['data']['Date']
+        date = datetime.strptime(date_string.strip(), '%a, %d %b %Y %H:%M:%S %z')
+        return date.timestamp()
 
     # Introduction of the program
     def intro(self):
@@ -163,12 +166,14 @@ class analyzePerceval(object):
         print("\nYou will be asked to type a number corresponding of the action you want to do.")
         print("\nThe program will start to download the archive if not already downloaded.")
 
+    # This method will delete all the index in elastic search
     def deleteElastic(self):
         os.system("curl -XDELETE http://localhost:9200/mails")
 
     # Method who let the user choose an action
     def run(self, repo):
-        options = [0, 1, 2, 3, 4, 5, 6, 7, 8, 10]
+        options = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100]
+        mails = repo.fetch()
         res = 0
         while res == 0:
             print("\nType the number of action you want to do.")
@@ -182,7 +187,7 @@ class analyzePerceval(object):
             print("7 : Display all the senders of mails (ElasticSearch)")
             print("8 : Delete indexes in ElasticSearch")
             print("9 : Print Info on how to launch ElasticSearch")
-            print("10 : Stop the program")
+            print("100 : Stop the program")
             res = input("\nYour choice : ")
             if int(res) == 1:
                 self.getAllMessages(repo)
@@ -195,7 +200,8 @@ class analyzePerceval(object):
                     self.getMessageCounterName(repo, nom)
                 res = 0
             if int(res) == 3:
-                self.printArray(self.divideMbox(repo))
+                # self.printArray(self.divideMbox(repo))
+                self.afficherPremiers(repo)
                 res = 0
             if int(res) == 4:
                 key = self.typeWord()
@@ -206,7 +212,6 @@ class analyzePerceval(object):
                 res = 0
             if int(res) == 5:
                 jsonBuilder().buildJSON(repo=repo)
-                # self.buildJSON(repo)
                 res = 0
             if int(res) == 6:
                 self.saveToElastic(repo)
@@ -221,7 +226,7 @@ class analyzePerceval(object):
                 print("\nEnable ElasticSearch service : sudo /bin/systemctl enable elasticsearch.service")
                 print("Start ElasticSearch service : sudo systemctl start elasticsearch.service")
                 res = 0
-            if int(res) == 10:
+            if int(res) == 100:
                 print("\nEND")
             if int(res) not in options:
                 print("\nNot an action, please retry")
