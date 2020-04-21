@@ -1,6 +1,7 @@
 import os
 import json
 from os import path
+from datetime import datetime
 class jsonBuilder(object):
 
     def buildJSON(self,repo):
@@ -23,3 +24,11 @@ class jsonBuilder(object):
                 index = index + 1
         print("\nJSON file created !")
 
+    def buildResJSON(self,input):
+        now = datetime.now()
+        nom_fichier = now.strftime("%Y-%m-%d-%Hh%M")
+        base_path = os.path.dirname(os.path.realpath(__file__))
+        json_path = base_path.replace("/python/testPerceval/classes","/data/json/")
+        with open(json_path + nom_fichier + '.json','w',encoding='utf-8') as f:
+            json.dump(input,f)
+        print("\nJSON CREATED")

@@ -2,16 +2,62 @@
     "backend_name": "MBox",
     "backend_version": "0.12.0",
     "perceval_version": "0.12.24",
-    "timestamp": 1587039912.118541,
-    "origin": "dm@iova.net",
-    "uuid": "f241e532fe4e7eb674bff8bf2007f06bcd272b3f",
+    "timestamp": 1587461445.641448,
+    "origin": "edu@iova.net",
+    "uuid": "da5088b81de55d37d26b0ae77f5aecbebfb9060b",
+    "updated_on": 1036991555.0,
+    "classified_fields_filtered": null,
+    "category": "message",
+    "search_fields": {
+        "item_id": "<004d01c28940$f2f7bef0$6f07a8c0@intranet.pspl.co.in>"
+    },
+    "tag": "edu@iova.net",
+    "data": {
+        "unixfrom": "- Mon Nov 11 10:16:56 2002",
+        "Return-Path": "<owner-votable@us-vo.org>",
+        "Received": "from jhansi (jhansi.intranet.pspl.co.in [192.168.7.111])\n\tby www.pspl.co.in (8.11.6/8.11.0) with SMTP id gAB59vv07924;\n\tMon, 11 Nov 2002 10:39:57 +0530",
+        "X-Authentication-Warning": "mercury.cacr.caltech.edu: majordomo set sender to owner-votable@us-vo.org using -f",
+        "Reply-To": "\"Sonali A. Kale\" <sonali_kale@persistent.co.in>",
+        "From": "\"Sonali A. Kale\" <sonali@pspl.co.in>",
+        "To": "\"Stephen Lowe\" <slowe@head-cfa.harvard.edu>, <votable@us-vo.org>,\n   <metadata@us-vo.org>, <dm@us-vo.org>",
+        "References": "<3DC7D305.35ADA19A@head-cfa.harvard.edu>",
+        "Subject": "Re: Any recommendations on development software?",
+        "Organization": "PSPL",
+        "MIME-Version": "1.0",
+        "Content-Type": "text/plain;\n\tcharset=\"iso-8859-1\"",
+        "Content-Transfer-Encoding": "7bit",
+        "X-Priority": "3",
+        "X-MSMail-Priority": "Normal",
+        "X-Mailer": "Microsoft Outlook Express 5.00.2919.6600",
+        "X-MimeOLE": "Produced By Microsoft MimeOLE V5.00.2919.6600",
+        "Sender": "owner-votable@us-vo.org",
+        "Precedence": "bulk",
+        "X-Virus-Scanned": "by amavisd-milter (http://amavis.org/)",
+        "Status": "U",
+        "X-Mozilla-Status": "8011",
+        "X-Mozilla-Status2": "00000000",
+        "X-Mozilla-Keys": null,
+        "X-UIDL": "e4feec0616672c70c7627ef39aaaed72",
+        "body": {
+            "plain": "Hi,\n\n    We have a VOTable parser developed in C++\nwhich is available at \nhttp://vo.iucaa.ernet.in/~voi/html/iucaawriteup.htm\n\nCurrently this has read-only facility, you cannot\nwrite VOTables using this parser. We will soon\nbe adding the write facility and streaming support\nfor reading large VOTables.\n\n- Thanks,\nSonali\n\n-----------------------------------\nPersistent Systems Private Limited      \nTel: +91-20-5678900 Ext. 328\n-----------------------------------\n\n----- Original Message ----- \nFrom: \"Stephen Lowe\" <slowe@head-cfa.harvard.edu>\nTo: <votable@us-vo.org>; <metadata@us-vo.org>; <dm@us-vo.org>\nSent: Tuesday, November 05, 2002 7:47 PM\nSubject: Any recommendations on development software?\n\n\n> Hi all,\n> \n> I was wondering if anyone has recommendations on development software\n> for working with VOTables, XML Schema or FITS files. Particular areas\n> we're interested in here are:\n> \n> XML Binders --- the Caltech group used Breeze to create and distribute a\n> Java class hierarchy (JAVOT) for manipulating VOTable data, reading and\n> creating VOTable files. Are there features that recommend Breeze over\n> alternatives, such as Sun's JAXB?\n> \n> Are any of the participants working with a C++ binder and class library?\n> \n> FITS file libraries --- we're trying the Java package nom.tam.fits. Any\n> other suggestions?\n> \n> Just to give some context, to support our demo system we're writing some\n> translators to reformat FITS headers from several example archives into\n> VOTables. We're presently using Java, nom.tam.fits and JAVOT, though\n> we're early enough in development to change if we want. We're making\n> some very provisional object definitions, such as a WCSXFORM object to\n> encapsulate the pixel-to-sky coordinate transformation, so we may need\n> to experiment with with modifications to the VOTable schema, which is\n> why we're interested in the XML binder.\n> \n> Thanks for any advice,\n> Steve\n> \n> \n"
+        },
+        "Message-ID": "<004d01c28940$f2f7bef0$6f07a8c0@intranet.pspl.co.in>",
+        "Date": "Mon, 11 Nov 2002 10:42:35 +0530"
+    }
+}{
+    "backend_name": "MBox",
+    "backend_version": "0.12.0",
+    "perceval_version": "0.12.24",
+    "timestamp": 1587461445.64346,
+    "origin": "edu@iova.net",
+    "uuid": "2199dc01ba8000877cbe756a9e6d1b60504e15c2",
     "updated_on": 1036613352.0,
     "classified_fields_filtered": null,
     "category": "message",
     "search_fields": {
         "item_id": "<3DC976E8.3010209@gsfc.nasa.gov>"
     },
-    "tag": "dm@iova.net",
+    "tag": "edu@iova.net",
     "data": {
         "unixfrom": "- Wed Nov  6 21:11:19 2002",
         "Return-Path": "<owner-votable@us-vo.org>",
@@ -44,16 +90,16 @@
     "backend_name": "MBox",
     "backend_version": "0.12.0",
     "perceval_version": "0.12.24",
-    "timestamp": 1587039912.120506,
-    "origin": "dm@iova.net",
-    "uuid": "75cf99ff69505f6526d9385b327f841debafaf2a",
+    "timestamp": 1587461445.645311,
+    "origin": "edu@iova.net",
+    "uuid": "a235201c50de56b3575ef92888a548c782e2adb8",
     "updated_on": 1036505861.0,
     "classified_fields_filtered": null,
     "category": "message",
     "search_fields": {
         "item_id": "<3DC7D305.35ADA19A@head-cfa.harvard.edu>"
     },
-    "tag": "dm@iova.net",
+    "tag": "edu@iova.net",
     "data": {
         "unixfrom": "- Tue Nov  5 17:01:01 2002",
         "Return-Path": "<owner-votable@us-vo.org>",
@@ -80,45 +126,5 @@
         },
         "Message-ID": "<3DC7D305.35ADA19A@head-cfa.harvard.edu>",
         "Date": "Tue, 05 Nov 2002 09:17:41 -0500"
-    }
-}{
-    "backend_name": "MBox",
-    "backend_version": "0.12.0",
-    "perceval_version": "0.12.24",
-    "timestamp": 1587039912.122304,
-    "origin": "dm@iova.net",
-    "uuid": "b757b44c10ea8b420e7ba53f845e3a58e964e919",
-    "updated_on": 1039478015.0,
-    "classified_fields_filtered": null,
-    "category": "message",
-    "search_fields": {
-        "item_id": "<49F73BEED865D3119F8700902773C9F9013FF60E@exchange09.rl.ac.uk>"
-    },
-    "tag": "dm@iova.net",
-    "data": {
-        "unixfrom": "- Tue Dec 10 09:20:39 2002",
-        "Return-Path": "<owner-votable@us-vo.org>",
-        "Received": "by exchange01.rl.ac.uk with Internet Mail Service (5.5.2656.59)\n\tid <YDP9SXXA>; Mon, 9 Dec 2002 23:53:38 -0000",
-        "X-Authentication-Warning": "mercury.cacr.caltech.edu: majordomo set sender to owner-votable@us-vo.org using -f",
-        "From": "\"Giaretta, DL (David) \" <D.L.Giaretta@rl.ac.uk>",
-        "To": "\"'VOTable@us-vo.org'\" <VOTable@us-vo.org>",
-        "Cc": "\"'dm@us-vo.org'\" <dm@us-vo.org>",
-        "Subject": "TreeView tool - including VOTable support",
-        "MIME-Version": "1.0",
-        "X-Mailer": "Internet Mail Service (5.5.2656.59)",
-        "Content-Type": "text/plain;\n\tcharset=\"iso-8859-1\"",
-        "Sender": "owner-votable@us-vo.org",
-        "Precedence": "bulk",
-        "X-Virus-Scanned": "by amavisd-milter (http://amavis.org/)",
-        "Status": null,
-        "X-Mozilla-Status": "8001",
-        "X-Mozilla-Status2": "00000000",
-        "X-Mozilla-Keys": null,
-        "X-UIDL": "3df25b31000000c5",
-        "body": {
-            "plain": "Hi\n\nwe have released a new tool whch allows one to browse structured data. It\nhas recently been enhanced by adding VOTable support.\n\nThe VOTable capabilities includes support of STREAM data - for example\npointing to an external FITS file. \n\nWe are beginning to support this tool on MSWindows, in addition to the more\nusual Linux, Solaris and Tru64.\n\nThe tools can be found at http://www.starlink.ac.uk/treeview\n\nWe will be tidying up the VOtable access library in the coming weeks.\n\nHope this is of interest. We are improving the tool rapidly so please keep\nan eye on the web site. Please let me know if you have any problems.\n\n...David\n"
-        },
-        "Message-ID": "<49F73BEED865D3119F8700902773C9F9013FF60E@exchange09.rl.ac.uk>",
-        "Date": "Mon, 9 Dec 2002 23:53:35 -0000 "
     }
 }
