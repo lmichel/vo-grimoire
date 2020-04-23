@@ -3,6 +3,9 @@ from Message import Message
 from jsonBuilder import jsonBuilder
 import re
 
+# This method will rebuild the current tree to eliminate ambiguous relations
+# For example if a container is not useful or is None, then the children of this one
+# will be promote to top level
 def pruneContainers(container):
     newChilds = []
     for cont in container.children:
@@ -22,14 +25,18 @@ def pruneContainers(container):
     else:
         return [container]
 
+# This is the regex expression to delete the Re[4] from the mails
 re_regex = re.compile("""(
   (Re(\[\d+\])?:) | (\[ [^]]+ \])
 \s*)+
 """, re.I | re.VERBOSE)
 
+# This method is an implementation of the jwz algorithm
 def thread(messageList):
     id_table = {}
+    #1
     for msg in messageList:
+        #1A
         if msg.message_id in id_table:
             this_container = id_table[msg.message_id]
             this_container.message = msg
@@ -38,6 +45,8 @@ def thread(messageList):
             this_container.message = msg
             id_table[msg.message_id] = this_container
         previous = None
+        #1A-END
+        #1B AND 1C
         for ref in msg.references:
             container = id_table.get(ref, None)
             if container is None:
@@ -53,20 +62,26 @@ def thread(messageList):
             previous = container
         if previous is not None:
             previous.add_child(this_container)
-
+        #1B AND 1C-END
+    #2
     root_set = []
     for value in id_table.values():
         if value.parent is None:
             root_set.append(value)
-
+    #2-END
+    #3
     del id_table
+    #3-END
+    #4
     new_root_set = []
     for container in root_set:
         temp_list = pruneContainers(container)
         new_root_set.extend(temp_list)
     root_set = new_root_set
-    print("SIZE OF ROOT_SET : " + str(len(root_set)))
+    #4-END
+    #5
     subject_table = {}
+    #5A and 5B
     for container in root_set:
         if container.message:
             subject = container.message.subject
@@ -80,6 +95,8 @@ def thread(messageList):
         temp = subject_table.get(subject, None)
         if (temp is None or (temp.message is not None and container.message is None) or (temp.message is not None and container.message is not None and len(temp.message.subject) > len(container.message.subject))):
             subject_table[subject] = container
+    #5A and 5B-END
+    #5C
     for container in root_set:
         if container.message:
             subject = container.message.subject
@@ -108,7 +125,7 @@ def thread(messageList):
             new.add_child(temp_container)
             new.add_child(container)
             subject_table[subject] = new
-
+    #5C-END
     return subject_table
 
 def printSubjectTable(subs):

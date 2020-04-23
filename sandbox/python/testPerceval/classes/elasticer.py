@@ -33,10 +33,10 @@ class elasticer(object):
                 if isUseful == 1:
                     es.index(index='mails', doc_type='message', body=item)
                 else:
-                    print("Mail ignoré")
+                    print("\nMail ignoré")
                     isUseful = 1
             except KeyError:
-                print(json.dumps(message))
+                print("Programme Annulé")
 
     def doQuery(self):
         choix = input("\nDo you want your results to be printed or storaged in a Json :"

@@ -243,7 +243,7 @@ class analyzePerceval(object):
                     res = 0
                 if int(res) == 9:
                     print("\nEnable ElasticSearch service : sudo /bin/systemctl enable elasticsearch.service")
-                    print("Start ElasticSearch service : sudo systemctl start elasticsearch.service")
+                    print("\nStart ElasticSearch service : sudo systemctl start elasticsearch.service")
                     res = 0
                 if int(res) == 10:
                     elasticer().doQuery()
