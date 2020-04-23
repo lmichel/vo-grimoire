@@ -10,7 +10,7 @@ from percevaler import percevaler
 from jsonBuilder import jsonBuilder
 from perceval.backends.core.mbox import MBox
 from datetime import datetime
-
+import threadingMails
 '''
 This program is build to test GrimoireLab : Perceval and especially Perceval on .mbox files
 You will be able to :
@@ -210,7 +210,7 @@ class analyzePerceval(object):
             res = input("\nYour choice : ")
             if self.isInt(res) == 0:
                 if int(res) == 1:
-                    percevaler().getAllMessage(repo)
+                    threadingMails.runThread(repo)
                     res = 0
                 if int(res) == 2:
                     nom = self.typeName()

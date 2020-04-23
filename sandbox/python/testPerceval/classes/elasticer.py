@@ -15,7 +15,7 @@ class elasticer(object):
         for message in repo.fetch():
             try:
                 item = {'from': message['data']['From'], 'body': message['data']['body'], 'in-reply-to': 'none',
-                        'timestamp': self.returnTimestamp(message), 'id': message['data']['Message-ID'],
+                        'timestamp': self.returnTimestamp(message), 'id': message['data']['Message-ID'],'thread-topic':'none','thread-index':'none',
                         'references': 'none'}
                 if 'From' in message['data'] and 'body' in message['data']:
                     item['from'] = message['data']['From']
@@ -24,10 +24,10 @@ class elasticer(object):
                     isUseful = 0
                 if 'In-Reply-To' in message['data']:
                     item['in-reply-to'] = message['data']['In-Reply-To']
-                # if 'Thread-Topic' in message['data']:
-                #     item['thread-topic'] = message['data']['Thread-Topic']
-                # if 'Thread-Index' in message['data']:
-                #     item['thread-index'] = message['data']['Thread-Index']
+                if 'Thread-Topic' in message['data']:
+                    item['thread-topic'] = message['data']['Thread-Topic']
+                if 'Thread-Index' in message['data']:
+                    item['thread-index'] = message['data']['Thread-Index']
                 if 'References' in message['data']:
                     item['references'] = message['data']['References']
                 if isUseful == 1:

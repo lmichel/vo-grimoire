@@ -1,8 +1,7 @@
 {
   "query":{
-    "match_all":{}
-  },
-  "sort":[
-    {"from": {"order":"asc"}}
-  ]
+    "match":{
+      "id":"<A737019CD0F1EB4C80BA4935586378FC04EA587873@NA-EXMSG-C115.redmond.corp.microsoft.com>"
+    }
+  }
 }
