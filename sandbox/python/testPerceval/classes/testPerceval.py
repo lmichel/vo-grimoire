@@ -11,6 +11,7 @@ from jsonBuilder import jsonBuilder
 from perceval.backends.core.mbox import MBox
 from datetime import datetime
 import threadingMails
+
 '''
 This program is build to test GrimoireLab : Perceval and especially Perceval on .mbox files
 You will be able to :
@@ -20,6 +21,7 @@ You will be able to :
     - Search a keyword in the archive
     - Build a JSON with N messages
 '''
+
 
 class analyzePerceval(object):
 
@@ -32,7 +34,7 @@ class analyzePerceval(object):
     # You will need to specify the target mailing list
     # and the path where the archives are
     def createRepo(self, dir, mailList):
-        mbox_uri = mailList+'@iova.net'
+        mbox_uri = mailList + '@iova.net'
         mbox_dir = dir
         repo = MBox(uri=mbox_uri, dirpath=mbox_dir)
         return repo
@@ -61,7 +63,7 @@ class analyzePerceval(object):
         print("\nYou will be asked to type a number corresponding of the action you want to do.")
         print("\nThe program will start to download the archive if not already downloaded.")
 
-    def isInt(self,input):
+    def isInt(self, input):
         try:
             int(input)
             return 0
@@ -69,8 +71,8 @@ class analyzePerceval(object):
             return 1
 
     # Method who let the user choose an action
-    def run(self, repo):
-        options = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100]
+    def run(self, repo, mailList):
+        options = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 100]
         # self.countAllMessage(repo)
         res = 0
         while res == 0:
@@ -82,16 +84,16 @@ class analyzePerceval(object):
             print("4 : Search a keyword")
             print("5 : Build a JSON with N messages")
             print("6 : Save the mails to Elastic")
-            print("7 : Display all the senders of mails (ElasticSearch)")
             print("8 : Delete indexes in ElasticSearch")
             print("9 : Print Info on how to launch ElasticSearch")
             print("10 : Execute a default query")
             print("11 : TEST")
+            print("12 : Build Threads And Index It")
             print("100 : Stop the program")
             res = input("\nYour choice : ")
             if self.isInt(res) == 0:
                 if int(res) == 1:
-                    threadingMails.runThread(repo)
+                    percevaler().getAllMessage(repo)
                     res = 0
                 if int(res) == 2:
                     nom = self.typeName()
@@ -114,23 +116,24 @@ class analyzePerceval(object):
                     jsonBuilder().buildJSON(repo=repo)
                     res = 0
                 if int(res) == 6:
-                    elasticer().saveMailsToElastic(repo)
-                    res = 0
-                if int(res) == 7:
-                    elasticer().searchElastic()
+                    elasticer().saveMailsToElastic(repo, mailList)
                     res = 0
                 if int(res) == 8:
-                    elasticer().deleteMails()
+                    elasticer().deleteMails(mailList)
                     res = 0
                 if int(res) == 9:
                     print("\nEnable ElasticSearch service : sudo /bin/systemctl enable elasticsearch.service")
                     print("\nStart ElasticSearch service : sudo systemctl start elasticsearch.service")
                     res = 0
                 if int(res) == 10:
-                    elasticer().doQuery()
+                    elasticer().doQuery(mailList)
                     res = 0
                 if int(res) == 11:
-                    elasticer().printThread()
+                    elasticer().findThread(mailList)
+                    res = 0
+                if int(res) == 12:
+                    subject_table = threadingMails.runThread(repo)
+                    elasticer().addThread(subject_table, mailList)
                     res = 0
                 if int(res) == 100:
                     print("\nEND")

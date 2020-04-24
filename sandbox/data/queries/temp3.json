@@ -1,0 +1,8 @@
+{
+  "query": {
+    "function_score": {
+      "random_score": {}
+    }
+  },
+  "size": 1
+}

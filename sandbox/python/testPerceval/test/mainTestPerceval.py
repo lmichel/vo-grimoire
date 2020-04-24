@@ -8,4 +8,4 @@ if __name__ == '__main__':
     # dir = per.downloadMails()
     tab = downloader().downloadMails(input("Please type the mailing list that you want (eg : dm for dm@iova.net) : "))
     repo = per.createRepo(tab[0],tab[1])
-    per.run(repo)
+    per.run(repo,mailList=tab[1])

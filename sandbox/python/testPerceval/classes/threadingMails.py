@@ -138,10 +138,13 @@ def runThread(repo):
         if 'plain' in message['data']['body'] and 'Message-ID' in message['data'] and 'References' in message['data'] and 'From' in message['data'] and 'Subject' in message['data']:
             if message['data']['Message-ID'] is not None and message['data']['References'] is not None and message['data']['From'] is not None and message['data']['Subject'] is not None:
                 mes = Message()
-                mes.msg = message['data']['From']
+                mes.msg = message['data']['body']['plain']
                 mes.message_id = message['data']['Message-ID']
                 mes.subject = message['data']['Subject']
-                refs = message['data']['References'].split(" ")
+                refs = message['data']['References']
+                refs = refs.replace("\t"," ")
+                refs = refs.replace("\n","")
+                refs = refs.split(" ")
                 newRefs = []
                 for elem in refs:
                     if elem not in newRefs:
@@ -153,3 +156,4 @@ def runThread(repo):
     subject_table = thread(messageList)
     sorted(subject_table)
     jsonBuilder().buildThreadJSON(subject_table)
+    return subject_table

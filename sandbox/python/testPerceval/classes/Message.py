@@ -11,3 +11,6 @@ class Message(object):
         self.message_id = None
         self.references = []
         self.subject = None
+
+    def toString(self):
+        return self.msg

@@ -1,7 +1,7 @@
 {
   "query": {
-    "match": {
-      "body": "password"
+    "match_phrase": {
+      "id": "<52AB441D.8050409@astro.unistra.fr"
     }
   }
 }
