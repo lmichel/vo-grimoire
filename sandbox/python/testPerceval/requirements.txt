@@ -28,6 +28,7 @@ jaraco.collections==3.0.0
 jaraco.functools==3.0.0
 jaraco.text==3.2.0
 Jinja2==2.11.2
+jsonpickle==1.4.1
 kingarthur==0.1.18
 lazy-object-proxy==1.4.3
 lizard==1.17.3

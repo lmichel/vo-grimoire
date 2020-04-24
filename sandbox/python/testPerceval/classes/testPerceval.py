@@ -87,7 +87,7 @@ class analyzePerceval(object):
             print("8 : Delete indexes in ElasticSearch")
             print("9 : Print Info on how to launch ElasticSearch")
             print("10 : Execute a default query")
-            print("11 : TEST")
+            print("11 : Print a random thread")
             print("12 : Build Threads And Index It")
             print("100 : Stop the program")
             res = input("\nYour choice : ")
