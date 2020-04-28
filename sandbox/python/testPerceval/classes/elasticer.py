@@ -24,7 +24,8 @@ class elasticer(object):
                         'timestamp': self.returnTimestamp(message),
                         'id': message['data']['Message-ID'],
                         'references': 'none',
-                        'subject': 'none'}
+                        'subject': 'none',
+                        'maillist':mailList}
                 if 'From' in message['data'] and 'body' in message['data']:
                     item['from'] = message['data']['From']
                     item['body'] = message['data']['body']
