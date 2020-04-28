@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IVOA Mailiing List</title>
+<!--    StyleSheets-->
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/perso.css">
+    <link rel="stylesheet" href="../node_modules/jquery-datetimepicker/jquery.datetimepicker.css">
+<!--    Scripts-->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/bootstrap.bundle.min.js"></script>
+    <script src="../node_modules/jquery-datetimepicker/jquery.datetimepicker.js"></script>
+    <script src="../js/perso.js"></script>
+</head>
+
+<body>
+<!-- As a link -->
+<nav class="navbar navbar-expand-lg bg-dark">
+
+    <div class="navbar-nav mr-auto">
+        <a class="navbar-brand text-white" href="#">International Virtual<br>Observatory Alliance</a>
+    </div>
+
+    <div class="collapse navbar-collapse ml-auto" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link text-white" href="http://ivoa.net">IVOA</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="index.html">HOME</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<br>
+<form>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="inputKeyword">Search a key word/phrase on (Subject, Author, Content...) :</label>
+            <input type="text" class="form-control" id="inputKeyword" placeholder="Keyword / Phrase">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="inputMailList">Filter the mailing list :</label>
+            <div>
+                <select id="inputMailList" name="filtermailinglist" class="form-control">
+                    <option value ="apps">Applications</option>
+                    <option value="dal">Data Access Layer</option>
+                    <option value="dm">Data Model</option>
+                    <option value="grid">Grid & Web Services</option>
+                    <option value="registry">Registry</option>
+                    <option value="semantics">Semantics</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="form-row justify-content-center">
+        <div class="form-group col-md-3">
+            <label for="inputQuerySize">Number of maximum mails returned :</label>
+            <input type="number" class="form-control" id="inputQuerySize" placeholder="...">
+        </div>
+        <div class="form-group col-md-3">
+            <label for="datepicker">Start Period :</label>
+            <input type="date" id="datepicker" class="form-control">
+        </div>
+        <div class="form-group col-md-3">
+            <label for="datepicker">End Period :</label>
+            <input type="date" id="datepicker2" class="form-control">
+        </div>
+    </div>
+    <div class="form-row justify-content-center">
+        <div class="form-group mr-3">
+            <button id="button1id" name="button1id" class="btn btn-success">Execute Query</button>
+        </div>
+        <div class="form-group ">
+            <button id="button2id" name="button2id" class="btn btn-danger">Reset Fields</button>
+        </div>
+    </div>
+</form>
+
+
+
+
+
+
+
+
+<!--Accordion wrapper-->
+<div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
+
+    <!-- Accordion card -->
+    <div class="card">
+
+        <!-- Card header -->
+        <div class="card-header" role="tab" id="headingOne1">
+                <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseOne1" aria-expanded="false"
+                   aria-controls="collapseOne1">
+                    <h5 class="mb-0">
+                        EDU : Result°1 <i class="fas fa-angle-down rotate-icon"></i>
+                    </h5>
+                </a>
+        </div>
+
+        <!-- Card body -->
+        <div id="collapseOne1" class="collapse show" role="tabpanel" aria-labelledby="headingOne1"
+             data-parent="#accordionEx">
+            <div class="m-2 card-body p-1 border border-primary">
+                <i>FROM :</i> <br> &emsp;Laurent Michel &ltlaurent.michel@astro.unistra.fr&gt<br>
+                <i>TO :</i> <br> &emsp;Andre Schaaff &ltandre schaaff@astro.unistra.fr&gt<br>
+                <i>SUBJECT :</i> <br> &emsp;Tutoring Enzo Cisternino Internship<br>
+                <i>DATE :</i> <br> &emsp;28/04/2020 <br>
+                <i>CONTENT :</i> <br> &emsp;The internship of Enzo Cisternino will start on 14/04/2020 and finish on 26/04/2020 <br>
+            </div>
+            <div class="text-center mb-3">
+                <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#edu_result_1">
+                    View Thread
+                </button>
+            </div>
+        </div>
+
+    </div>
+    <!-- Accordion card -->
+
+    <!-- Accordion card -->
+    <div class="card">
+
+        <!-- Card header -->
+        <div class="card-header" role="tab" id="headingTwo2">
+            <a class="collapsed" data-toggle="collapse" data-parent="#accordionEx" href="#collapseTwo2"
+               aria-expanded="false" aria-controls="collapseTwo2">
+                <h5 class="mb-0">
+                    EDU : Result°2 <i class="fas fa-angle-down rotate-icon"></i>
+                </h5>
+            </a>
+        </div>
+
+        <!-- Card body -->
+        <div id="collapseTwo2" class="collapse" role="tabpanel" aria-labelledby="headingTwo2"
+             data-parent="#accordionEx">
+            <div class="m-2 card-body p-1 border border-primary">
+                <i>FROM :</i> <br> &emsp;Laurent Michel &ltlaurent.michel@astro.unistra.fr&gt<br>
+                <i>TO :</i> <br> &emsp;Andre Schaaff &ltandre schaaff@astro.unistra.fr&gt<br>
+                <i>SUBJECT :</i> <br> &emsp;Tutoring Enzo Cisternino Internship<br>
+                <i>DATE :</i> <br> &emsp;28/04/2020 <br>
+                <i>CONTENT :</i> <br> &emsp;The internship of Enzo Cisternino will start on 14/04/2020 and finish on 26/04/2020 <br>
+            </div>
+            <div class="text-center mb-3">
+                <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#edu_result_2">
+                    View Thread
+                </button>
+            </div>
+        </div>
+
+    </div>
+    <!-- Accordion card -->
+
+    <!-- Accordion card -->
+    <div class="card">
+
+        <!-- Card header -->
+        <div class="card-header" role="tab" id="headingThree3">
+            <a class="collapsed" data-toggle="collapse" data-parent="#accordionEx" href="#collapseThree3"
+               aria-expanded="false" aria-controls="collapseThree3">
+                <h5 class="mb-0">
+                    EDU : Result°3 <i class="fas fa-angle-down rotate-icon"></i>
+                </h5>
+            </a>
+        </div>
+
+        <!-- Card body -->
+        <div id="collapseThree3" class="collapse" role="tabpanel" aria-labelledby="headingThree3"
+             data-parent="#accordionEx">
+            <div class="m-2 card-body p-1 border border-primary">
+                <i>FROM :</i> <br> &emsp;Laurent Michel &ltlaurent.michel@astro.unistra.fr&gt<br>
+                <i>TO :</i> <br> &emsp;Andre Schaaff &ltandre schaaff@astro.unistra.fr&gt<br>
+                <i>SUBJECT :</i> <br> &emsp;Tutoring Enzo Cisternino Internship<br>
+                <i>DATE :</i> <br> &emsp;28/04/2020 <br>
+                <i>CONTENT :</i> <br> &emsp;The internship of Enzo Cisternino will start on 14/04/2020 and finish on 26/04/2020 <br>
+            </div>
+            <div class="text-center mb-3">
+                <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#edu_result_3">
+                    View Thread
+                </button>
+            </div>
+        </div>
+
+    </div>
+    <!-- Accordion card -->
+
+</div>
+<!-- Accordion wrapper -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="edu_result_1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque porttitor erat et diam consectetur vulputate. Proin odio augue, gravida bibendum lectus eu, vulputate accumsan lacus. Curabitur sem augue, dictum luctus molestie vel, fermentum eu urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed sapien diam, malesuada vitae odio et, rutrum tincidunt tellus. Phasellus risus velit, porttitor vel eros eu, venenatis volutpat sem. Mauris euismod viverra quam, at euismod eros suscipit at. Ut consequat lorem nec dapibus gravida. Vestibulum placerat quis nunc sit amet posuere.
+
+                Donec eu ipsum vel nisi tempus auctor. In gravida volutpat purus, vitae tristique risus hendrerit non. Phasellus tempor maximus sapien, ac volutpat lectus aliquet vitae. Cras ut congue ipsum, ac molestie nunc. Aliquam erat volutpat. Maecenas varius suscipit malesuada. Nullam pharetra justo in velit mattis, eget tempor justo vehicula.
+
+                Donec vel velit a mauris convallis euismod. Maecenas lacus orci, mollis vulputate scelerisque non, eleifend pulvinar nunc. Suspendisse ipsum lorem, commodo in arcu ut, condimentum scelerisque quam. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Proin vel imperdiet odio. Vivamus eu massa urna. Mauris dictum risus eu nisl lobortis, eu commodo augue scelerisque. Curabitur sit amet condimentum risus. In hac habitasse platea dictumst. Nulla quis bibendum nisi. Phasellus lobortis molestie elit ut laoreet. Ut scelerisque aliquam odio, at tempus elit. Nullam mollis augue vel leo scelerisque porttitor. Phasellus quis dui venenatis, maximus magna ac, suscipit urna. Proin vel tempor massa.
+
+                Fusce quis dui et arcu sagittis dictum. Morbi fringilla mollis est, in dictum lorem viverra vitae. Vestibulum luctus, ex eu vehicula rhoncus, est augue placerat odio, sit amet elementum augue mauris eu tortor. Aliquam semper ex quis dapibus sollicitudin. Integer at tincidunt dui. Maecenas congue facilisis magna sit amet lacinia. Nunc ornare est ut tellus pellentesque semper. Maecenas at lorem justo. Vestibulum in diam dapibus, blandit purus et, tincidunt lectus. Phasellus ligula tortor, porttitor sed congue ac, feugiat nec massa. Ut dui ligula, congue id libero ut, dapibus aliquam eros. Donec auctor eget diam eget varius. Cras pharetra, nisl eu vulputate congue, ipsum augue consequat augue, quis dictum dolor nibh sed velit. Nam pulvinar eros non metus auctor, vel mattis libero mollis. Ut laoreet consectetur libero ut fringilla.
+
+                Curabitur at nisi tortor. Nullam rhoncus lorem ac interdum pharetra. Donec molestie arcu a justo vehicula, fermentum porta ligula imperdiet. Phasellus nec augue elit. Etiam luctus eu lacus sit amet tempor. Fusce justo nisi, sollicitudin et dignissim sit amet, luctus et ipsum. Nulla viverra metus nec nisi sollicitudin mattis. Sed ex justo, ornare et quam eget, tristique lacinia dui. Donec elit diam, suscipit vitae velit ut, tempus laoreet magna. Praesent eu ipsum dictum, dictum nibh eget, pharetra mi. Etiam sed mi mollis, hendrerit tortor id, efficitur massa. Maecenas ut ligula vel lacus convallis lacinia non in velit. Nunc sapien velit, fermentum ut leo quis, viverra varius quam. Fusce vulputate tristique quam, eu accumsan ligula varius non. Nam tempus ligula a nibh dictum, feugiat porta lectus egestas. Ut lobortis maximus.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="edu_result_2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle2">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque porttitor erat et diam consectetur vulputate. Proin odio augue, gravida bibendum lectus eu, vulputate accumsan lacus. Curabitur sem augue, dictum luctus molestie vel, fermentum eu urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed sapien diam, malesuada vitae odio et, rutrum tincidunt tellus. Phasellus risus velit, porttitor vel eros eu, venenatis volutpat sem. Mauris euismod viverra quam, at euismod eros suscipit at. Ut consequat lorem nec dapibus gravida. Vestibulum placerat quis nunc sit amet posuere.
+
+                Donec eu ipsum vel nisi tempus auctor. In gravida volutpat purus, vitae tristique risus hendrerit non. Phasellus tempor maximus sapien, ac volutpat lectus aliquet vitae. Cras ut congue ipsum, ac molestie nunc. Aliquam erat volutpat. Maecenas varius suscipit malesuada. Nullam pharetra justo in velit mattis, eget tempor justo vehicula.
+
+                Donec vel velit a mauris convallis euismod. Maecenas lacus orci, mollis vulputate scelerisque non, eleifend pulvinar nunc. Suspendisse ipsum lorem, commodo in arcu ut, condimentum scelerisque quam. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Proin vel imperdiet odio. Vivamus eu massa urna. Mauris dictum risus eu nisl lobortis, eu commodo augue scelerisque. Curabitur sit amet condimentum risus. In hac habitasse platea dictumst. Nulla quis bibendum nisi. Phasellus lobortis molestie elit ut laoreet. Ut scelerisque aliquam odio, at tempus elit. Nullam mollis augue vel leo scelerisque porttitor. Phasellus quis dui venenatis, maximus magna ac, suscipit urna. Proin vel tempor massa.
+
+                Fusce quis dui et arcu sagittis dictum. Morbi fringilla mollis est, in dictum lorem viverra vitae. Vestibulum luctus, ex eu vehicula rhoncus, est augue placerat odio, sit amet elementum augue mauris eu tortor. Aliquam semper ex quis dapibus sollicitudin. Integer at tincidunt dui. Maecenas congue facilisis magna sit amet lacinia. Nunc ornare est ut tellus pellentesque semper. Maecenas at lorem justo. Vestibulum in diam dapibus, blandit purus et, tincidunt lectus. Phasellus ligula tortor, porttitor sed congue ac, feugiat nec massa. Ut dui ligula, congue id libero ut, dapibus aliquam eros. Donec auctor eget diam eget varius. Cras pharetra, nisl eu vulputate congue, ipsum augue consequat augue, quis dictum dolor nibh sed velit. Nam pulvinar eros non metus auctor, vel mattis libero mollis. Ut laoreet consectetur libero ut fringilla.
+
+                Curabitur at nisi tortor. Nullam rhoncus lorem ac interdum pharetra. Donec molestie arcu a justo vehicula, fermentum porta ligula imperdiet. Phasellus nec augue elit. Etiam luctus eu lacus sit amet tempor. Fusce justo nisi, sollicitudin et dignissim sit amet, luctus et ipsum. Nulla viverra metus nec nisi sollicitudin mattis. Sed ex justo, ornare et quam eget, tristique lacinia dui. Donec elit diam, suscipit vitae velit ut, tempus laoreet magna. Praesent eu ipsum dictum, dictum nibh eget, pharetra mi. Etiam sed mi mollis, hendrerit tortor id, efficitur massa. Maecenas ut ligula vel lacus convallis lacinia non in velit. Nunc sapien velit, fermentum ut leo quis, viverra varius quam. Fusce vulputate tristique quam, eu accumsan ligula varius non. Nam tempus ligula a nibh dictum, feugiat porta lectus egestas. Ut lobortis maximus.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="edu_result_3" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle3">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque porttitor erat et diam consectetur vulputate. Proin odio augue, gravida bibendum lectus eu, vulputate accumsan lacus. Curabitur sem augue, dictum luctus molestie vel, fermentum eu urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed sapien diam, malesuada vitae odio et, rutrum tincidunt tellus. Phasellus risus velit, porttitor vel eros eu, venenatis volutpat sem. Mauris euismod viverra quam, at euismod eros suscipit at. Ut consequat lorem nec dapibus gravida. Vestibulum placerat quis nunc sit amet posuere.
+
+                Donec eu ipsum vel nisi tempus auctor. In gravida volutpat purus, vitae tristique risus hendrerit non. Phasellus tempor maximus sapien, ac volutpat lectus aliquet vitae. Cras ut congue ipsum, ac molestie nunc. Aliquam erat volutpat. Maecenas varius suscipit malesuada. Nullam pharetra justo in velit mattis, eget tempor justo vehicula.
+
+                Donec vel velit a mauris convallis euismod. Maecenas lacus orci, mollis vulputate scelerisque non, eleifend pulvinar nunc. Suspendisse ipsum lorem, commodo in arcu ut, condimentum scelerisque quam. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Proin vel imperdiet odio. Vivamus eu massa urna. Mauris dictum risus eu nisl lobortis, eu commodo augue scelerisque. Curabitur sit amet condimentum risus. In hac habitasse platea dictumst. Nulla quis bibendum nisi. Phasellus lobortis molestie elit ut laoreet. Ut scelerisque aliquam odio, at tempus elit. Nullam mollis augue vel leo scelerisque porttitor. Phasellus quis dui venenatis, maximus magna ac, suscipit urna. Proin vel tempor massa.
+
+                Fusce quis dui et arcu sagittis dictum. Morbi fringilla mollis est, in dictum lorem viverra vitae. Vestibulum luctus, ex eu vehicula rhoncus, est augue placerat odio, sit amet elementum augue mauris eu tortor. Aliquam semper ex quis dapibus sollicitudin. Integer at tincidunt dui. Maecenas congue facilisis magna sit amet lacinia. Nunc ornare est ut tellus pellentesque semper. Maecenas at lorem justo. Vestibulum in diam dapibus, blandit purus et, tincidunt lectus. Phasellus ligula tortor, porttitor sed congue ac, feugiat nec massa. Ut dui ligula, congue id libero ut, dapibus aliquam eros. Donec auctor eget diam eget varius. Cras pharetra, nisl eu vulputate congue, ipsum augue consequat augue, quis dictum dolor nibh sed velit. Nam pulvinar eros non metus auctor, vel mattis libero mollis. Ut laoreet consectetur libero ut fringilla.
+
+                Curabitur at nisi tortor. Nullam rhoncus lorem ac interdum pharetra. Donec molestie arcu a justo vehicula, fermentum porta ligula imperdiet. Phasellus nec augue elit. Etiam luctus eu lacus sit amet tempor. Fusce justo nisi, sollicitudin et dignissim sit amet, luctus et ipsum. Nulla viverra metus nec nisi sollicitudin mattis. Sed ex justo, ornare et quam eget, tristique lacinia dui. Donec elit diam, suscipit vitae velit ut, tempus laoreet magna. Praesent eu ipsum dictum, dictum nibh eget, pharetra mi. Etiam sed mi mollis, hendrerit tortor id, efficitur massa. Maecenas ut ligula vel lacus convallis lacinia non in velit. Nunc sapien velit, fermentum ut leo quis, viverra varius quam. Fusce vulputate tristique quam, eu accumsan ligula varius non. Nam tempus ligula a nibh dictum, feugiat porta lectus egestas. Ut lobortis maximus.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
