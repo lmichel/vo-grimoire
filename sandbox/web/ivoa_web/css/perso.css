@@ -21,8 +21,13 @@ legend {
 }
 
 .lienLegend {
-    color : black
+    color : #656565;
+    font-size:  0.8em;
 }
 .containerCollapse{
     border : 1px solid;
+}
+
+.advanced{
+    color : #656565;
 }
