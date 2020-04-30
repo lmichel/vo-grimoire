@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <title>IVOA Mailiing List</title>
     <!--    StyleSheets-->
-    <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css/perso.css">
-    <link rel="stylesheet" href="../src/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/perso.css" rel="stylesheet">
+    <link href="../src/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <!--    Scripts-->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/bootstrap.bundle.min.js"></script>
-    <script type="module" src="../js/perso/research.js"></script>
-    <script type="module" src="../js/perso/listeners.js"></script>
+    <script src="../js/perso/research.js" type="module"></script>
+    <script src="../js/perso/listeners.js" type="module"></script>
 </head>
 
 <body>
@@ -34,212 +34,84 @@
         </ul>
     </div>
 </nav>
-<form>
-    <div class="col-md-3 float-right d-inline">
-        <img src="../src/ivoa.jpg" class="img-fluid" width="233" height="143" alt="ivoa_logo">
+
+<form class="ml-2">
+    <div class="col-md-3 float-right">
+        <img alt="ivoa_logo" class="img-fluid" height="143" src="../src/ivoa.jpg" width="233">
     </div>
     <div class="form-row align-items-center justify-content-center">
         <span class="search_attributes">Search by Attribtutes : </span>
         <span class="attributes">
-            <button id="from_but" type="button" class="btn btn-link">From</button>
-            <button id="to_but" type="button" class="btn btn-link">To</button>
-            <button id="subject_but" type="button" class="btn btn-link">Subject</button>
-            <button id="content_but" type="button" class="btn btn-link">Content</button>
+            <button class="btn btn-link" id="from_but" type="button">From</button>
+            <button class="btn btn-link" id="to_but" type="button">To</button>
+            <button class="btn btn-link" id="subject_but" type="button">Subject</button>
+            <button class="btn btn-link" id="content_but" type="button">Content</button>
+            <button aria-controls="collapseOne" aria-expanded="true" class="btn btn-link" data-target="#collapseOne"
+                    data-toggle="collapse"
+                    type="button">
+                    Advanced parameters
+            </button>
         </span>
     </div>
-    <div class="form-row">
+    <div class="form-row ml-2 mb-2">
         <div class="input-group">
-            <input type="text" placeholder="Attributes and keywords to build query" class="form-control"
-                   id="search_bar"/>
+            <input class="form-control" id="search_bar" placeholder="Attributes and keywords to build query"
+                   type="text"/>
             <span class="input-group-btn">
-            <button type="submit" class="btn btn-dark">
+            <button class="btn btn-dark" type="submit">
             <i class="fa fa-search"></i>
             </button>
         </span>
         </div>
     </div>
-    <div class="form-row justify-content-center">
+    <div class="ml-2 mb-2" id="accordion">
+        <div class="card">
+            <div aria-labelledby="headingOne" class="collapse" data-parent="#accordion"
+                 id="collapseOne">
+                <div class="form-group mt-2">
+                    <label class="col-md-3" for="mailList">Filter the mailing list :</label>
+                    <select class="form-control line col-md-3" id="mailList" name="filtermailinglist">
+                        <option value="apps">Applications</option>
+                        <option value="dal">Data Access Layer</option>
+                        <option value="dm">Data Model</option>
+                        <option value="grid">Grid & Web Services</option>
+                        <option value="registry">Registry</option>
+                        <option value="semantics">Semantics</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3" for="inputQuerySize">Number of maximum mails returned :</label>
+                    <input class="form-control line col-md-3" id="inputQuerySize" placeholder="..." type="number">
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3" for="datepicker">Start Period :</label>
+                    <input class="form-control line col-md-3" id="datepicker" type="date">
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3" for="datepicker2">End Period :</label>
+                    <input class="form-control line col-md-3" id="datepicker2" type="date">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-row ml-2 mb-2">
         <div class="form-group mr-3">
-            <button id="button1id" name="button1id" class="btn btn-success">Execute Query</button>
+            <button type="submit" class="btn btn-success" id="button1id" name="button1id">Execute Query</button>
         </div>
         <div class="form-group ">
-            <button id="button2id" name="button2id" class="btn btn-danger">Reset Fields</button>
+            <button type="reset" class="btn btn-danger" id="button2id" name="button2id">Reset Fields</button>
         </div>
     </div>
 </form>
 
-<div id="accordion" class=" ml-2 mr-2 mb-5">
-    <div class="card">
-        <div class="" id="headingOne">
-            <h5 class="mb-0">
-                <button class="btn btn-outline-dark w-100" data-toggle="collapse" data-target="#collapseOne"
-                        aria-expanded="true"
-                        aria-controls="collapseOne">
-                    Advanced parameters
-                </button>
-            </h5>
-        </div>
-
-        <div id="collapseOne" class="collapse m-2" aria-labelledby="headingOne"
-             data-parent="#accordion">
-            <div class="form-group">
-                <label for="mailList" class="col-md-3">Filter the mailing list :</label>
-                <select id="mailList" name="filtermailinglist" class="form-control line col-md-3">
-                    <option value="apps">Applications</option>
-                    <option value="dal">Data Access Layer</option>
-                    <option value="dm">Data Model</option>
-                    <option value="grid">Grid & Web Services</option>
-                    <option value="registry">Registry</option>
-                    <option value="semantics">Semantics</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="inputQuerySize" class="col-md-3">Number of maximum mails returned :</label>
-                <input type="number" class="form-control line col-md-3" id="inputQuerySize" placeholder="...">
-            </div>
-            <div class="form-group">
-                <label for="datepicker" class="col-md-3">Start Period :</label>
-                <input type="date" id="datepicker" class="form-control line col-md-3">
-            </div>
-            <div class="form-group">
-                <label for="datepicker2" class="col-md-3">End Period :</label>
-                <input type="date" id="datepicker2" class="form-control line col-md-3">
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<!--Accordion wrapper-->
-<div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
-    <fieldset>
-    <!-- Accordion card -->
-        <div class="card border border-primary m-3 bgrey">
-
-            <!-- Card header -->
-            <div class="card-header " role="tab" id="headingOne1">
-                <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseOne1" aria-expanded="false"
-                   aria-controls="collapseOne1">
-                    <h5 class="mb-0">
-                        EDU : Result°1<i class="fa fa-angle-down rotate-icon"></i>
-                    </h5>
-                </a>
-            </div>
-
-            <!-- Card body -->
-            <div id="collapseOne1" class="collapse" role="tabpanel" aria-labelledby="headingOne1"
-                 data-parent="#accordionEx">
-                <div class="m-2 card-body p-1">
-                    <i>FROM :</i> <br> &emsp;Laurent Michel &ltlaurent.michel@astro.unistra.fr&gt<br>
-                    <i>TO :</i> <br> &emsp;Andre Schaaff &ltandre schaaff@astro.unistra.fr&gt<br>
-                    <i>SUBJECT :</i> <br> &emsp;Tutoring Enzo Cisternino Internship<br>
-                    <i>DATE :</i> <br> &emsp;28/04/2020 <br>
-                    <i>CONTENT :</i> <br> &emsp;The internship of Enzo Cisternino will start on 14/04/2020 and finish on
-                    26/04/2020 <br>
-                </div>
-                <div class="text-center mb-3">
-                    <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#edu_result_1">
-                        View Thread
-                    </button>
-                </div>
-            </div>
-
-        </div>
-    </fieldset>
-    <!-- Accordion card -->
-
-
-
-
-    
-
-
-
-
-
-
-
-    <!-- Accordion card -->
-    <div class="card border border-primary m-3 bgrey">
-
-        <!-- Card header -->
-        <div class="card-header" role="tab" id="headingTwo2">
-            <a class="collapsed" data-toggle="collapse" data-parent="#accordionEx" href="#collapseTwo2"
-               aria-expanded="false" aria-controls="collapseTwo2">
-                <h5 class="mb-0">
-                    EDU : Result°2 <i class="fa fa-angle-down rotate-icon"></i>
-                </h5>
-            </a>
-        </div>
-
-        <!-- Card body -->
-        <div id="collapseTwo2" class="collapse m-3" role="tabpanel" aria-labelledby="headingTwo2"
-             data-parent="#accordionEx">
-            <div class="m-2 card-body p-1">
-                <i>FROM :</i> <br> &emsp;Laurent Michel &ltlaurent.michel@astro.unistra.fr&gt<br>
-                <i>TO :</i> <br> &emsp;Andre Schaaff &ltandre schaaff@astro.unistra.fr&gt<br>
-                <i>SUBJECT :</i> <br> &emsp;Tutoring Enzo Cisternino Internship<br>
-                <i>DATE :</i> <br> &emsp;28/04/2020 <br>
-                <i>CONTENT :</i> <br> &emsp;The internship of Enzo Cisternino will start on 14/04/2020 and finish on
-                26/04/2020 <br>
-            </div>
-            <div class="text-center mb-3">
-                <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#edu_result_2">
-                    View Thread
-                </button>
-            </div>
-        </div>
-
-    </div>
-    <!-- Accordion card -->
-
-    <!-- Accordion card -->
-    <div class="card border border-primary m-3 bgrey">
-
-        <!-- Card header -->
-        <div class="card-header" role="tab" id="headingThree3">
-            <a class="collapsed" data-toggle="collapse" data-parent="#accordionEx" href="#collapseThree3"
-               aria-expanded="false" aria-controls="collapseThree3">
-                <h5 class="mb-0">
-                    EDU : Result°3 <i class="fa fa-angle-down rotate-icon"></i>
-                </h5>
-            </a>
-        </div>
-
-        <!-- Card body -->
-        <div id="collapseThree3" class="collapse m-3" role="tabpanel"
-             aria-labelledby="headingThree3"
-             data-parent="#accordionEx">
-            <div class="m-2 card-body p-1">
-                <i>FROM :</i> <br> &emsp;Laurent Michel &ltlaurent.michel@astro.unistra.fr&gt<br>
-                <i>TO :</i> <br> &emsp;Andre Schaaff &ltandre schaaff@astro.unistra.fr&gt<br>
-                <i>SUBJECT :</i> <br> &emsp;Tutoring Enzo Cisternino Internship<br>
-                <i>DATE :</i> <br> &emsp;28/04/2020 <br>
-                <i>CONTENT :</i> <br> &emsp;The internship of Enzo Cisternino will start on 14/04/2020 and finish on
-                26/04/2020 <br>
-            </div>
-            <div class="text-center mb-3">
-                <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#edu_result_3">
-                    View Thread
-                </button>
-            </div>
-        </div>
-
-    </div>
-    <!-- Accordion card -->
-
-</div>
-<!-- Accordion wrapper -->
-
-
 <!-- Modal -->
-<div class="modal fade" id="edu_result_1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-     aria-hidden="true">
+<div aria-hidden="true" aria-labelledby="exampleModalCenterTitle" class="modal fade" id="edu_result_1" role="dialog"
+     tabindex="-1">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -287,21 +159,21 @@
                 egestas. Ut lobortis maximus.
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                <button class="btn btn-primary" type="button">Save changes</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="edu_result_2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-     aria-hidden="true">
+<div aria-hidden="true" aria-labelledby="exampleModalCenterTitle" class="modal fade" id="edu_result_2" role="dialog"
+     tabindex="-1">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalCenterTitle2">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -349,21 +221,21 @@
                 egestas. Ut lobortis maximus.
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                <button class="btn btn-primary" type="button">Save changes</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="edu_result_3" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-     aria-hidden="true">
+<div aria-hidden="true" aria-labelledby="exampleModalCenterTitle" class="modal fade" id="edu_result_3" role="dialog"
+     tabindex="-1">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalCenterTitle3">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -411,11 +283,90 @@
                 egestas. Ut lobortis maximus.
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                <button class="btn btn-primary" type="button">Save changes</button>
             </div>
         </div>
     </div>
 </div>
+
+<div aria-multiselectable="true" class="accordion md-accordion" id="accordionEx" role="tablist">
+    <fieldset>
+        <legend>
+            <a aria-controls="collapseOne1" aria-expanded="false" class="lienLegend"
+               data-toggle="collapse" href="#result1">
+                EDU : Result°1
+            </a>
+        </legend>
+        <div aria-labelledby="headingOne1" class="collapse" data-parent="#accordionEx" id="result1"
+             role="tabpanel">
+            <div class="m-2 card-body p-1">
+                <i>FROM :</i> <br> &emsp;Laurent Michel &ltlaurent.michel@astro.unistra.fr&gt<br>
+                <i>TO :</i> <br> &emsp;Andre Schaaff &ltandre schaaff@astro.unistra.fr&gt<br>
+                <i>SUBJECT :</i> <br> &emsp;Tutoring Enzo Cisternino Internship<br>
+                <i>DATE :</i> <br> &emsp;28/04/2020 <br>
+                <i>CONTENT :</i> <br> &emsp;The internship of Enzo Cisternino will start on 14/04/2020 and finish on
+                26/04/2020 <br>
+            </div>
+            <div>
+                <button class="btn btn-link" data-target="#edu_result_1" data-toggle="modal" type="button">
+                    View Thread
+                </button>
+            </div>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>
+            <a aria-controls="collapseOne1" aria-expanded="false" class="lienLegend"
+               data-toggle="collapse" href="#result2">
+                EDU : Result°2
+            </a>
+        </legend>
+        <div aria-labelledby="headingOne1" class="collapse" data-parent="#accordionEx" id="result2"
+             role="tabpanel">
+            <div class="m-2 card-body p-1">
+                <i>FROM :</i> <br> &emsp;Laurent Michel &ltlaurent.michel@astro.unistra.fr&gt<br>
+                <i>TO :</i> <br> &emsp;Andre Schaaff &ltandre schaaff@astro.unistra.fr&gt<br>
+                <i>SUBJECT :</i> <br> &emsp;Tutoring Enzo Cisternino Internship<br>
+                <i>DATE :</i> <br> &emsp;28/04/2020 <br>
+                <i>CONTENT :</i> <br> &emsp;The internship of Enzo Cisternino will start on 14/04/2020 and finish on
+                26/04/2020 <br>
+            </div>
+            <div>
+                <button class="btn btn-link" data-target="#edu_result_1" data-toggle="modal" type="button">
+                    View Thread
+                </button>
+            </div>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>
+            <a aria-controls="collapseOne1" aria-expanded="false" class="lienLegend"
+               data-toggle="collapse" href="#result3">
+                EDU : Result°3
+            </a>
+        </legend>
+        <div aria-labelledby="headingOne1" class="collapse" data-parent="#accordionEx" id="result3"
+             role="tabpanel">
+            <div class="m-2 card-body p-1">
+                <i>FROM :</i> <br> &emsp;Laurent Michel &ltlaurent.michel@astro.unistra.fr&gt<br>
+                <i>TO :</i> <br> &emsp;Andre Schaaff &ltandre schaaff@astro.unistra.fr&gt<br>
+                <i>SUBJECT :</i> <br> &emsp;Tutoring Enzo Cisternino Internship<br>
+                <i>DATE :</i> <br> &emsp;28/04/2020 <br>
+                <i>CONTENT :</i> <br> &emsp;The internship of Enzo Cisternino will start on 14/04/2020 and finish on
+                26/04/2020 <br>
+            </div>
+            <div>
+                <button class="btn btn-link" data-target="#edu_result_1" data-toggle="modal" type="button">
+                    View Thread
+                </button>
+            </div>
+        </div>
+    </fieldset>
+</div>
+
 </body>
+
 </html>
