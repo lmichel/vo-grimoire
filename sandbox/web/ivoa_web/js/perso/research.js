@@ -15,7 +15,19 @@ function addSearchAttribute(input){
 }
 
 function testAxios(){
-    return axios.get("http://192.168.1.48:9200/edu/_search",{
+    // return axios.get("http://192.168.1.48:9200/edu/_search",{
+    //     data: JSON.stringify({
+    //             "size":1,
+    //             "query":{
+    //                 "match_all":{}
+    //             },
+    //         }
+    //     ),
+    //     responseType: 'json',
+    // }).then((res)=>{
+    //     traitementMessage(res.data.hits.hits);
+    // }).catch(function(e){console.log(e)})
+    return axios.get("http://83.194.254.94:9200/edu/_search",{
         data: JSON.stringify({
                 "size":1,
                 "query":{
