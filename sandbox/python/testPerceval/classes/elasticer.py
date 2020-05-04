@@ -25,12 +25,18 @@ class elasticer(object):
                         'id': message['data']['Message-ID'],
                         'references': 'none',
                         'subject': 'none',
+                        'data': 'none',
+                        'to': 'none',
                         'maillist':mailList}
                 if 'From' in message['data'] and 'body' in message['data']:
                     item['from'] = message['data']['From']
                     item['body'] = message['data']['body']
                 else:
                     isUseful = 0
+                if 'Date' in message['data']:
+                    item['date'] = message['data']['Date']
+                if 'To' in message['data']:
+                    item['to'] = message['data']['To']
                 if 'Subject' in message['data']:
                     item['subject'] = message['data']['Subject']
                 if 'In-Reply-To' in message['data']:

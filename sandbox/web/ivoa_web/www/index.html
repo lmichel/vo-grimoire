@@ -11,7 +11,8 @@
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/bootstrap.bundle.min.js"></script>
-    <script src="../js/perso/research.js" type="module"></script>
+<!--    <script src="../node_modules/axios/lib/axios.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.js"></script>
     <script src="../js/perso/listeners.js" type="module"></script>
 </head>
 
@@ -58,7 +59,7 @@
             <input class="form-control" id="search_bar" placeholder="Attributes and keywords to build query"
                    type="text"/>
             <span class="input-group-btn">
-            <button class="btn btn-dark" type="submit">
+            <button class="btn btn-dark" type="button" id="search_button">
             <i class="fa fa-search"></i>
             </button>
         </span>
@@ -71,6 +72,7 @@
                 <div class="form-group mt-2">
                     <label class="col-md-3" for="mailList">Filter the mailing list :</label>
                     <select class="form-control line col-md-3" id="mailList" name="filtermailinglist">
+                        <option value="default">Choose Mailing List (apps by default)</option>
                         <option value="apps">Applications</option>
                         <option value="dal">Data Access Layer</option>
                         <option value="dm">Data Model</option>
@@ -84,22 +86,24 @@
                     <input class="form-control line col-md-3" id="inputQuerySize" placeholder="..." type="number">
                 </div>
                 <div class="form-group">
-                    <label class="col-md-3" for="datepicker">Start Period :</label>
-                    <input class="form-control line col-md-3" id="datepicker" type="date">
-                </div>
-                <div class="form-group">
-                    <label class="col-md-3" for="datepicker2">End Period :</label>
-                    <input class="form-control line col-md-3" id="datepicker2" type="date">
+                    <label class="col-md-1" for="datepicker">Period :</label>
+                    <input class="form-control line col-md-2" id="datepicker" type="date">
+                    <label class="col-md-1" for="datepicker2">To :</label>
+                    <input class="form-control line col-md-2" id="datepicker2" type="date">
                 </div>
             </div>
         </div>
     </div>
     <div class="form-row ml-2 mb-2">
         <div class="form-group mr-3">
-            <button type="submit" class="btn btn-success" id="button1id" name="button1id">Execute Query</button>
+            <button type="button" class="btn btn-success" id="button1id" name="executeQuery">Execute Query</button>
         </div>
-        <div class="form-group ">
-            <button type="reset" class="btn btn-danger" id="button2id" name="button2id">Reset Fields</button>
+        <div class="form-group mr-3">
+            <button type="reset" class="btn btn-danger" id="button2id" name="resetFields">Reset Fields</button>
+        </div>
+        <div class="form-group">
+<!--            <button type="button" class="btn btn-dark" data-target="#queryContainer" data-toggle="modal" id="buttonQuery" name="buttonQuery">See Query</button>-->
+            <button type="button" class="btn btn-dark" id="buttonQuery" name="buttonQuery">See Query</button>
         </div>
     </div>
 </form>
@@ -290,83 +294,62 @@
     </div>
 </div>
 
-<div aria-multiselectable="true" class="accordion md-accordion" id="accordionEx" role="tablist">
-    <fieldset>
-        <legend>
-            <a aria-controls="collapseOne1" aria-expanded="false" class="lienLegend"
-               data-toggle="collapse" href="#result1">
-                28/04/2020 (edu) Tutoring Enzo Cis...
-            </a>
-        </legend>
-        <div aria-labelledby="headingOne1" class="collapse" data-parent="#accordionEx" id="result1"
-             role="tabpanel">
-            <div class="m-2 card-body p-1">
-                <i>FROM :</i> <br> &emsp;Laurent Michel &ltlaurent.michel@astro.unistra.fr&gt<br>
-                <i>TO :</i> <br> &emsp;Andre Schaaff &ltandre schaaff@astro.unistra.fr&gt<br>
-                <i>SUBJECT :</i> <br> &emsp;Tutoring Enzo Cisternino Internship<br>
-                <i>DATE :</i> <br> &emsp;28/04/2020 <br>
-                <i>CONTENT :</i> <br> &emsp;The internship of Enzo Cisternino will start on 14/04/2020 and finish on
-                26/04/2020 <br>
-            </div>
-            <div>
-                <button class="btn btn-link" data-target="#edu_result_1" data-toggle="modal" type="button">
-                    View Thread
-                </button>
-            </div>
-        </div>
-    </fieldset>
+<!--<div aria-multiselectable="true" class="accordion md-accordion" id="accordionEx" role="tablist">-->
+<!--    <fieldset>-->
+<!--        <legend>-->
+<!--            <a aria-controls="collapseOne1" aria-expanded="false" class="lienLegend"-->
+<!--               data-toggle="collapse" href="#result3">-->
+<!--                28/04/2020 (apps) Tutoring Enzo Cis...-->
+<!--            </a>-->
+<!--        </legend>-->
+<!--        <div aria-labelledby="headingOne1" class="collapse" data-parent="#accordionEx" id="result3"-->
+<!--             role="tabpanel">-->
+<!--            <div class="m-2 card-body p-1">-->
+<!--                <i>FROM :</i> <br> &emsp;Laurent Michel &ltlaurent.michel@astro.unistra.fr&gt<br>-->
+<!--                <i>TO :</i> <br> &emsp;Andre Schaaff &ltandre schaaff@astro.unistra.fr&gt<br>-->
+<!--                <i>SUBJECT :</i> <br> &emsp;Tutoring Enzo Cisternino Internship<br>-->
+<!--                <i>DATE :</i> <br> &emsp;28/04/2020 <br>-->
+<!--                <i>CONTENT :</i> <br> &emsp;The internship of Enzo Cisternino will start on 14/04/2020 and finish on-->
+<!--                26/04/2020 <br>-->
+<!--            </div>-->
+<!--            <div>-->
+<!--                <button class="btn btn-link" data-target="#edu_result_1" data-toggle="modal" type="button">-->
+<!--                    View Thread-->
+<!--                </button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </fieldset>-->
+<!--</div>-->
 
-    <fieldset>
-        <legend>
-            <a aria-controls="collapseOne1" aria-expanded="false" class="lienLegend"
-               data-toggle="collapse" href="#result2">
-                28/04/2020 (dm) Tutoring Enzo Cis...
-            </a>
-        </legend>
-        <div aria-labelledby="headingOne1" class="collapse" data-parent="#accordionEx" id="result2"
-             role="tabpanel">
-            <div class="m-2 card-body p-1">
-                <i>FROM :</i> <br> &emsp;Laurent Michel &ltlaurent.michel@astro.unistra.fr&gt<br>
-                <i>TO :</i> <br> &emsp;Andre Schaaff &ltandre schaaff@astro.unistra.fr&gt<br>
-                <i>SUBJECT :</i> <br> &emsp;Tutoring Enzo Cisternino Internship<br>
-                <i>DATE :</i> <br> &emsp;28/04/2020 <br>
-                <i>CONTENT :</i> <br> &emsp;The internship of Enzo Cisternino will start on 14/04/2020 and finish on
-                26/04/2020 <br>
-            </div>
-            <div>
-                <button class="btn btn-link" data-target="#edu_result_1" data-toggle="modal" type="button">
-                    View Thread
+<div aria-hidden="true" aria-labelledby="exampleModalCenterTitle" class="modal fade" id="queryContainer" role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="query">Modal title</h5>
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-        </div>
-    </fieldset>
+            <div class="modal-body">
+                <textarea name="body_query" id="body_query">
 
-    <fieldset>
-        <legend>
-            <a aria-controls="collapseOne1" aria-expanded="false" class="lienLegend"
-               data-toggle="collapse" href="#result3">
-                28/04/2020 (apps) Tutoring Enzo Cis...
-            </a>
-        </legend>
-        <div aria-labelledby="headingOne1" class="collapse" data-parent="#accordionEx" id="result3"
-             role="tabpanel">
-            <div class="m-2 card-body p-1">
-                <i>FROM :</i> <br> &emsp;Laurent Michel &ltlaurent.michel@astro.unistra.fr&gt<br>
-                <i>TO :</i> <br> &emsp;Andre Schaaff &ltandre schaaff@astro.unistra.fr&gt<br>
-                <i>SUBJECT :</i> <br> &emsp;Tutoring Enzo Cisternino Internship<br>
-                <i>DATE :</i> <br> &emsp;28/04/2020 <br>
-                <i>CONTENT :</i> <br> &emsp;The internship of Enzo Cisternino will start on 14/04/2020 and finish on
-                26/04/2020 <br>
+                </textarea>
             </div>
-            <div>
-                <button class="btn btn-link" data-target="#edu_result_1" data-toggle="modal" type="button">
-                    View Thread
-                </button>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                <button class="btn btn-primary" type="button">Save changes</button>
             </div>
         </div>
-    </fieldset>
+    </div>
 </div>
 
+<pre id="testAxios">
+</pre>
+
+<div id="accordionEx" aria-multiselectable="true" class="accordion md-accordion" role="tablist">
+
+</div>
 </body>
 
 </html>

@@ -13,4 +13,13 @@ $(document).ready(function(){
     $("#content_but").click(function(){
         research.addSearchAttribute("(Content:)")
     })
+    $("#buttonQuery").click(function(){
+        research.testAxios()
+    })
+    $("#executeQuery").click(function(){
+        research.formQuery()
+    })
+    $("#search_button").click(function(){
+        research.formQuery()
+    })
 })
