@@ -11,6 +11,7 @@
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <!--    <script src="../node_modules/axios/lib/axios.js"></script>-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.js"></script>
     <script src="../js/perso/listeners.js" type="module"></script>
@@ -103,7 +104,7 @@
         </div>
         <div class="form-group">
 <!--            <button type="button" class="btn btn-dark" data-target="#queryContainer" data-toggle="modal" id="buttonQuery" name="buttonQuery">See Query</button>-->
-            <button type="button" class="btn btn-dark" id="buttonQuery" name="buttonQuery">See Query</button>
+            <button type="button" data-target="#see_query" data-toggle="modal" class="btn btn-dark" id="buttonQuery" name="buttonQuery">See Query</button>
         </div>
     </div>
 </form>
@@ -321,7 +322,7 @@
 <!--    </fieldset>-->
 <!--</div>-->
 
-<div aria-hidden="true" aria-labelledby="exampleModalCenterTitle" class="modal fade" id="queryContainer" role="dialog"
+<div aria-hidden="true" aria-labelledby="exampleModalCenterTitle" class="modal fade" id="see_query" role="dialog"
      tabindex="-1">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -332,8 +333,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <textarea name="body_query" id="body_query">
-
+                <textarea rows="10" class="w-100" name="body_query" id="body_query">
                 </textarea>
             </div>
             <div class="modal-footer">

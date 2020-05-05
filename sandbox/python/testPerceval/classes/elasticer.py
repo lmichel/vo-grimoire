@@ -19,7 +19,7 @@ class elasticer(object):
         for message in repo.fetch():
             try:
                 item = {'from': message['data']['From'],
-                        'body': message['data']['body'],
+                        'body': 'none',
                         'in-reply-to': 'none',
                         'timestamp': self.returnTimestamp(message),
                         'id': message['data']['Message-ID'],
@@ -28,9 +28,13 @@ class elasticer(object):
                         'data': 'none',
                         'to': 'none',
                         'maillist':mailList}
+                if 'plain' in message['data']['body']:
+                    item['body'] = message['data']['body']['plain']
+                if 'html' in message['data']['body']:
+                    if item['body'] == 'none':
+                        item['body'] = message['data']['body']['html']
                 if 'From' in message['data'] and 'body' in message['data']:
                     item['from'] = message['data']['From']
-                    item['body'] = message['data']['body']
                 else:
                     isUseful = 0
                 if 'Date' in message['data']:
@@ -138,6 +142,10 @@ class elasticer(object):
         if '(' in date_string:
             date_string = date_string.split('(')[0]
         date = datetime.strptime(date_string.strip(), '%a, %d %b %Y %H:%M:%S %z')
+        print("AVANT TRAITEMENT : " + message['data']['Date'])
+        print("APRES TRAITEMENT : " + str(date.day) + "/" + str(date.month) + "/" + str(date.year))
+        newDate = datetime.fromtimestamp(date.timestamp())
+        print("RETRANSCRIPTION : " + str(newDate.day) + "/" + str(newDate.month) + "/" + str(newDate.year))
         return date.timestamp()
 
     def isInt(self, input):

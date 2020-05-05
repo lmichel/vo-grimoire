@@ -14,12 +14,12 @@ $(document).ready(function(){
         research.addSearchAttribute("(Content:)")
     })
     $("#buttonQuery").click(function(){
-        research.testAxios()
+        research.seeQuery()
     })
     $("#executeQuery").click(function(){
         research.formQuery()
     })
     $("#search_button").click(function(){
-        research.formQuery()
+        research.formQuery(1)
     })
 })

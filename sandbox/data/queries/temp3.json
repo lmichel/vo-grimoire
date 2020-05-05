@@ -1,8 +1,19 @@
 {
   "query": {
-    "function_score": {
-      "random_score": {}
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "subject": "Another Point"
+          }
+        },
+        {
+          "match": {
+            "from": "Marco"
+          }
+        }
+      ]
     }
   },
-  "size": 1
+  "size": 100
 }

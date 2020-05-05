@@ -15,49 +15,40 @@ function addSearchAttribute(input){
 }
 
 function testAxios(){
-    // return axios.get("http://192.168.1.48:9200/edu/_search",{
-    //     data: JSON.stringify({
-    //             "size":1,
-    //             "query":{
-    //                 "match_all":{}
-    //             },
-    //         }
-    //     ),
-    //     responseType: 'json',
-    // }).then((res)=>{
-    //     traitementMessage(res.data.hits.hits);
-    // }).catch(function(e){console.log(e)})
-    return axios.get("http://83.194.254.94:9200/edu/_search",{
-        data: JSON.stringify({
-                "size":1,
-                "query":{
-                    "match_all":{}
-                },
-            }
-        ),
-        responseType: 'json',
-    }).then((res)=>{
-        traitementMessage(res.data.hits.hits);
-    }).catch(function(e){console.log(e)})
+    return axios.get("http://192.168.1.48:9200/edu/_search",{
+            data: JSON.stringify({
+                    "size":1,
+                    "query":{
+                        "match_all":{}
+                    },
+                }
+            ),
+            responseType: 'json',
+        }).then((res)=>{
+            traitementMessage(res.data.hits.hits);
+        }).catch(function(e){console.log(e)})
 }
 
 function traitementMessage(hits){
     for (let i=0; i<hits.length; i++){
+        let timestamp = new Date(hits[i]["_source"]["timestamp"]*1000)
+        let date = moment(timestamp).format("DD/MM/YYYY")
+        let mailList = hits[i]["_source"]["maillist"]
         $("#accordionEx").append("<fieldset>\n" +
             "<legend>\n" +
             "<a aria-controls=\"collapseOne1\" aria-expanded=\"false\" class=\"lienLegend\"\n" +
             "data-toggle=\"collapse\" href=\"#result"+i+"\">\n" +
-            "    28/04/2020 (apps) Tutoring Enzo Cis...\n" +
+             date + " ("+mailList+") "+hits[i]["_source"]["subject"]+"\n" +
             "</a>\n" +
             "</legend>\n" +
             "<div aria-labelledby=\"headingOne1\" class=\"collapse\" data-parent=\"#accordionEx\" id=\"result"+i+"\"\n" +
             "role=\"tabpanel\">\n" +
             "    <div class=\"m-2 card-body p-1\">\n" +
-            "    <i>FROM :</i> <br> &emsp;"+ hits[i]["_source"]["from"] +"<br>\n" +
-            "<i>TO :</i> <br> &emsp;"+ hits[i]["_source"]["to"] +"<br>\n" +
-            "<i>SUBJECT :</i> <br> &emsp;"+ hits[i]["_source"]["subject"] +"<br>\n" +
-            "<i>DATE :</i> <br> &emsp;"+ hits[i]["_source"]["date"] +" <br>\n" +
-            "<i>CONTENT :</i> <br> &emsp;<pre>"+ hits[i]["_source"]["body"]["plain"] +"</pre><br>\n" +
+            "    <i>FROM :</i>"+ hits[i]["_source"]["from"] +"<br>\n" +
+            "<i>TO :</i>"+ hits[i]["_source"]["to"] +"<br>\n" +
+            "<i>SUBJECT :</i>"+ hits[i]["_source"]["subject"] +"<br>\n" +
+            "<i>DATE :</i>"+ hits[i]["_source"]["date"] +" <br>\n" +
+            "<i>CONTENT :</i><pre>"+ hits[i]["_source"]["body"] +"</pre><br>\n" +
             "</div>\n" +
             "<div>\n" +
             "<button class=\"btn btn-link\" data-target=\"#edu_result_1\" data-toggle=\"modal\" type=\"button\">\n" +
@@ -67,9 +58,10 @@ function traitementMessage(hits){
             "</div>\n" +
             "</fieldset>")
     }
+    alert("Number of mails returned for the query : " + hits.length)
 }
 
-function formQuery(){
+function formQuery(exec){
     let totalString = $("#search_bar").val();
     let fromRes = totalString.match(fromReg)
     let toRes = totalString.match(toReg)
@@ -85,13 +77,13 @@ function formQuery(){
     let startPeriodInput = $("#datepicker");
     let endPeriodInput = $("#datepicker2");
     let querySize = 100
-    if (numberInput.val() != null && numberInput.val() > 0){
+    if (numberInput.val() != null && numberInput.val() > 0 && numberInput.val() <= 100){
         querySize = numberInput.val();
     }
     let mailList = ""
     switch (mailListInput.val()) {
         case "Choose Mailing List (apps by default)":
-            mailList = "apps"
+            mailList = "edu"
             break;
         case "Applications":
             mailList = "apps"
@@ -140,34 +132,55 @@ function formQuery(){
     }
     if (fromRes !== null) fromRes.forEach(element => {
         query["query"]["bool"]["must"].push({
-            "match":{"from": element.replace("(From:","").replace(")","").trim()}
+            "match":{"from": {"query":element.replace("(From:","").replace(")","").trim(),"operator":"and"}}
         })
     })
     if (toRes !== null) toRes.forEach(element => {
         query["query"]["bool"]["must"].push({
-            "match":{"to": element.replace("(To:","").replace(")","").trim()}
+            "match":{"to": {"query":element.replace("(To:","").replace(")","").trim(),"operator":"and"}}
         })
     })
     if (subjectRes !== null) subjectRes.forEach(element => {
         query["query"]["bool"]["must"].push({
-            "match":{"to": element.replace("(Subject:","").replace(")","").trim()}
+            "match":{"subject": {"query": element.replace("(Subject:","").replace(")","").trim(),"operator":"and"}}
         })
     })
     if (contentRes !== null) contentRes.forEach(element => {
         query["query"]["bool"]["must"].push({
-            "match":{"content": element.replace("(Content:","").replace(")","").trim()}
+            "match":{"body": {"query": element.replace("(Content:","").replace(")","").trim(),"operator":"and"}}
         })
     })
     if (totalString !== ""){
         query["query"]["bool"]["must"].push({
-            "match_phrase":{"content": totalString}
+            "match":{"content": totalString}
         })
     }
-    console.log(query);
+    console.log(query)
+    if (exec === 1){
+        executeQuery(query)
+    }
+    return query
 }
 
+function executeQuery(query){
+    $("#accordionEx").empty()
+    return axios.get("http://192.168.1.48:9200/edu/_search", {
+        params: {
+            source: JSON.stringify(query),
+            source_content_type: 'application/json'
+        }
+    }).then((res)=>{
+        traitementMessage(res.data.hits.hits);
+    }).catch(function(e){console.log(e)})
+}
+
+function seeQuery(){
+    let query = formQuery(0)
+    $("#body_query").val(JSON.stringify(query,null,2))
+}
 export default {
     addSearchAttribute : addSearchAttribute,
     testAxios : testAxios,
     formQuery : formQuery,
+    seeQuery : seeQuery
 }
