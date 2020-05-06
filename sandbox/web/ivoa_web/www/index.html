@@ -12,7 +12,7 @@
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<!--    <script src="../node_modules/axios/lib/axios.js"></script>-->
+    <!--    <script src="../node_modules/axios/lib/axios.js"></script>-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.js"></script>
     <script src="../js/perso/listeners.js" type="module"></script>
 </head>
@@ -42,20 +42,31 @@
         <img alt="ivoa_logo" class="img-fluid" height="143" src="../src/ivoa.jpg" width="233">
     </div>
     <div class="form-row align-items-center justify-content-center">
-        <span class="search_attributes">Search by Attributes : </span>
         <span class="attributes">
             <button class="btn btn-link" id="from_but" type="button">From</button>
             <button class="btn btn-link" id="to_but" type="button">To</button>
             <button class="btn btn-link" id="subject_but" type="button">Subject</button>
             <button class="btn btn-link" id="content_but" type="button">Content</button>
-            <button aria-controls="collapseOne" aria-expanded="true" class="btn btn-link advanced" data-target="#collapseOne"
+            <button aria-controls="collapseOne" aria-expanded="true" class="btn btn-link advanced"
+                    data-target="#collapseOne"
                     data-toggle="collapse"
                     type="button">
                 <i>Advanced parameters</i>
             </button>
+            <label class="" for="mailList">Filter the mailing list :</label>
+            <select class="form-control line col-md-2" id="mailList" name="filtermailinglist">
+                <option value="default">None</option>
+                <option value="apps">Applications</option>
+                <option value="dal">Data Access Layer</option>
+                <option value="dm">Data Model</option>
+                <option value="grid">Grid & Web Services</option>
+                <option value="registry">Registry</option>
+                <option value="semantics">Semantics</option>
+                <option value="edu">Education</option>
+            </select>
         </span>
     </div>
-    <div class="form-row ml-2 mb-2">
+    <div class="form-row ml-2 mb-2 mt-2">
         <div class="input-group">
             <input class="form-control" id="search_bar" placeholder="Attributes and keywords to build query"
                    type="text"/>
@@ -71,26 +82,21 @@
             <div aria-labelledby="headingOne" class="collapse" data-parent="#accordion"
                  id="collapseOne">
                 <div class="form-group mt-2">
-                    <label class="col-md-3" for="mailList">Filter the mailing list :</label>
-                    <select class="form-control line col-md-3" id="mailList" name="filtermailinglist">
-                        <option value="default">Choose Mailing List (apps by default)</option>
-                        <option value="apps">Applications</option>
-                        <option value="dal">Data Access Layer</option>
-                        <option value="dm">Data Model</option>
-                        <option value="grid">Grid & Web Services</option>
-                        <option value="registry">Registry</option>
-                        <option value="semantics">Semantics</option>
+                    <label class="col-md-3" for="mailList" for="query_method">Query Method :</label>
+                    <select class="form-control line col-md-3" id="query_method" name="or_and_method">
+                        <option value="and">AND</option>
+                        <option value="or">OR</option>
                     </select>
                 </div>
-                <div class="form-group">
+                <div class="form-group mt-2">
                     <label class="col-md-3" for="inputQuerySize">Number of maximum mails returned :</label>
                     <input class="form-control line col-md-3" id="inputQuerySize" placeholder="..." type="number">
                 </div>
-                <div class="form-group">
-                    <label class="col-md-1" for="datepicker">Period :</label>
-                    <input class="form-control line col-md-2" id="datepicker" type="date">
-                    <label class="col-md-1" for="datepicker2">To :</label>
-                    <input class="form-control line col-md-2" id="datepicker2" type="date">
+                <div class="form-group ml-3">
+                    <label class="" style="max-width: 25%" for="datepicker">Period :</label>
+                    <input class="form-control line" style="max-width: 25%" id="datepicker" type="date">
+                    <label class="" style="max-width: 25%" for="datepicker2">To :</label>
+                    <input class="form-control line " style="max-width: 25%" id="datepicker2" type="date">
                 </div>
             </div>
         </div>
@@ -103,8 +109,10 @@
             <button type="reset" class="btn btn-danger" id="button2id" name="resetFields">Reset Fields</button>
         </div>
         <div class="form-group">
-<!--            <button type="button" class="btn btn-dark" data-target="#queryContainer" data-toggle="modal" id="buttonQuery" name="buttonQuery">See Query</button>-->
-            <button type="button" data-target="#see_query" data-toggle="modal" class="btn btn-dark" id="buttonQuery" name="buttonQuery">See Query</button>
+            <!--            <button type="button" class="btn btn-dark" data-target="#queryContainer" data-toggle="modal" id="buttonQuery" name="buttonQuery">See Query</button>-->
+            <button type="button" data-target="#see_query" data-toggle="modal" class="btn btn-dark" id="buttonQuery"
+                    name="buttonQuery">See Query
+            </button>
         </div>
     </div>
 </form>
@@ -295,6 +303,36 @@
     </div>
 </div>
 
+<div aria-hidden="true" aria-labelledby="exampleModalCenterTitle" class="modal fade" id="see_query" role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="query">Modal title</h5>
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <textarea rows="10" class="w-100" name="body_query" id="body_query">
+                </textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                <button class="btn btn-primary" type="button">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="accordionEx" aria-multiselectable="true" class="accordion md-accordion" role="tablist">
+
+</div>
+</body>
+
+</html>
+
+
 <!--<div aria-multiselectable="true" class="accordion md-accordion" id="accordionEx" role="tablist">-->
 <!--    <fieldset>-->
 <!--        <legend>-->
@@ -321,35 +359,3 @@
 <!--        </div>-->
 <!--    </fieldset>-->
 <!--</div>-->
-
-<div aria-hidden="true" aria-labelledby="exampleModalCenterTitle" class="modal fade" id="see_query" role="dialog"
-     tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="query">Modal title</h5>
-                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <textarea rows="10" class="w-100" name="body_query" id="body_query">
-                </textarea>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
-                <button class="btn btn-primary" type="button">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<pre id="testAxios">
-</pre>
-
-<div id="accordionEx" aria-multiselectable="true" class="accordion md-accordion" role="tablist">
-
-</div>
-</body>
-
-</html>

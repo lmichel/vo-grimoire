@@ -1,19 +1,41 @@
 {
+  "size": 100,
   "query": {
     "bool": {
       "must": [
         {
-          "match": {
-            "subject": "Another Point"
-          }
-        },
-        {
-          "match": {
-            "from": "Marco"
-          }
+          "should": [
+            {
+              "wildcard": {
+                "from": {
+                  "value": "*massimo*"
+                }
+              }
+            },
+            {
+              "wildcard": {
+                "to": {
+                  "value": "*massimo*"
+                }
+              }
+            },
+            {
+              "wildcard": {
+                "subject": {
+                  "value": "*massimo*"
+                }
+              }
+            },
+            {
+              "wildcard": {
+                "body": {
+                  "value": "*massimo*"
+                }
+              }
+            }
+          ]
         }
       ]
     }
-  },
-  "size": 100
+  }
 }
