@@ -43,6 +43,17 @@
     </div>
     <div class="form-row align-items-center justify-content-center">
         <span class="attributes">
+            <label class="" for="mailList">Mailing List:</label>
+            <select class="form-control line" id="mailList" name="filtermailinglist">
+                <option value="default">None</option>
+                <option value="apps">Applications</option>
+                <option value="dal">Data Access Layer</option>
+                <option value="dm">Data Model</option>
+                <option value="grid">Grid & Web Services</option>
+                <option value="registry">Registry</option>
+                <option value="semantics">Semantics</option>
+                <option value="edu">Education</option>
+            </select>
             <button class="btn btn-link" id="from_but" type="button">From</button>
             <button class="btn btn-link" id="to_but" type="button">To</button>
             <button class="btn btn-link" id="subject_but" type="button">Subject</button>
@@ -53,17 +64,7 @@
                     type="button">
                 <i>Advanced parameters</i>
             </button>
-            <label class="" for="mailList">Filter the mailing list :</label>
-            <select class="form-control line col-md-2" id="mailList" name="filtermailinglist">
-                <option value="default">None</option>
-                <option value="apps">Applications</option>
-                <option value="dal">Data Access Layer</option>
-                <option value="dm">Data Model</option>
-                <option value="grid">Grid & Web Services</option>
-                <option value="registry">Registry</option>
-                <option value="semantics">Semantics</option>
-                <option value="edu">Education</option>
-            </select>
+
         </span>
     </div>
     <div class="form-row ml-2 mb-2 mt-2">
@@ -89,6 +90,14 @@
                     </select>
                 </div>
                 <div class="form-group mt-2">
+                    <label class="col-md-3" for="sort_method">Sort By :</label>
+                    <select class="form-control line col-md-3" id="sort_method" name="or_and_method">
+                        <option value="none">Default</option>
+                        <option value="date_asc">Date (asc)</option>
+                        <option value="date_desc">Date (desc)</option>
+                    </select>
+                </div>
+                <div class="form-group mt-2">
                     <label class="col-md-3" for="inputQuerySize">Number of maximum mails returned :</label>
                     <input class="form-control line col-md-3" id="inputQuerySize" placeholder="..." type="number">
                 </div>
@@ -98,22 +107,26 @@
                     <label class="" style="max-width: 25%" for="datepicker2">To :</label>
                     <input class="form-control line " style="max-width: 25%" id="datepicker2" type="date">
                 </div>
+                <div class="form-row ml-2 mb-2">
+                    <div class="form-group mr-3">
+                        <button type="button" class="btn btn-success" id="button1id" name="executeQuery">Execute Query
+                        </button>
+                    </div>
+                    <div class="form-group mr-3">
+                        <button type="reset" class="btn btn-danger" id="button2id" name="resetFields">Reset Fields</button>
+                    </div>
+                    <div class="form-group">
+                        <!--            <button type="button" class="btn btn-dark" data-target="#queryContainer" data-toggle="modal" id="buttonQuery" name="buttonQuery">See Query</button>-->
+                        <button type="button" data-target="#see_query" data-toggle="modal" class="btn btn-dark"
+                                id="buttonQuery"
+                                name="buttonQuery">See Query
+                        </button>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
-    <div class="form-row ml-2 mb-2">
-        <div class="form-group mr-3">
-            <button type="button" class="btn btn-success" id="button1id" name="executeQuery">Execute Query</button>
-        </div>
-        <div class="form-group mr-3">
-            <button type="reset" class="btn btn-danger" id="button2id" name="resetFields">Reset Fields</button>
-        </div>
-        <div class="form-group">
-            <!--            <button type="button" class="btn btn-dark" data-target="#queryContainer" data-toggle="modal" id="buttonQuery" name="buttonQuery">See Query</button>-->
-            <button type="button" data-target="#see_query" data-toggle="modal" class="btn btn-dark" id="buttonQuery"
-                    name="buttonQuery">See Query
-            </button>
-        </div>
     </div>
 </form>
 
@@ -129,47 +142,6 @@
                 </button>
             </div>
             <div class="modal-body">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque porttitor erat et diam consectetur
-                vulputate. Proin odio augue, gravida bibendum lectus eu, vulputate accumsan lacus. Curabitur sem augue,
-                dictum luctus molestie vel, fermentum eu urna. Pellentesque habitant morbi tristique senectus et netus
-                et malesuada fames ac turpis egestas. Sed sapien diam, malesuada vitae odio et, rutrum tincidunt tellus.
-                Phasellus risus velit, porttitor vel eros eu, venenatis volutpat sem. Mauris euismod viverra quam, at
-                euismod eros suscipit at. Ut consequat lorem nec dapibus gravida. Vestibulum placerat quis nunc sit amet
-                posuere.
-
-                Donec eu ipsum vel nisi tempus auctor. In gravida volutpat purus, vitae tristique risus hendrerit non.
-                Phasellus tempor maximus sapien, ac volutpat lectus aliquet vitae. Cras ut congue ipsum, ac molestie
-                nunc. Aliquam erat volutpat. Maecenas varius suscipit malesuada. Nullam pharetra justo in velit mattis,
-                eget tempor justo vehicula.
-
-                Donec vel velit a mauris convallis euismod. Maecenas lacus orci, mollis vulputate scelerisque non,
-                eleifend pulvinar nunc. Suspendisse ipsum lorem, commodo in arcu ut, condimentum scelerisque quam. Orci
-                varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Proin vel imperdiet
-                odio. Vivamus eu massa urna. Mauris dictum risus eu nisl lobortis, eu commodo augue scelerisque.
-                Curabitur sit amet condimentum risus. In hac habitasse platea dictumst. Nulla quis bibendum nisi.
-                Phasellus lobortis molestie elit ut laoreet. Ut scelerisque aliquam odio, at tempus elit. Nullam mollis
-                augue vel leo scelerisque porttitor. Phasellus quis dui venenatis, maximus magna ac, suscipit urna.
-                Proin vel tempor massa.
-
-                Fusce quis dui et arcu sagittis dictum. Morbi fringilla mollis est, in dictum lorem viverra vitae.
-                Vestibulum luctus, ex eu vehicula rhoncus, est augue placerat odio, sit amet elementum augue mauris eu
-                tortor. Aliquam semper ex quis dapibus sollicitudin. Integer at tincidunt dui. Maecenas congue facilisis
-                magna sit amet lacinia. Nunc ornare est ut tellus pellentesque semper. Maecenas at lorem justo.
-                Vestibulum in diam dapibus, blandit purus et, tincidunt lectus. Phasellus ligula tortor, porttitor sed
-                congue ac, feugiat nec massa. Ut dui ligula, congue id libero ut, dapibus aliquam eros. Donec auctor
-                eget diam eget varius. Cras pharetra, nisl eu vulputate congue, ipsum augue consequat augue, quis dictum
-                dolor nibh sed velit. Nam pulvinar eros non metus auctor, vel mattis libero mollis. Ut laoreet
-                consectetur libero ut fringilla.
-
-                Curabitur at nisi tortor. Nullam rhoncus lorem ac interdum pharetra. Donec molestie arcu a justo
-                vehicula, fermentum porta ligula imperdiet. Phasellus nec augue elit. Etiam luctus eu lacus sit amet
-                tempor. Fusce justo nisi, sollicitudin et dignissim sit amet, luctus et ipsum. Nulla viverra metus nec
-                nisi sollicitudin mattis. Sed ex justo, ornare et quam eget, tristique lacinia dui. Donec elit diam,
-                suscipit vitae velit ut, tempus laoreet magna. Praesent eu ipsum dictum, dictum nibh eget, pharetra mi.
-                Etiam sed mi mollis, hendrerit tortor id, efficitur massa. Maecenas ut ligula vel lacus convallis
-                lacinia non in velit. Nunc sapien velit, fermentum ut leo quis, viverra varius quam. Fusce vulputate
-                tristique quam, eu accumsan ligula varius non. Nam tempus ligula a nibh dictum, feugiat porta lectus
-                egestas. Ut lobortis maximus.
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
@@ -179,6 +151,7 @@
     </div>
 </div>
 
+<div id="modal_container"></div>
 <!-- Modal -->
 <div aria-hidden="true" aria-labelledby="exampleModalCenterTitle" class="modal fade" id="edu_result_2" role="dialog"
      tabindex="-1">
@@ -191,47 +164,6 @@
                 </button>
             </div>
             <div class="modal-body">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque porttitor erat et diam consectetur
-                vulputate. Proin odio augue, gravida bibendum lectus eu, vulputate accumsan lacus. Curabitur sem augue,
-                dictum luctus molestie vel, fermentum eu urna. Pellentesque habitant morbi tristique senectus et netus
-                et malesuada fames ac turpis egestas. Sed sapien diam, malesuada vitae odio et, rutrum tincidunt tellus.
-                Phasellus risus velit, porttitor vel eros eu, venenatis volutpat sem. Mauris euismod viverra quam, at
-                euismod eros suscipit at. Ut consequat lorem nec dapibus gravida. Vestibulum placerat quis nunc sit amet
-                posuere.
-
-                Donec eu ipsum vel nisi tempus auctor. In gravida volutpat purus, vitae tristique risus hendrerit non.
-                Phasellus tempor maximus sapien, ac volutpat lectus aliquet vitae. Cras ut congue ipsum, ac molestie
-                nunc. Aliquam erat volutpat. Maecenas varius suscipit malesuada. Nullam pharetra justo in velit mattis,
-                eget tempor justo vehicula.
-
-                Donec vel velit a mauris convallis euismod. Maecenas lacus orci, mollis vulputate scelerisque non,
-                eleifend pulvinar nunc. Suspendisse ipsum lorem, commodo in arcu ut, condimentum scelerisque quam. Orci
-                varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Proin vel imperdiet
-                odio. Vivamus eu massa urna. Mauris dictum risus eu nisl lobortis, eu commodo augue scelerisque.
-                Curabitur sit amet condimentum risus. In hac habitasse platea dictumst. Nulla quis bibendum nisi.
-                Phasellus lobortis molestie elit ut laoreet. Ut scelerisque aliquam odio, at tempus elit. Nullam mollis
-                augue vel leo scelerisque porttitor. Phasellus quis dui venenatis, maximus magna ac, suscipit urna.
-                Proin vel tempor massa.
-
-                Fusce quis dui et arcu sagittis dictum. Morbi fringilla mollis est, in dictum lorem viverra vitae.
-                Vestibulum luctus, ex eu vehicula rhoncus, est augue placerat odio, sit amet elementum augue mauris eu
-                tortor. Aliquam semper ex quis dapibus sollicitudin. Integer at tincidunt dui. Maecenas congue facilisis
-                magna sit amet lacinia. Nunc ornare est ut tellus pellentesque semper. Maecenas at lorem justo.
-                Vestibulum in diam dapibus, blandit purus et, tincidunt lectus. Phasellus ligula tortor, porttitor sed
-                congue ac, feugiat nec massa. Ut dui ligula, congue id libero ut, dapibus aliquam eros. Donec auctor
-                eget diam eget varius. Cras pharetra, nisl eu vulputate congue, ipsum augue consequat augue, quis dictum
-                dolor nibh sed velit. Nam pulvinar eros non metus auctor, vel mattis libero mollis. Ut laoreet
-                consectetur libero ut fringilla.
-
-                Curabitur at nisi tortor. Nullam rhoncus lorem ac interdum pharetra. Donec molestie arcu a justo
-                vehicula, fermentum porta ligula imperdiet. Phasellus nec augue elit. Etiam luctus eu lacus sit amet
-                tempor. Fusce justo nisi, sollicitudin et dignissim sit amet, luctus et ipsum. Nulla viverra metus nec
-                nisi sollicitudin mattis. Sed ex justo, ornare et quam eget, tristique lacinia dui. Donec elit diam,
-                suscipit vitae velit ut, tempus laoreet magna. Praesent eu ipsum dictum, dictum nibh eget, pharetra mi.
-                Etiam sed mi mollis, hendrerit tortor id, efficitur massa. Maecenas ut ligula vel lacus convallis
-                lacinia non in velit. Nunc sapien velit, fermentum ut leo quis, viverra varius quam. Fusce vulputate
-                tristique quam, eu accumsan ligula varius non. Nam tempus ligula a nibh dictum, feugiat porta lectus
-                egestas. Ut lobortis maximus.
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
@@ -319,14 +251,19 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
-                <button class="btn btn-primary" type="button">Save changes</button>
+                <button class="btn btn-primary" id="modif_query" type="button" data-dismiss="modal">Save changes</button>
             </div>
         </div>
     </div>
 </div>
 
-<div id="accordionEx" aria-multiselectable="true" class="accordion md-accordion" role="tablist">
+<br>
+<br>
 
+<div id="mails_container">
+    <div id="accordionEx" aria-multiselectable="true" class="accordion md-accordion" role="tablist">
+
+    </div>
 </div>
 </body>
 

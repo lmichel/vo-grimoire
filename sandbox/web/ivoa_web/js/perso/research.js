@@ -41,7 +41,7 @@ function traitementMessage(hits) {
             "<legend>\n" +
             "<a aria-controls=\"collapseOne1\" aria-expanded=\"false\" class=\"lienLegend\"\n" +
             "data-toggle=\"collapse\" href=\"#result" + i + "\">\n" +
-            date + " (" + mailList + ") <strong>From</strong> : "+ hits[i]["_source"]["from"] + " <strong>Subject</strong> : " + hits[i]["_source"]["subject"] + "\n" +
+            date + " (" + mailList + ") <strong>From</strong> : " + hits[i]["_source"]["from"] + " <strong>Subject</strong> : " + hits[i]["_source"]["subject"] + "\n" +
             "</a>\n" +
             "</legend>\n" +
             "<div aria-labelledby=\"headingOne1\" class=\"collapse\" data-parent=\"#accordionEx\" id=\"result" + i + "\"\n" +
@@ -54,12 +54,13 @@ function traitementMessage(hits) {
             "<pre>" + hits[i]["_source"]["body"] + "</pre><br>" +
             "</div>\n" +
             "<div>\n" +
-            "<button class=\"btn btn-link\" data-target=\"#edu_result_1\" data-toggle=\"modal\" type=\"button\">\n" +
+            "<button class=\"btn btn-link\" data-target=\"#edu_result_"+i+"\" data-toggle=\"modal\" type=\"button\">\n" +
             "    View Thread\n" +
             "</button>\n" +
             "</div>\n" +
             "</div>\n" +
             "</fieldset>")
+        findThread(hits[i]["_source"]["id"], hits[i]["_source"]["maillist"],i)
     }
     alert("Number of mails returned for the query : " + hits.length)
 }
@@ -83,8 +84,8 @@ function formQuery(exec) {
     let numberInput = $("#inputQuerySize");
     let startPeriodInput = $("#datepicker");
     let endPeriodInput = $("#datepicker2");
-    let querySize = 100
-    if (numberInput.val() != null && numberInput.val() > 0 && numberInput.val() <= 100) {
+    let querySize = 20
+    if (numberInput.val() != null && numberInput.val() > 0 && numberInput.val() <= 20) {
         querySize = numberInput.val();
     }
     let mailList = ""
@@ -125,15 +126,13 @@ function formQuery(exec) {
         startTimestamp = new Date(startPeriodInput.val()).getTime()
         if (isNaN(startTimestamp)) startTimestamp = 0;
     }
-    console.log("DEBUT : " + startTimestamp/1000)
     if (endPeriodInput.val() != null) {
         endTimestamp = new Date(endPeriodInput.val()).getTime()
         if (isNaN(endTimestamp)) endTimestamp = 0;
     }
-    console.log("DEBUT : " + endTimestamp/1000)
     let query = ""
-    if ($("#query_method").val() === "and"){
-         query = {
+    if ($("#query_method").val() === "and") {
+        query = {
             "size": querySize,
             "query": {
                 "bool": {
@@ -142,38 +141,37 @@ function formQuery(exec) {
             }
         }
         if (fromRes !== null) fromRes.forEach(element => {
-            let all = element.replace("(From:","").replace(")","").trim().toLowerCase().split(" ")
-            all.forEach(second_element =>{
+            let all = element.replace("(From:", "").replace(")", "").trim().toLowerCase().split(" ")
+            all.forEach(second_element => {
                 query["query"]["bool"]["must"].push({
                     "wildcard": {"from": {"value": "*" + second_element + "*"}}
                 })
             })
         })
         if (toRes !== null) toRes.forEach(element => {
-            let all = element.replace("(To:","").replace(")","").trim().toLowerCase().split(" ")
-            all.forEach(second_element =>{
+            let all = element.replace("(To:", "").replace(")", "").trim().toLowerCase().split(" ")
+            all.forEach(second_element => {
                 query["query"]["bool"]["must"].push({
                     "wildcard": {"to": {"value": "*" + second_element + "*"}}
                 })
             })
         })
         if (subjectRes !== null) subjectRes.forEach(element => {
-            let all = element.replace("(Subject:","").replace(")","").trim().toLowerCase().split(" ")
-            all.forEach(second_element =>{
+            let all = element.replace("(Subject:", "").replace(")", "").trim().toLowerCase().split(" ")
+            all.forEach(second_element => {
                 query["query"]["bool"]["must"].push({
                     "wildcard": {"subject": {"value": "*" + second_element + "*"}}
                 })
             })
         })
         if (contentRes !== null) contentRes.forEach(element => {
-            let all = element.replace("(Content:","").replace(")","").trim().toLowerCase().split(" ")
-            all.forEach(second_element =>{
+            let all = element.replace("(Content:", "").replace(")", "").trim().toLowerCase().split(" ")
+            all.forEach(second_element => {
                 query["query"]["bool"]["must"].push({
                     "wildcard": {"body": {"value": "*" + second_element + "*"}}
                 })
             })
         })
-
         if (totalString !== "") {
             query["query"]["bool"]["must"].push({
                 "bool": {
@@ -186,50 +184,52 @@ function formQuery(exec) {
                 }
             })
         }
-        query["query"]["bool"]["must"].push({
-            "range": {
-                "timestamp":{
-                    "gte" : startTimestamp/1000,
-                    "lte" : endTimestamp/1000,
+        if (startTimestamp !== 0 && endTimestamp !== 0) {
+            query["query"]["bool"]["must"].push({
+                "range": {
+                    "timestamp": {
+                        "gte": startTimestamp / 1000,
+                        "lte": endTimestamp / 1000,
+                    }
                 }
-            }
-        })
-    }else if ($("#query_method").val() === "or"){
+            })
+        }
+    } else if ($("#query_method").val() === "or") {
         query = {
             "size": querySize,
             "query": {
-                "bool":{
-                    "should":[]
+                "bool": {
+                    "should": []
                 }
             }
         }
         if (fromRes !== null) fromRes.forEach(element => {
-            let all = element.replace("(From:","").replace(")","").trim().toLowerCase().split(" ")
-            all.forEach(second_element =>{
+            let all = element.replace("(From:", "").replace(")", "").trim().toLowerCase().split(" ")
+            all.forEach(second_element => {
                 query["query"]["bool"]["should"].push({
                     "wildcard": {"from": {"value": "*" + second_element + "*"}}
                 })
             })
         })
         if (toRes !== null) toRes.forEach(element => {
-            let all = element.replace("(To:","").replace(")","").trim().toLowerCase().split(" ")
-            all.forEach(second_element =>{
+            let all = element.replace("(To:", "").replace(")", "").trim().toLowerCase().split(" ")
+            all.forEach(second_element => {
                 query["query"]["bool"]["should"].push({
                     "wildcard": {"to": {"value": "*" + second_element + "*"}}
                 })
             })
         })
         if (subjectRes !== null) subjectRes.forEach(element => {
-            let all = element.replace("(Subject:","").replace(")","").trim().toLowerCase().split(" ")
-            all.forEach(second_element =>{
+            let all = element.replace("(Subject:", "").replace(")", "").trim().toLowerCase().split(" ")
+            all.forEach(second_element => {
                 query["query"]["bool"]["should"].push({
                     "wildcard": {"subject": {"value": "*" + second_element + "*"}}
                 })
             })
         })
         if (contentRes !== null) contentRes.forEach(element => {
-            let all = element.replace("(Content:","").replace(")","").trim().toLowerCase().split(" ")
-            all.forEach(second_element =>{
+            let all = element.replace("(Content:", "").replace(")", "").trim().toLowerCase().split(" ")
+            all.forEach(second_element => {
                 query["query"]["bool"]["should"].push({
                     "wildcard": {"body": {"value": "*" + second_element + "*"}}
                 })
@@ -247,27 +247,39 @@ function formQuery(exec) {
                 }
             })
         }
-        if (startTimestamp !== 0 && endTimestamp !== 0 ){
-            query["query"]["bool"]["must"].push({
+        if (startTimestamp !== 0 && endTimestamp !== 0) {
+            query["query"]["bool"]["must"] = {
                 "range": {
-                    "timestamp":{
-                        "gte" : startTimestamp/1000,
-                        "lte" : endTimestamp/1000,
+                    "timestamp": {
+                        "gte": startTimestamp / 1000,
+                        "lte": endTimestamp / 1000,
                     }
                 }
-            })
+            }
         }
+    }
+    switch ($("#sort_method").val()) {
+        case "date_asc":
+            query["sort"] = [
+                {"timestamp": {"order": "asc"}},
+            ]
+            break;
+        case "date_desc":
+            query["sort"] = [
+                {"timestamp": {"order": "desc"}},
+            ]
+            break;
     }
     console.log(query)
     if (exec === 1) {
-        executeQuery(query,mailList)
+        executeQuery(query, mailList)
     }
     return query
 }
 
-function executeQuery(query,mailList) {
+function executeQuery(query, mailList) {
     $("#accordionEx").empty()
-    return axios.get("http://192.168.1.48:9200/"+mailList+"/_search", {
+    return axios.get("http://192.168.1.48:9200/" + mailList + "/_search", {
         params: {
             source: JSON.stringify(query),
             source_content_type: 'application/json'
@@ -284,9 +296,55 @@ function seeQuery() {
     $("#body_query").val(JSON.stringify(query, null, 2))
 }
 
+function findThread(id, mailList,num) {
+    console.log("ID : " + id)
+    return axios.get("http://192.168.1.48:9200/" + mailList + "_threads/_search", {
+        params: {
+            source: JSON.stringify({
+                "query": {
+                    "match_phrase": {
+                        "content": id
+                    }
+                }
+            }),
+            source_content_type: 'application/json'
+        }
+    }).then((res) => {
+        if (res === undefined){
+            addModalThread("No Thread for this mail",num)
+        }else {
+            addModalThread(res.data.hits.hits[0]["_source"]["content"], num)
+        }
+    }).catch(function (e) {
+        addModalThread("No Thread for this mail",num)
+    })
+}
+
+function addModalThread(content,num) {
+    $("#modal_container").append("<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\"edu_result_"+num+"\" role=\"dialog\"\n" +
+        "     tabindex=\"-1\">\n" +
+        "    <div class=\"modal-dialog modal-dialog-centered\" role=\"document\">\n" +
+        "        <div class=\"modal-content\">\n" +
+        "            <div class=\"modal-header\">\n" +
+        "                <h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\">Thread Content</h5>\n" +
+        "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">\n" +
+        "                    <span class=\"thread_content\""+num+" aria-hidden=\"true\">&times;</span>\n" +
+        "                </button>\n" +
+        "            </div>\n" +
+        "            <div class=\"modal-body\">\n" + JSON.stringify(content)+
+        "            </div>\n" +
+        "            <div class=\"modal-footer\">\n" +
+        "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>\n" +
+        "                <button class=\"btn btn-primary\" type=\"button\">Save changes</button>\n" +
+        "            </div>\n" +
+        "        </div>\n" +
+        "    </div>\n" +
+        "</div>")
+}
+
 export default {
     addSearchAttribute: addSearchAttribute,
-    testAxios: testAxios,
     formQuery: formQuery,
-    seeQuery: seeQuery
+    seeQuery: seeQuery,
+    executeQuery: executeQuery
 }

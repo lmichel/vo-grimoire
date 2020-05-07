@@ -4,38 +4,17 @@
     "bool": {
       "must": [
         {
-          "should": [
-            {
-              "wildcard": {
-                "from": {
-                  "value": "*massimo*"
-                }
-              }
-            },
-            {
-              "wildcard": {
-                "to": {
-                  "value": "*massimo*"
-                }
-              }
-            },
-            {
-              "wildcard": {
-                "subject": {
-                  "value": "*massimo*"
-                }
-              }
-            },
-            {
-              "wildcard": {
-                "body": {
-                  "value": "*massimo*"
-                }
-              }
+          "should": {
+          "wildcard": {
+            "from": {
+              "value": "*massimo*"
             }
-          ]
-        }
+          }
+        }}
       ]
     }
+  },
+  "sort": {
+    "from": {"order": "asc"}
   }
 }

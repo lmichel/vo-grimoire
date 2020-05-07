@@ -22,4 +22,13 @@ $(document).ready(function(){
     $("#search_button").click(function(){
         research.formQuery(1)
     })
+    $("#modif_query").click(function(){
+        console.log(JSON.parse($("#body_query").val()));
+        research.executeQuery(JSON.parse($("#body_query").val()),$("#mailList").val())
+    })
+    $('input[type=text]').on('keydown', function(e) {
+        if (e.which === 13) {
+            research.formQuery(1)
+        }
+    });
 })
