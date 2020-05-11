@@ -1,3 +1,4 @@
+import threads from "./threads.js"
 // let fromReg = '\(From:\d*\w*\)';
 let fromReg = new RegExp("\\(From:[^)]*\\)", 'g')
 // let toReg = '\(To:\d*\w*\)';
@@ -15,23 +16,6 @@ function addSearchAttribute(input) {
     search_bar.prop('selectionEnd', cursorPos - 2)
 }
 
-function testAxios() {
-    return axios.get("http://192.168.1.48:9200/edu/_search", {
-        data: JSON.stringify({
-                "size": 1,
-                "query": {
-                    "match_all": {}
-                },
-            }
-        ),
-        responseType: 'json',
-    }).then((res) => {
-        traitementMessage(res.data.hits.hits);
-    }).catch(function (e) {
-        console.log(e)
-    })
-}
-
 function traitementMessage(hits) {
     for (let i = 0; i < hits.length; i++) {
         let timestamp = new Date(hits[i]["_source"]["timestamp"] * 1000)
@@ -40,15 +24,15 @@ function traitementMessage(hits) {
         $("#accordionEx").append("<fieldset>\n" +
             "<legend>\n" +
             "<a aria-controls=\"collapseOne1\" aria-expanded=\"false\" class=\"lienLegend\"\n" +
-            "data-toggle=\"collapse\" href=\"#result" + i + "\">\n" +
-            date + " (" + mailList + ") <strong>From</strong> : " + hits[i]["_source"]["from"] + " <strong>Subject</strong> : " + hits[i]["_source"]["subject"] + "\n" +
+            "data-toggle=\"collapse\" href=\"#result" + i + "\">\n"+ "<strong>N°:" + (i+1) +"/"+hits.length+" </strong>"+
+            date + " (" + mailList + ") <strong>From</strong> : " + hits[i]["_source"]["from"].replace("<","&lt").replace(">","&gt") + " <strong>Subject</strong> : " + hits[i]["_source"]["subject"] + "\n" +
             "</a>\n" +
             "</legend>\n" +
             "<div aria-labelledby=\"headingOne1\" class=\"collapse\" data-parent=\"#accordionEx\" id=\"result" + i + "\"\n" +
             "role=\"tabpanel\">\n" +
             "    <div class=\"m-2 card-body p-1\">\n" +
-            "    <i>FROM : </i>" + hits[i]["_source"]["from"] +
-            "<i>&emsp; TO : </i>" + hits[i]["_source"]["to"] + "<br>" +
+            "    <i>FROM : </i>" + hits[i]["_source"]["from"].replace("<","&lt").replace(">","&gt") +
+            "<i>&emsp; TO : </i>" + hits[i]["_source"]["to"].replace("<","&lt").replace(">","&gt") + "<br>" +
             // "<i>SUBJECT : </i>"+ hits[i]["_source"]["subject"]+
             // "<i>&emsp; DATE : </i>"+ date +" <br>" +
             "<pre>" + hits[i]["_source"]["body"] + "</pre><br>" +
@@ -60,16 +44,16 @@ function traitementMessage(hits) {
             "</div>\n" +
             "</div>\n" +
             "</fieldset>")
-        findThread(hits[i]["_source"]["id"], hits[i]["_source"]["maillist"],i)
+        threads.findThread(hits[i]["_source"]["id"], hits[i]["_source"]["maillist"],i)
     }
-    alert("Number of mails returned for the query : " + hits.length)
+    // alert("Number of mails returned for the query : " + hits.length)
 }
 
 function formQuery(exec) {
     let mailListInput = $("#mailList");
     let totalString = $("#search_bar").val();
     if (totalString === "") {
-        alert("You've type nothing")
+        // alert("You've type nothing")
         return 0
     }
     let fromRes = totalString.match(fromReg)
@@ -84,8 +68,8 @@ function formQuery(exec) {
     let numberInput = $("#inputQuerySize");
     let startPeriodInput = $("#datepicker");
     let endPeriodInput = $("#datepicker2");
-    let querySize = 20
-    if (numberInput.val() != null && numberInput.val() > 0 && numberInput.val() <= 20) {
+    let querySize = 50
+    if (numberInput.val() != null && numberInput.val() > 0 && numberInput.val() <= 50) {
         querySize = numberInput.val();
     }
     let mailList = ""
@@ -172,18 +156,18 @@ function formQuery(exec) {
                 })
             })
         })
-        if (totalString !== "") {
+        if (totalString.split(" ") !== null) totalString.split(" ").forEach(element => {
             query["query"]["bool"]["must"].push({
                 "bool": {
                     "should": [
-                        {"wildcard": {"from": {"value": "*" + totalString.toLowerCase() + "*"}}},
-                        {"wildcard": {"to": {"value": "*" + totalString.toLowerCase() + "*"}}},
-                        {"wildcard": {"subject": {"value": "*" + totalString.toLowerCase() + "*"}}},
-                        {"wildcard": {"body": {"value": "*" + totalString.toLowerCase() + "*"}}},
+                        {"wildcard": {"from": {"value": "*" + element.toLowerCase() + "*"}}},
+                        {"wildcard": {"to": {"value": "*" + element.toLowerCase() + "*"}}},
+                        {"wildcard": {"subject": {"value": "*" + element.toLowerCase() + "*"}}},
+                        {"wildcard": {"body": {"value": "*" + element.toLowerCase() + "*"}}},
                     ]
                 }
             })
-        }
+        })
         if (startTimestamp !== 0 && endTimestamp !== 0) {
             query["query"]["bool"]["must"].push({
                 "range": {
@@ -235,18 +219,18 @@ function formQuery(exec) {
                 })
             })
         })
-        if (totalString !== "") {
+        if (totalString.split(" ") !== null) totalString.split(" ").forEach(element => {
             query["query"]["bool"]["should"].push({
                 "bool": {
                     "should": [
-                        {"wildcard": {"from": {"value": "*" + totalString.toLowerCase() + "*"}}},
-                        {"wildcard": {"to": {"value": "*" + totalString.toLowerCase() + "*"}}},
-                        {"wildcard": {"subject": {"value": "*" + totalString.toLowerCase() + "*"}}},
-                        {"wildcard": {"body": {"value": "*" + totalString.toLowerCase() + "*"}}},
+                        {"wildcard": {"from": {"value": "*" + element.toLowerCase() + "*"}}},
+                        {"wildcard": {"to": {"value": "*" + element.toLowerCase() + "*"}}},
+                        {"wildcard": {"subject": {"value": "*" + element.toLowerCase() + "*"}}},
+                        {"wildcard": {"body": {"value": "*" + element.toLowerCase() + "*"}}},
                     ]
                 }
             })
-        }
+        })
         if (startTimestamp !== 0 && endTimestamp !== 0) {
             query["query"]["bool"]["must"] = {
                 "range": {
@@ -270,7 +254,6 @@ function formQuery(exec) {
             ]
             break;
     }
-    console.log(query)
     if (exec === 1) {
         executeQuery(query, mailList)
     }
@@ -296,55 +279,73 @@ function seeQuery() {
     $("#body_query").val(JSON.stringify(query, null, 2))
 }
 
-function findThread(id, mailList,num) {
-    console.log("ID : " + id)
-    return axios.get("http://192.168.1.48:9200/" + mailList + "_threads/_search", {
-        params: {
-            source: JSON.stringify({
-                "query": {
-                    "match_phrase": {
-                        "content": id
-                    }
-                }
-            }),
-            source_content_type: 'application/json'
-        }
-    }).then((res) => {
-        if (res === undefined){
-            addModalThread("No Thread for this mail",num)
-        }else {
-            addModalThread(res.data.hits.hits[0]["_source"]["content"], num)
-        }
-    }).catch(function (e) {
-        addModalThread("No Thread for this mail",num)
-    })
-}
+// function findThread(id, mailList,num) {
+//     return axios.get("http://192.168.1.48:9200/" + mailList + "_threads/_search", {
+//         params: {
+//             source: JSON.stringify({
+//                 "query": {
+//                     "match_phrase": {
+//                         "content": id
+//                     }
+//                 }
+//             }),
+//             source_content_type: 'application/json'
+//         }
+//     }).then((res) => {
+//         if (res === undefined){
+//             addModalThread("No Thread for this mail",num)
+//         }else {
+//             addModalThread(res.data.hits.hits[0]["_source"]["content"], num)
+//         }
+//     }).catch(function (e) {
+//         addModalThread("No Thread for this mail",num)
+//     })
+// }
 
-function addModalThread(content,num) {
-    $("#modal_container").append("<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\"edu_result_"+num+"\" role=\"dialog\"\n" +
-        "     tabindex=\"-1\">\n" +
-        "    <div class=\"modal-dialog modal-dialog-centered\" role=\"document\">\n" +
-        "        <div class=\"modal-content\">\n" +
-        "            <div class=\"modal-header\">\n" +
-        "                <h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\">Thread Content</h5>\n" +
-        "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">\n" +
-        "                    <span class=\"thread_content\""+num+" aria-hidden=\"true\">&times;</span>\n" +
-        "                </button>\n" +
-        "            </div>\n" +
-        "            <div class=\"modal-body\">\n" + JSON.stringify(content)+
-        "            </div>\n" +
-        "            <div class=\"modal-footer\">\n" +
-        "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>\n" +
-        "                <button class=\"btn btn-primary\" type=\"button\">Save changes</button>\n" +
-        "            </div>\n" +
-        "        </div>\n" +
-        "    </div>\n" +
-        "</div>")
-}
+// function addModalThread(content,num) {
+//     $("#modal_container").append("<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\"edu_result_"+num+"\" role=\"dialog\"\n" +
+//         "     tabindex=\"-1\">\n" +
+//         "    <div class=\"modal-dialog modal-dialog-centered\" role=\"document\">\n" +
+//         "        <div class=\"modal-content\">\n" +
+//         "            <div class=\"modal-header\">\n" +
+//         "                <h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\">Thread Content</h5>\n" +
+//         "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">\n" +
+//         "                    <span class=\"thread_content\""+num+" aria-hidden=\"true\">&times;</span>\n" +
+//         "                </button>\n" +
+//         "            </div>\n" +
+//         "            <div class=\"modal-body\">\n" + JSON.stringify(content)+
+//         "            </div>\n" +
+//         "            <div class=\"modal-footer\">\n" +
+//         "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>\n" +
+//         "                <button class=\"btn btn-primary\" type=\"button\">Save changes</button>\n" +
+//         "            </div>\n" +
+//         "        </div>\n" +
+//         "    </div>\n" +
+//         "</div>")
+//     try{
+//         console.log(JSON.parse(content))
+//     }catch (e){
+//         console.log(e)
+//     }
+// }
 
+function manageDates(){
+    console.log($("#datepicker").val())
+    console.log($("#datepicker2").val())
+    if ($("#datepicker").val() !== "" && $("#datepicker2").val() === ""){
+        $("#datepicker2").val($("#datepicker").val())
+        console.log("D1")
+    }
+    if ($("#datepicker2").val() !== "" && $("#datepicker").val() === ""){
+        $("#datepicker").val($("#datepicker2").val())
+        console.log("D2")
+    }
+    formQuery(1)
+}
 export default {
     addSearchAttribute: addSearchAttribute,
     formQuery: formQuery,
     seeQuery: seeQuery,
-    executeQuery: executeQuery
+    executeQuery: executeQuery,
+    manageDates: manageDates,
 }

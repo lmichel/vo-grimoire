@@ -31,4 +31,20 @@ $(document).ready(function(){
             research.formQuery(1)
         }
     });
+    $("#query_method").on("change",function(){
+        research.formQuery(1)
+    })
+    $("#sort_method").on("change",function(){
+        research.formQuery(1)
+    })
+    $("#inputQuerySize").on("change",function(){
+        research.formQuery(1)
+    })
+    $("#datepicker").on("blur",function(){
+        research.manageDates()
+    })
+    $("#datepicker2").on("blur",function(){
+        research.manageDates()
+    })
+
 })

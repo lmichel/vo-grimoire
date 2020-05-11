@@ -36,3 +36,7 @@ legend {
     height: 500px;
     overflow:auto;
 }
+
+.modal_ivoa{
+    min-width: 70%;
+}
