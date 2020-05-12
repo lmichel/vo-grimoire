@@ -44,7 +44,7 @@ function traitementMessage(hits) {
             "</div>\n" +
             "</div>\n" +
             "</fieldset>")
-        threads.findThread(hits[i]["_source"]["id"], hits[i]["_source"]["maillist"],i)
+        threads.findThread(hits[i]["_source"]["id"], hits[i]["_source"]["maillist"],i,hits[i]["_source"]["subject"])
     }
     // alert("Number of mails returned for the query : " + hits.length)
 }

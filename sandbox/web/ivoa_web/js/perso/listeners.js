@@ -1,5 +1,5 @@
 import research from "./research.js";
-
+import threads from "./threads.js"
 $(document).ready(function(){
     $("#from_but").click(function(){
         research.addSearchAttribute("(From:)")
@@ -46,5 +46,9 @@ $(document).ready(function(){
     $("#datepicker2").on("blur",function(){
         research.manageDates()
     })
-
+    $("body").on('keydown', function(e){
+        if (e.which === 18){
+            threads.testRequest()
+        }
+    })
 })

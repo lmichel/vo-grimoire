@@ -1,20 +1,13 @@
 {
-  "size": 100,
   "query": {
     "bool": {
-      "must": [
+      "should": [
         {
-          "should": {
-          "wildcard": {
-            "from": {
-              "value": "*massimo*"
-            }
+          "match_phrase": {
+            "subject": "time transformation"
           }
-        }}
+        }
       ]
     }
-  },
-  "sort": {
-    "from": {"order": "asc"}
   }
 }

@@ -17,7 +17,7 @@ def pruneContainers(container):
     if container.isMessageNone() and len(container.children) == 0 :
         # If it is an empty container with no children, nuke it
         return []
-    elif container.isMessageNone() and (len(container.children)==1 or container.parent is not None):
+    elif (container.isMessageNone() and (len(container.children)==1 or container.parent is not None)):
         temp_list = container.children[:]
         for cont in temp_list:
             container.remove_child(cont)
@@ -72,6 +72,8 @@ def thread(messageList):
     #3
     del id_table
     #3-END
+    for container in root_set:
+        assert container.parent is None
     #4
     new_root_set = []
     for container in root_set:
@@ -84,12 +86,14 @@ def thread(messageList):
     #5A and 5B
     for container in root_set:
         if container.message:
+            print(container.message.subject)
             subject = container.message.subject
         else:
-            if container.children[0].message is None or container.children[0].message.subject is None:
-                continue
-            subject = container.children[0].message.subject
-        subject = re_regex.sub('',subject)
+            if container.children[0].message is not None :
+                print(container.children[0].message.subject)
+                subject = container.children[0].message.subject
+        # subject = re_regex.sub('',subject)
+        subject = subject.replace("Re:","")
         if subject == "":
             continue
         temp = subject_table.get(subject, None)
@@ -101,10 +105,10 @@ def thread(messageList):
         if container.message:
             subject = container.message.subject
         else:
-            if container.children[0].message is None or container.children[0].message.subject is None:
-                continue
-            subject = container.children[0].message.subject
+            if container.children[0].message is not None:
+                subject = container.children[0].message.subject
         subject = re_regex.sub('',subject)
+        subject = subject.replace("Re:", "")
         temp_container = subject_table.get(subject,None)
         if temp_container is None or temp_container is container:
             continue
@@ -134,26 +138,32 @@ def printSubjectTable(subs):
 
 def runThread(repo):
     messageList = []
+    compteur = 0
     for message in repo.fetch():
         if 'plain' in message['data']['body'] and 'Message-ID' in message['data'] and 'References' in message['data'] and 'From' in message['data'] and 'Subject' in message['data']:
-            if message['data']['Message-ID'] is not None and message['data']['References'] is not None and message['data']['From'] is not None and message['data']['Subject'] is not None:
+            if message['data']['Message-ID'] is not None and message['data']['From'] is not None and message['data']['Subject'] is not None:
                 mes = Message()
+                compteur += 1
                 mes.msg = message['data']['body']['plain']
                 mes.message_id = message['data']['Message-ID']
                 mes.subject = message['data']['Subject']
-                refs = message['data']['References']
-                refs = refs.replace("\t"," ")
-                refs = refs.replace("\n","")
-                refs = refs.split(" ")
+                ref = ""
                 newRefs = []
-                for elem in refs:
-                    if elem not in newRefs:
-                        newRefs.append(elem.replace("\n",""))
-                # print("Les refs : " + str(newRefs))
+                if message['data']['References'] is not None:
+                    refs = message['data']['References']
+                    refs = refs.replace("\t"," ")
+                    refs = refs.replace("\n","")
+                    refs = refs.split(" ")
+                    for elem in refs:
+                        if elem not in newRefs:
+                            newRefs.append(elem.replace("\n",""))
+                if 'In-Reply-To' in message['data']:
+                    if message['data']['In-Reply-To'] is not None:
+                        newRefs.append(message['data']['In-Reply-To'])
                 mes.references = newRefs
                 messageList.append(mes)
     print('Threading the mails...')
     subject_table = thread(messageList)
     sorted(subject_table)
-    jsonBuilder().buildThreadJSON(subject_table)
+    # jsonBuilder().buildThreadJSON(subject_table)
     return subject_table

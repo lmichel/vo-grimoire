@@ -79,7 +79,7 @@ class elasticer(object):
                 json_query = json.load(f)
                 print("MAILLIST : " + mailList)
                 print(json_query)
-                es_result = es.search(index=mailList, body=json_query)
+                es_result = es.search(index=mailList+"_threads", body=json_query)
                 compteur = 0
                 for message in es_result['hits']['hits']:
                     compteur += 1
@@ -157,6 +157,7 @@ class elasticer(object):
 
     def addThread(self, sub_table, mailList):
         es = elasticsearch.Elasticsearch(['http://localhost:9200'])
+        es.indices.delete(index=mailList + "_threads", ignore=[400, 404])
         for elem in sub_table:
             try:
                 thread_item = {'subject': elem,

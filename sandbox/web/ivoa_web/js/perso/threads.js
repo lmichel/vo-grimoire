@@ -1,10 +1,16 @@
-function findThread(id, mailList,num) {
+function findThread(id, mailList,num,subject) {
+    // let string = subject.replace(/((Re:\s*)*(RE:\s*)*(\[(\w)*\])*)/,"")
+    let string = subject.replace("Re:","")
+    string = string.toLowerCase()
+    string = string.trim()
+    console.log(num + " SUBJECT : " + subject)
+    console.log(num + " REGEXP : "+ string)
     return axios.get("http://192.168.1.48:9200/" + mailList + "_threads/_search", {
         params: {
             source: JSON.stringify({
                 "query": {
                     "match_phrase": {
-                        "content": id
+                        "subject": string
                     }
                 }
             }),
@@ -12,16 +18,23 @@ function findThread(id, mailList,num) {
         }
     }).then((res) => {
         if (res === undefined){
-            addModalThread("No Thread for this mail",num)
+            addModalThread("",num,"No Thread for this mail")
         }else {
-            addModalThread(res.data.hits.hits[0]["_source"]["content"], num)
+            addModalThread(res.data.hits.hits[0]["_source"]["content"], num,"")
         }
     }).catch(function (e) {
-        addModalThread("No Thread for this mail",num)
+        addModalThread("",num,"No Thread for this mail")
     })
 }
 
-function addModalThread(content,num) {
+function addModalThread(content,num,string) {
+    let total
+    if (string === "" && content !== ""){
+        total = traitementThread(content).replace("<","&lt").replace(">","&gt")
+        // console.log((num+1) + " contient un thread")
+    }else{
+        total = string
+    }
     $("#modal_container").append("<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\"edu_result_"+num+"\" role=\"dialog\"\n" +
         "     tabindex=\"-1\">\n" +
         "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">\n" +
@@ -32,7 +45,7 @@ function addModalThread(content,num) {
         "                    <span class=\"thread_content\""+num+" aria-hidden=\"true\">&times;</span>\n" +
         "                </button>\n" +
         "            </div>\n" +
-        "            <div class=\"modal-body\"><pre>\n" + traitementThread(content).replace("<","&lt").replace(">","&gt")+
+        "            <div class=\"modal-body\"><pre>\n" + total +
         "            </pre></div>\n" +
         "            <div class=\"modal-footer\">\n" +
         "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>\n" +
@@ -46,34 +59,74 @@ function addModalThread(content,num) {
 function traitementThread(content){
     try {
         let thread = JSON.parse(content)
+        // console.log(thread)
         let total = ""
-        if (thread.message.msg !== undefined) {
+        if (thread.message !== null && thread.message.msg !== null) {
             total += thread.message.msg + "\n"
         }
-        if (thread.children !== undefined) {
+        if (thread.children !== null) {
             for (let childrenKey in thread.children) {
-                if (childrenKey.message.msg !== undefined) total += childrenKey.message.msg + "\n"
-                if (childrenKey.children !== undefined) {
-                    total += printChildsRecursive(childrenKey.children, total)
+                if (thread.children[childrenKey].message !== null) total += thread.children[childrenKey].message.msg + "\n"
+                if (thread.children[childrenKey].children !== null) {
+                    total += printChildsRecursive(thread.children[childrenKey].children, total)
                 }
             }
         }
         return total
     } catch(e){
-        return "No Thread for this message"
+        console.log(e)
+        return "TEST"
     }
 }
 
 function printChildsRecursive(childs,total){
     for (let childsKey in childs) {
-        if (childsKey.message.msg !== undefined){
-            total += childsKey.message.msg + "\n"
+        if (childs[childsKey].message !== null && childs[childsKey].message.msg !== null){
+            total += childs[childsKey].message.msg + "\n"
         }
-        if (childsKey.children !== undefined){
-            total += printChildsRecursive(childsKey.children,total) + "\n"
+        if (childs[childsKey].children !== null){
+            total += printChildsRecursive(childs[childsKey].children,total) + "\n"
         }
     }
     return total
+}
+
+// function testRequest(){
+//     return axios.get("http://192.168.1.48:9200/dm_threads/_search", {
+//         params: {
+//             source: JSON.stringify({
+//                 "query": {
+//                     "match_phrase": {
+//                         "subject": "plea for pragmatism"
+//                     }
+//                 }
+//             }),
+//             source_content_type: 'application/json'
+//         }
+//     }).then((res) => {
+//         console.log(res.data.hits.hits)
+//     }).catch(function (e) {
+//         console.log(e)
+//     })
+// }
+
+function testRequest(){
+    return axios.get("http://192.168.1.48:9200/dm_threads/_search", {
+        params: {
+            source: JSON.stringify({
+                "query":{
+                    "match_phrase":{
+                        "content": "iw7ng5cnvsvkox1t28ohndt0.1299089625925@email.android.com"
+                    }
+                }
+            }),
+            source_content_type: 'application/json'
+        }
+    }).then((res) => {
+        console.log(res.data.hits.hits)
+    }).catch(function (e) {
+        console.log(e)
+    })
 }
 
 export default {
@@ -81,4 +134,5 @@ export default {
     addModalThread: addModalThread,
     traitementThread: traitementThread,
     printChildsRecursive: printChildsRecursive,
+    testRequest: testRequest,
 }
