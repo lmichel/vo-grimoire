@@ -30,12 +30,15 @@ function traitementMessage(hits) {
             "</legend>\n" +
             "<div aria-labelledby=\"headingOne1\" class=\"collapse\" data-parent=\"#accordionEx\" id=\"result" + i + "\"\n" +
             "role=\"tabpanel\">\n" +
-            "    <div class=\"m-2 card-body p-1\">\n" +
+            "    <div class=\"m-2 card-body p-1\">\n" + "<i>ID : </i>" + hits[i]["_source"]["id"].replace("<","&lt").replace(">","&gt") + "<br>" +
+            "<i>References : </i>" + hits[i]["_source"]["references"].replace("<","&lt").replace(">","&gt") + "<br>" +
+            "<i>In-Reply-To : </i>" + hits[i]["_source"]["in-reply-to"].replace("<","&lt").replace(">","&gt") + "<br>" +
+            "<i>Responders : </i>" + hits[i]["_source"]["responders"].replace("<","&lt").replace(">","&gt") + "<br>" +
             "    <i>FROM : </i>" + hits[i]["_source"]["from"].replace("<","&lt").replace(">","&gt") +
             "<i>&emsp; TO : </i>" + hits[i]["_source"]["to"].replace("<","&lt").replace(">","&gt") + "<br>" +
             // "<i>SUBJECT : </i>"+ hits[i]["_source"]["subject"]+
             // "<i>&emsp; DATE : </i>"+ date +" <br>" +
-            "<pre>" + hits[i]["_source"]["body"] + "</pre><br>" +
+            // "<pre>" + hits[i]["_source"]["body"] + "</pre><br>" +
             "</div>\n" +
             "<div>\n" +
             "<button class=\"btn btn-link\" data-target=\"#edu_result_"+i+"\" data-toggle=\"modal\" type=\"button\">\n" +
@@ -44,7 +47,8 @@ function traitementMessage(hits) {
             "</div>\n" +
             "</div>\n" +
             "</fieldset>")
-        threads.findThread(hits[i]["_source"]["id"], hits[i]["_source"]["maillist"],i,hits[i]["_source"]["subject"])
+        // threads.findThread(hits[i]["_source"]["id"], hits[i]["_source"]["maillist"],i,hits[i]["_source"]["subject"])
+        threads.findResponders(mailList,hits[i]["_source"]["responders"],i)
     }
     // alert("Number of mails returned for the query : " + hits.length)
 }
@@ -79,7 +83,7 @@ function formQuery(exec) {
             return 0
             break;
         case "apps":
-            mailList = "apps"
+            mailList = "datacp"
             break;
         case "dal":
             mailList = "dal"
@@ -278,56 +282,6 @@ function seeQuery() {
     let query = formQuery(0)
     $("#body_query").val(JSON.stringify(query, null, 2))
 }
-
-// function findThread(id, mailList,num) {
-//     return axios.get("http://192.168.1.48:9200/" + mailList + "_threads/_search", {
-//         params: {
-//             source: JSON.stringify({
-//                 "query": {
-//                     "match_phrase": {
-//                         "content": id
-//                     }
-//                 }
-//             }),
-//             source_content_type: 'application/json'
-//         }
-//     }).then((res) => {
-//         if (res === undefined){
-//             addModalThread("No Thread for this mail",num)
-//         }else {
-//             addModalThread(res.data.hits.hits[0]["_source"]["content"], num)
-//         }
-//     }).catch(function (e) {
-//         addModalThread("No Thread for this mail",num)
-//     })
-// }
-
-// function addModalThread(content,num) {
-//     $("#modal_container").append("<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\"edu_result_"+num+"\" role=\"dialog\"\n" +
-//         "     tabindex=\"-1\">\n" +
-//         "    <div class=\"modal-dialog modal-dialog-centered\" role=\"document\">\n" +
-//         "        <div class=\"modal-content\">\n" +
-//         "            <div class=\"modal-header\">\n" +
-//         "                <h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\">Thread Content</h5>\n" +
-//         "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">\n" +
-//         "                    <span class=\"thread_content\""+num+" aria-hidden=\"true\">&times;</span>\n" +
-//         "                </button>\n" +
-//         "            </div>\n" +
-//         "            <div class=\"modal-body\">\n" + JSON.stringify(content)+
-//         "            </div>\n" +
-//         "            <div class=\"modal-footer\">\n" +
-//         "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>\n" +
-//         "                <button class=\"btn btn-primary\" type=\"button\">Save changes</button>\n" +
-//         "            </div>\n" +
-//         "        </div>\n" +
-//         "    </div>\n" +
-//         "</div>")
-//     try{
-//         console.log(JSON.parse(content))
-//     }catch (e){
-//         console.log(e)
-//     }
-// }
 
 function manageDates(){
     console.log($("#datepicker").val())

@@ -14,8 +14,9 @@ class elasticer(object):
     def saveMailsToElastic(self, repo, mailList):
         es = elasticsearch.Elasticsearch(['http://localhost:9200'])
         es.indices.create(mailList)
-        nbErreurs = 0
+        compteur = 0
         isUseful = 1
+        allIds = []
         for message in repo.fetch():
             try:
                 item = {'from': message['data']['From'],
@@ -27,7 +28,9 @@ class elasticer(object):
                         'subject': 'none',
                         'data': 'none',
                         'to': 'none',
+                        'responders': 'none',
                         'maillist':mailList}
+                # self.addResponders(item["id"])
                 if 'plain' in message['data']['body']:
                     item['body'] = message['data']['body']['plain']
                 if 'html' in message['data']['body']:
@@ -48,12 +51,42 @@ class elasticer(object):
                 if 'References' in message['data']:
                     item['references'] = message['data']['References']
                 if isUseful == 1:
+                    allIds.append(item["id"])
+                    compteur += 1
                     es.index(index=mailList, doc_type='keyword', body=item)
                 else:
                     print("\nMail ignoré")
                     isUseful = 1
             except KeyError:
                 print("Useless Mail")
+        print("Compteur : " + str(compteur))
+        # self.addResponders(allIds,mailList,es)
+
+    def addResponders(self,allIds,mailList):
+        es = elasticsearch.Elasticsearch(['http://localhost:9200'])
+        for id in allIds:
+            print("ID : " + id)
+            query = {
+                "query": {
+                    "match_all": {
+
+                    }
+                }
+            }
+            es_result = es.search(index=mailList, doc_type="message", body=query)
+            es_id = es_result['hits']['hits'][0]['_id']
+            query = {
+                "query": {
+                    "match_phrase": {
+                        "in-reply-to": id
+                    }
+                }
+            }
+            es_result_reps = es.search(index=mailList, body=query)
+            responders = ""
+            for msg in es_result_reps['hits']['hits']:
+                responders += msg['_source']['id']
+            es.update(index=mailList, doc_type='keyword', id=es_id, body={"doc": {"responders": responders}})
 
     def doQuery(self, mailList):
         choix = input("\nDo you want your results to be printed or storaged in a Json :"
@@ -75,11 +108,11 @@ class elasticer(object):
             print('\nThis query does not exist, please type different name without .json')
         else:
             es = elasticsearch.Elasticsearch(['http://localhost:9200'])
-            with open(json_path + json_name + '.json', 'r', encoding='utf-8') as f:
+            with open(json_path + json_name + '.json', 'r', encoding='utf8') as f:
                 json_query = json.load(f)
                 print("MAILLIST : " + mailList)
                 print(json_query)
-                es_result = es.search(index=mailList+"_threads", body=json_query)
+                es_result = es.search(index=mailList, body=json_query)
                 compteur = 0
                 for message in es_result['hits']['hits']:
                     compteur += 1
@@ -99,7 +132,7 @@ class elasticer(object):
             print('\nThis query does not exist, please type different name without .json')
         else:
             es = elasticsearch.Elasticsearch(['http://localhost:9200'])
-            with open(json_path + json_name + '.json', 'r', encoding='utf-8') as f:
+            with open(json_path + json_name + '.json', 'r', encoding='utf8') as f:
                 json_query = json.load(f)
                 print(json_query)
                 es_result = es.search(index="mails", doc_type="message", body=json_query)
@@ -130,8 +163,11 @@ class elasticer(object):
     def deleteMails(self, mailList):
         es = elasticsearch.Elasticsearch(['http://localhost:9200'])
         # Faudra ajouter les ignore
-        es.indices.delete(index='mails', ignore=[400, 404])
+        # es.indices.delete(index='mails', ignore=[400, 404])
         es.indices.delete(index=mailList, ignore=[400, 404])
+        es.indices.delete(index="edu", ignore=[400, 404])
+        es.indices.delete(index="dm", ignore=[400, 404])
+        es.indices.delete(index="datacp", ignore=[400, 404])
         es.indices.delete(index=mailList + "_threads", ignore=[400, 404])
 
     def launchElastic(self):
@@ -142,10 +178,10 @@ class elasticer(object):
         if '(' in date_string:
             date_string = date_string.split('(')[0]
         date = datetime.strptime(date_string.strip(), '%a, %d %b %Y %H:%M:%S %z')
-        print("AVANT TRAITEMENT : " + message['data']['Date'])
-        print("APRES TRAITEMENT : " + str(date.day) + "/" + str(date.month) + "/" + str(date.year))
+        # print("AVANT TRAITEMENT : " + message['data']['Date'])
+        # print("APRES TRAITEMENT : " + str(date.day) + "/" + str(date.month) + "/" + str(date.year))
         newDate = datetime.fromtimestamp(date.timestamp())
-        print("RETRANSCRIPTION : " + str(newDate.day) + "/" + str(newDate.month) + "/" + str(newDate.year))
+        # print("RETRANSCRIPTION : " + str(newDate.day) + "/" + str(newDate.month) + "/" + str(newDate.year))
         return date.timestamp()
 
     def isInt(self, input):

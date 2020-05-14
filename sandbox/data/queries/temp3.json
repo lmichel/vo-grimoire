@@ -1,13 +1,7 @@
 {
   "query": {
-    "bool": {
-      "should": [
-        {
-          "match_phrase": {
-            "subject": "time transformation"
-          }
-        }
-      ]
+    "match_phrase": {
+      "id": "<525FF3B7.2030109@oats.inaf.it>"
     }
   }
 }

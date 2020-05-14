@@ -1,12 +1,20 @@
-import re
-re_regex = re.compile("""(
-  (Re(\[\d+\])?:) | (\[ [^]]+ \])
-\s*)+
-""", re.I | re.VERBOSE)
-
-def testRef():
-    stringTest = "Re: [QUANTITY] Plea for pragmatism"
-    print(re_regex.sub('', stringTest))
-
+import sys,os
+import time
+sys.path.append(os.path.abspath('../classes'))
+from testPerceval import analyzePerceval
+from testEs import testEs
 if __name__ == '__main__':
-    testRef()
+    per = analyzePerceval()
+    base_path = os.path.dirname(os.path.realpath(__file__))
+    mbox_path = base_path.replace("/python/testPerceval/test", "/data/mbox")
+    print(mbox_path)
+    repo = per.createRepo(mbox_path,'dm')
+    testEs().deleteMails('dm')
+    ids = testEs().saveMailsToElastic(repo,'dm')
+    time.sleep(5)
+    # allIds = []
+    # for elem in repo.fetch():
+    #     allIds.append(elem['data']['Message-ID'])
+    testEs().addResponders(ids,'dm')
+
+

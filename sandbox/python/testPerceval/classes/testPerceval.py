@@ -1,7 +1,6 @@
 import json
 import os
 import sys
-import urllib.request
 import elasticsearch
 from os import path
 from downloader import downloader
@@ -89,6 +88,7 @@ class analyzePerceval(object):
             print("10 : Execute a default query")
             print("11 : Print a random thread")
             print("12 : Build Threads And Index It")
+            print("13 : TEST")
             print("100 : Stop the program")
             res = input("\nYour choice : ")
             if self.isInt(res) == 0:
@@ -135,6 +135,8 @@ class analyzePerceval(object):
                     subject_table = threadingMails.runThread(repo)
                     elasticer().addThread(subject_table, mailList)
                     res = 0
+                if int(res) == 13:
+                    elasticer().addResponders(1)
                 if int(res) == 100:
                     print("\nEND")
                 if int(res) not in options:

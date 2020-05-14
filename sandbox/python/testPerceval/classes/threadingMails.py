@@ -86,14 +86,13 @@ def thread(messageList):
     #5A and 5B
     for container in root_set:
         if container.message:
-            print(container.message.subject)
             subject = container.message.subject
         else:
             if container.children[0].message is not None :
-                print(container.children[0].message.subject)
                 subject = container.children[0].message.subject
         # subject = re_regex.sub('',subject)
         subject = subject.replace("Re:","")
+        subject = subject.replace("RE:","")
         if subject == "":
             continue
         temp = subject_table.get(subject, None)
@@ -107,8 +106,9 @@ def thread(messageList):
         else:
             if container.children[0].message is not None:
                 subject = container.children[0].message.subject
-        subject = re_regex.sub('',subject)
+        # subject = re_regex.sub('',subject)
         subject = subject.replace("Re:", "")
+        subject = subject.replace("RE:", "")
         temp_container = subject_table.get(subject,None)
         if temp_container is None or temp_container is container:
             continue
@@ -134,29 +134,31 @@ def thread(messageList):
 
 def printSubjectTable(subs):
     for elem in subs:
-        print(elem)
+        print(elem.encode('utf8',"surrogateescape"))
 
 def runThread(repo):
     messageList = []
     compteur = 0
     for message in repo.fetch():
-        if 'plain' in message['data']['body'] and 'Message-ID' in message['data'] and 'References' in message['data'] and 'From' in message['data'] and 'Subject' in message['data']:
+        if 'plain' in message['data']['body'] and 'Message-ID' in message['data'] and 'From' in message['data'] and 'Subject' in message['data']:
             if message['data']['Message-ID'] is not None and message['data']['From'] is not None and message['data']['Subject'] is not None:
                 mes = Message()
                 compteur += 1
                 mes.msg = message['data']['body']['plain']
                 mes.message_id = message['data']['Message-ID']
                 mes.subject = message['data']['Subject']
-                ref = ""
+                if 'Data types question' in message["data"]["Subject"]:
+                    print("Coucou j'existe")
                 newRefs = []
-                if message['data']['References'] is not None:
-                    refs = message['data']['References']
-                    refs = refs.replace("\t"," ")
-                    refs = refs.replace("\n","")
-                    refs = refs.split(" ")
-                    for elem in refs:
-                        if elem not in newRefs:
-                            newRefs.append(elem.replace("\n",""))
+                if 'References' in message['data']:
+                    if message['data']['References'] is not None:
+                        refs = message['data']['References']
+                        refs = refs.replace("\t"," ")
+                        refs = refs.replace("\n","")
+                        refs = refs.split(" ")
+                        for elem in refs:
+                            if elem not in newRefs:
+                                newRefs.append(elem.replace("\n",""))
                 if 'In-Reply-To' in message['data']:
                     if message['data']['In-Reply-To'] is not None:
                         newRefs.append(message['data']['In-Reply-To'])
@@ -165,5 +167,6 @@ def runThread(repo):
     print('Threading the mails...')
     subject_table = thread(messageList)
     sorted(subject_table)
+    jsonBuilder().buildSubjectTableJSON(subject_table)
     # jsonBuilder().buildThreadJSON(subject_table)
     return subject_table

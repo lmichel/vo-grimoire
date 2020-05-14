@@ -42,3 +42,10 @@ class jsonBuilder(object):
         with open(json_path + nom_fichier + 'THREAD.json','w',encoding='utf-8') as f:
             f.write(jsonpickle.encode(input))
         print("\nJSON CREATED")
+
+    def buildSubjectTableJSON(self,input):
+        base_path = os.path.dirname(os.path.realpath(__file__))
+        json_path = base_path.replace("/python/testPerceval/classes","/data/json/")
+        with open(json_path + "subjects.json",'w',encoding='utf-8') as f:
+            for elem in input:
+                f.write(str(elem.encode('utf-8',"surrogateescape")) + "\n")
