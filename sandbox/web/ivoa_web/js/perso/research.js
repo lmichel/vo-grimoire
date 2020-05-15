@@ -21,24 +21,25 @@ function traitementMessage(hits) {
         let timestamp = new Date(hits[i]["_source"]["timestamp"] * 1000)
         let date = moment(timestamp).format("DD/MM/YYYY")
         let mailList = hits[i]["_source"]["maillist"]
-        $("#accordionEx").append("<fieldset>\n" +
-            "<legend>\n" +
+        $("#accordionEx").append("<fieldset class=\"field-mails\">\n" +
+            "<legend class=\"leg-mails\">\n" +
             "<a aria-controls=\"collapseOne1\" aria-expanded=\"false\" class=\"lienLegend\"\n" +
             "data-toggle=\"collapse\" href=\"#result" + i + "\">\n"+ "<strong>N°:" + (i+1) +"/"+hits.length+" </strong>"+
-            date + " (" + mailList + ") <strong>From</strong> : " + hits[i]["_source"]["from"].replace("<","&lt").replace(">","&gt") + " <strong>Subject</strong> : " + hits[i]["_source"]["subject"] + "\n" +
+            date + " (" + mailList + ") <strong>From</strong> : " + hits[i]["_source"]["from"].replace(/</g,"&lt").replace(">","&gt") + " <strong>Subject</strong> : " + hits[i]["_source"]["subject"] + "\n" +
             "</a>\n" +
             "</legend>\n" +
             "<div aria-labelledby=\"headingOne1\" class=\"collapse\" data-parent=\"#accordionEx\" id=\"result" + i + "\"\n" +
             "role=\"tabpanel\">\n" +
-            "    <div class=\"m-2 card-body p-1\">\n" + "<i>ID : </i>" + hits[i]["_source"]["id"].replace("<","&lt").replace(">","&gt") + "<br>" +
-            "<i>References : </i>" + hits[i]["_source"]["references"].replace("<","&lt").replace(">","&gt") + "<br>" +
-            "<i>In-Reply-To : </i>" + hits[i]["_source"]["in-reply-to"].replace("<","&lt").replace(">","&gt") + "<br>" +
-            "<i>Responders : </i>" + hits[i]["_source"]["responders"].replace("<","&lt").replace(">","&gt") + "<br>" +
-            "    <i>FROM : </i>" + hits[i]["_source"]["from"].replace("<","&lt").replace(">","&gt") +
-            "<i>&emsp; TO : </i>" + hits[i]["_source"]["to"].replace("<","&lt").replace(">","&gt") + "<br>" +
+            "    <div class=\"m-2 card-body p-1\">\n" +
+            "<i>ID : </i>" + hits[i]["_source"]["id"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
+            "<i>References : </i>" + hits[i]["_source"]["references"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
+            "<i>In-Reply-To : </i>" + hits[i]["_source"]["in-reply-to"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
+            "<i>Responders : </i>" + hits[i]["_source"]["responders"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
+            "    <i>FROM : </i>" + hits[i]["_source"]["from"].replace(/</g,"&lt").replace(">","&gt") +
+            "<i>&emsp; TO : </i>" + hits[i]["_source"]["to"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
             // "<i>SUBJECT : </i>"+ hits[i]["_source"]["subject"]+
             // "<i>&emsp; DATE : </i>"+ date +" <br>" +
-            // "<pre>" + hits[i]["_source"]["body"] + "</pre><br>" +
+            // "<br><pre>" + hits[i]["_source"]["body"] + "</pre><br>" +
             "</div>\n" +
             "<div>\n" +
             "<button class=\"btn btn-link\" data-target=\"#edu_result_"+i+"\" data-toggle=\"modal\" type=\"button\">\n" +
@@ -48,7 +49,16 @@ function traitementMessage(hits) {
             "</div>\n" +
             "</fieldset>")
         // threads.findThread(hits[i]["_source"]["id"], hits[i]["_source"]["maillist"],i,hits[i]["_source"]["subject"])
-        threads.findResponders(mailList,hits[i]["_source"]["responders"],i)
+        // console.log(hits[i]["_source"])
+        threads.addModal(i)
+        // threads.findResponders(mailList,hits[i]["_source"]["responders"],i)
+        let total = ["",""]
+        if (hits[i]["_source"]["references"] === "none"){
+            total = threads.findReferences(mailList,hits[i]["_source"]["in-reply-to"],i)
+        }else{
+            total = threads.findReferences(mailList,hits[i]["_source"]["references"],i)
+        }
+        threads.findResponders(mailList,hits[i]["_source"]["responders"],i,total[0],total[1])
     }
     // alert("Number of mails returned for the query : " + hits.length)
 }

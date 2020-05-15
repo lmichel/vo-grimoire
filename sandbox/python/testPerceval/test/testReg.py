@@ -10,8 +10,9 @@ if __name__ == '__main__':
     print(mbox_path)
     repo = per.createRepo(mbox_path,'dm')
     testEs().deleteMails('dm')
+    print("Delete Fini")
     ids = testEs().saveMailsToElastic(repo,'dm')
-    time.sleep(5)
+    # time.sleep(5)
     # allIds = []
     # for elem in repo.fetch():
     #     allIds.append(elem['data']['Message-ID'])
