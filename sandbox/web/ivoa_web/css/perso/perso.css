@@ -30,7 +30,7 @@ body {
 
 .field-modal{
     padding: 0 0.5em 1em !important;
-    margin: 1em !important;
+    /*margin: 1em !important;*/
 }
 
 .leg-modal{
@@ -63,10 +63,22 @@ body {
 }
 
 #mails_container{
-    height: 500px;
+    height: 700px;
     overflow:auto;
 }
 
 .modal_ivoa{
     min-width: 70%;
+}
+
+.modal{
+    overflow-y: scroll !important;
+}
+
+.closeThread {
+    color : red !important;
+}
+
+.contenuMails {
+    overflow:auto;
 }

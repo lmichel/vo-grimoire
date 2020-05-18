@@ -1,5 +1,6 @@
 import sys,os
 import time
+import json
 sys.path.append(os.path.abspath('../classes'))
 from testPerceval import analyzePerceval
 from testEs import testEs
@@ -12,10 +13,8 @@ if __name__ == '__main__':
     testEs().deleteMails('dm')
     print("Delete Fini")
     ids = testEs().saveMailsToElastic(repo,'dm')
-    # time.sleep(5)
-    # allIds = []
-    # for elem in repo.fetch():
-    #     allIds.append(elem['data']['Message-ID'])
+    print("Début Attente")
+    time.sleep(10)
     testEs().addResponders(ids,'dm')
-
-
+    print("Fin Attente")
+    testEs().addThreads(ids,'dm')

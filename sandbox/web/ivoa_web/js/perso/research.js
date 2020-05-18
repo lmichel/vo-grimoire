@@ -1,11 +1,7 @@
 import threads from "./threads.js"
-// let fromReg = '\(From:\d*\w*\)';
 let fromReg = new RegExp("\\(From:[^)]*\\)", 'g')
-// let toReg = '\(To:\d*\w*\)';
 let toReg = new RegExp("\\(To:[^)]*\\)", 'g')
-// let subjectReg= '\(Subject:\d*\w*\)'
 let subjectReg = new RegExp("\\(Subject:[^)]*\\)", 'g')
-// let contentReg = '\(Content:\d*\w*\)'
 let contentReg = new RegExp("\\(Content:[^)]*\\)", 'g')
 
 function addSearchAttribute(input) {
@@ -21,7 +17,7 @@ function traitementMessage(hits) {
         let timestamp = new Date(hits[i]["_source"]["timestamp"] * 1000)
         let date = moment(timestamp).format("DD/MM/YYYY")
         let mailList = hits[i]["_source"]["maillist"]
-        $("#accordionEx").append("<fieldset class=\"field-mails\">\n" +
+        $("#accordionEx").append("<fieldset id=\"ID"+i+"\" class=\"field-mails\">\n" +
             "<legend class=\"leg-mails\">\n" +
             "<a aria-controls=\"collapseOne1\" aria-expanded=\"false\" class=\"lienLegend\"\n" +
             "data-toggle=\"collapse\" href=\"#result" + i + "\">\n"+ "<strong>N°:" + (i+1) +"/"+hits.length+" </strong>"+
@@ -30,44 +26,37 @@ function traitementMessage(hits) {
             "</legend>\n" +
             "<div aria-labelledby=\"headingOne1\" class=\"collapse\" data-parent=\"#accordionEx\" id=\"result" + i + "\"\n" +
             "role=\"tabpanel\">\n" +
-            "    <div class=\"m-2 card-body p-1\">\n" +
-            "<i>ID : </i>" + hits[i]["_source"]["id"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
-            "<i>References : </i>" + hits[i]["_source"]["references"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
-            "<i>In-Reply-To : </i>" + hits[i]["_source"]["in-reply-to"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
-            "<i>Responders : </i>" + hits[i]["_source"]["responders"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
-            "    <i>FROM : </i>" + hits[i]["_source"]["from"].replace(/</g,"&lt").replace(">","&gt") +
-            "<i>&emsp; TO : </i>" + hits[i]["_source"]["to"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
-            // "<i>SUBJECT : </i>"+ hits[i]["_source"]["subject"]+
-            // "<i>&emsp; DATE : </i>"+ date +" <br>" +
-            // "<br><pre>" + hits[i]["_source"]["body"] + "</pre><br>" +
-            "</div>\n" +
-            "<div>\n" +
             "<button class=\"btn btn-link\" data-target=\"#edu_result_"+i+"\" data-toggle=\"modal\" type=\"button\">\n" +
             "    View Thread\n" +
             "</button>\n" +
+            "    <div class=\"m-2 card-body p-1 contenuMails\">\n" +
+            // "<i>ID : </i>" + hits[i]["_source"]["id"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
+            // "<i>References : </i>" + hits[i]["_source"]["references"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
+            // "<i>In-Reply-To : </i>" + hits[i]["_source"]["in-reply-to"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
+            // "<i>Responders : </i>" + hits[i]["_source"]["responders"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
+            "    <i>FROM : </i>" + hits[i]["_source"]["from"].replace(/</g,"&lt").replace(">","&gt") +
+            "<i>&emsp; TO : </i>" + hits[i]["_source"]["to"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
+            "<i>SUBJECT : </i>"+ hits[i]["_source"]["subject"]+
+            "<i>&emsp; DATE : </i>"+ date +" <br>" +
+            "<br><pre>" + hits[i]["_source"]["body"] + "</pre><br>" +
+            "</div>\n" + "" +
+            "<button class=\"btn btn-link closeThread\" aria-controls=\"collapseOne1\" aria-expanded=\"true\" data-toggle=\"collapse\" href=\"#result" + i + "\">\n" +
+            "    Close Thread\n" +
+            "</button>\n"+
+            "<div>\n" +
             "</div>\n" +
             "</div>\n" +
             "</fieldset>")
-        // threads.findThread(hits[i]["_source"]["id"], hits[i]["_source"]["maillist"],i,hits[i]["_source"]["subject"])
-        // console.log(hits[i]["_source"])
         threads.addModal(i)
-        // threads.findResponders(mailList,hits[i]["_source"]["responders"],i)
-        let total = ["",""]
-        if (hits[i]["_source"]["references"] === "none"){
-            total = threads.findReferences(mailList,hits[i]["_source"]["in-reply-to"],i)
-        }else{
-            total = threads.findReferences(mailList,hits[i]["_source"]["references"],i)
-        }
-        threads.findResponders(mailList,hits[i]["_source"]["responders"],i,total[0],total[1])
+        threads.findThread(mailList,hits[i]["_source"]["numThread"],i)
+
     }
-    // alert("Number of mails returned for the query : " + hits.length)
 }
 
 function formQuery(exec) {
     let mailListInput = $("#mailList");
     let totalString = $("#search_bar").val();
     if (totalString === "") {
-        // alert("You've type nothing")
         return 0
     }
     let fromRes = totalString.match(fromReg)
