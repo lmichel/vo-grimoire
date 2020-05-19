@@ -178,10 +178,6 @@ class elasticer(object):
         if '(' in date_string:
             date_string = date_string.split('(')[0]
         date = datetime.strptime(date_string.strip(), '%a, %d %b %Y %H:%M:%S %z')
-        # print("AVANT TRAITEMENT : " + message['data']['Date'])
-        # print("APRES TRAITEMENT : " + str(date.day) + "/" + str(date.month) + "/" + str(date.year))
-        newDate = datetime.fromtimestamp(date.timestamp())
-        # print("RETRANSCRIPTION : " + str(newDate.day) + "/" + str(newDate.month) + "/" + str(newDate.year))
         return date.timestamp()
 
     def isInt(self, input):

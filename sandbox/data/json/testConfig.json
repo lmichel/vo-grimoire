@@ -1,0 +1,24 @@
+{
+  "download_uri" : "http://mail.ivoa.net/pipermail/",
+  "elastic_search_url" : "http://localhost:9200",
+  "mailing_lists":[
+    {
+      "label":"Education",
+      "index_name":"edu",
+      "prefix":"edu_",
+      "download_mbox": "edu.mbox/edu.mbox",
+    },
+    {
+      "label":"Data Model",
+      "index_name":"dm",
+      "prefix":"dm_",
+      "download_mbox": "dm.mbox/dm.mbox",
+    },
+    {
+      "label":"Data Acess Layer",
+      "index_name":"dal",
+      "prefix":"dal_",
+      "download_mbox": "dal.mbox/dal.mbox",
+    }
+  ]
+}
