@@ -14,9 +14,15 @@ Example for my case : "/home/enzo/Bureau/grimoire/vo-grimoire/serveur/python/mbo
 "mailing_lists" : it's the array of all the mailing lists that you want to index
 
 Example for "Data Model" mailing list :
+
 {
+
   "label":"Data Model",
+  
   "index_name":"dm",
+  
   "prefix":"dm_",
+  
   "download_mbox":"edu.mbox/edu.mbox"
+  
 }
