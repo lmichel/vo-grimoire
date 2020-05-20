@@ -7,8 +7,8 @@ from modules.percevaler import percevaler
 from modules import elasticer
 if __name__ == '__main__':
     config = configManager()
-    config.readFile()
-    downloader = downloader(config)
+    print(configManager.mbox_dir())
+    downloader = downloader()
     downloader.analyzeJson()
-    percevaler = percevaler(config)
+    percevaler = percevaler()
     percevaler.buildReposAndIndex()

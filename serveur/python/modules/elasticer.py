@@ -1,11 +1,13 @@
 import elasticsearch
 from datetime import datetime
+from modules.configManager import configManager
 
+# This class is made for indexing the mails in Elastic Search
 class elasticer(object):
 
-    def __init__(self,config):
-        self.__config = config
-
+    # This method save the mail in Elastic Search
+    # Delete the duplicates
+    # Choose the index name in function of existing indexes
     def saveMailsToElastic(self, repo, mailList, es_url, prefix_name):
         es = elasticsearch.Elasticsearch([es_url])
         index_name = self.chooseName(es_url, mailList)
@@ -43,16 +45,16 @@ class elasticer(object):
                         item['from'] = message['data']['From'].encode('utf-8', 'ignore').decode('utf-8', 'ignore')
                     else:
                         isUseful = 0
-                    if 'Date' in message['data']:
+                    if 'Date' in message['data'] and message['data']['Date'] is not None:
                         item['date'] = message['data']['Date'].encode('utf-8', 'ignore').decode('utf-8', 'ignore')
-                    if 'To' in message['data']:
+                    if 'To' in message['data'] and message['data']['To'] is not None:
                         item['to'] = message['data']['To'].encode('utf-8', 'ignore').decode('utf-8', 'ignore')
                     if 'Subject' in message['data'] and message['data']['Subject'] is not None:
                         item['subject'] = message['data']['Subject'].encode('utf-8', 'ignore').decode('utf-8', 'ignore')
-                    if 'In-Reply-To' in message['data']:
+                    if 'In-Reply-To' in message['data'] and message['data']['In-Reply-To'] is not None:
                         item['in-reply-to'] = message['data']['In-Reply-To'].encode('utf-8', 'ignore').decode('utf-8',
                                                                                                               'ignore')
-                    if 'References' in message['data']:
+                    if 'References' in message['data'] and message['data']['References'] is not None:
                         item['references'] = message['data']['References'].encode('utf-8', 'ignore').decode('utf-8',
                                                                                                             'ignore')
                     if isUseful == 1:
@@ -67,11 +69,14 @@ class elasticer(object):
                     refus += 1
             except KeyError:
                 print("Useless Mail")
-        print("Compteur : " + str(compteur))
+        print("Compteur : " + str(prefix))
         print("Refusés : " + str(refus))
         print("Validés : " + str(valides))
         return allIds, index_name
 
+    # This method build a dictionnary
+    # Each key is a string with multiple message Id
+    # Each element is a number of Thread
     def addThreads(self,allIds, mailList, es_url):
         es = elasticsearch.Elasticsearch([es_url])
         compteur = 0
@@ -100,6 +105,7 @@ class elasticer(object):
                 compteur += 1
         print("Fin Ajout Threads")
 
+    # This method returns a string of all message id who contains the id of a certain mail
     def findResponders(self,id, mailList, es_url):
         es = elasticsearch.Elasticsearch([es_url])
         query = {
@@ -118,6 +124,7 @@ class elasticer(object):
             responders += mes["_source"]["id"] + "\n"
         return responders
 
+    # This method modify the numThread field of an element in Elastic Search
     def modifyThreads(self,mailList, id, numThread, es_url):
         es = elasticsearch.Elasticsearch([es_url])
         query = {
@@ -132,25 +139,27 @@ class elasticer(object):
             es.update(index=mailList, doc_type='keyword', id=es_result["hits"]["hits"][0]["_id"],
                       body={"doc": {"numThread": numThread}})
 
+    # This method delete all the index in Elastic Search
     def deleteMails(self,es_url):
         es = elasticsearch.Elasticsearch([es_url])
-        es.indices.delete(index="edu_temp", ignore=[400, 404])
-        es.indices.delete(index="edu_new", ignore=[400, 404])
-        es.indices.delete(index="kdd_new", ignore=[400, 404])
-        es.indices.delete(index="edu_temp", ignore=[400, 404])
-        es.indices.delete(index="kdd_temp", ignore=[400, 404])
-        es.indices.delete(index="dm", ignore=[400, 404])
-        es.indices.delete(index="dal", ignore=[400, 404])
+        for index in es.indices.get('*'):
+            es.indices.delete(index=index,ignore=[400,404])
 
+    # This method return the name of index to store mails into
+    # Eg : edu_new if edu_temp exists
+    # Eg : edu_temp if edu_new exists
     def chooseName(self,es_url, mailList):
         es = elasticsearch.Elasticsearch([es_url])
         if es.indices.exists(index=mailList + "_temp") and es.indices.exists(index=mailList + "_new") is False:
-            print("CHOOSE NAME : _new")
+            print("CHOOSE NAME : "+mailList+"_new")
             return mailList + "_new"
         else:
-            print("CHOOSE NAME : _temp")
+            print("CHOOSE NAME : "+mailList+"_temp")
             return mailList + "_temp"
 
+    # This method will delete the older index
+    # And will put an allias for the new index
+    # The allias name will be the mailing list prefix
     def mergeIndex(self,es_url, mailList, index_name):
         compteur = 0
         es = elasticsearch.Elasticsearch([es_url])
@@ -161,17 +170,22 @@ class elasticer(object):
         if compteur < 2:
             es.indices.put_alias(index=index_name, name=mailList)
         if es.indices.exists(index=mailList + "_temp") and mailList + "_new" in index_name:
-            print("MERGE INDEX : _temp")
+            print("MERGE INDEX : "+mailList+"_temp")
             es.indices.delete(index=mailList + "_temp", ignore=[400, 404])
             es.indices.put_alias(index=mailList + "_new", name=mailList)
         if es.indices.exists(index=mailList + "_new") and mailList + "_temp" in index_name:
-            print("MERGE INDEX : _new")
+            print("MERGE INDEX : "+mailList+"_new")
             es.indices.delete(index=mailList + "_new", ignore=[400, 404])
             es.indices.put_alias(index=mailList + "_temp", name=mailList)
 
+    # Returns timestamp of a message date
     def returnTimestamp(self,message):
-        date_string = message['data']['Date']
-        if '(' in date_string:
-            date_string = date_string.split('(')[0]
-        date = datetime.strptime(date_string.strip(), '%a, %d %b %Y %H:%M:%S %z')
-        return date.timestamp()
+        try:
+            date_string = message['data']['Date']
+            if '(' in date_string:
+                date_string = date_string.split('(')[0]
+            date = datetime.strptime(date_string.strip(), '%a, %d %b %Y %H:%M:%S %z')
+            return date.timestamp()
+        except ValueError:
+            print("Une Date Ignorée")
+            return 0
