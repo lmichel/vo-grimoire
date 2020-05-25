@@ -12,11 +12,17 @@ function addSearchAttribute(input) {
     search_bar.prop('selectionEnd', cursorPos - 2)
 }
 
-function traitementMessage(hits) {
+function traitementMessage(hits,thread) {
     for (let i = 0; i < hits.length; i++) {
         let timestamp = new Date(hits[i]["_source"]["timestamp"] * 1000)
         let date = moment(timestamp).format("DD/MM/YYYY")
         let mailList = hits[i]["_source"]["maillist"]
+        let url = ""
+        if(window.location.href.includes('?')){
+            url = window.location.href+"&num="+hits[i]["_source"]["num"]
+        }else{
+            url = window.location.href+"?num="+hits[i]["_source"]["num"]
+        }
         $("#accordionEx").append("<fieldset id=\"ID"+i+"\" class=\"field-mails\">\n" +
             "<legend class=\"leg-mails\">\n" +
             "<a aria-controls=\"collapseOne1\" aria-expanded=\"false\" class=\"lienLegend\"\n" +
@@ -34,12 +40,12 @@ function traitementMessage(hits) {
             // "<i>References : </i>" + hits[i]["_source"]["references"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
             // "<i>In-Reply-To : </i>" + hits[i]["_source"]["in-reply-to"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
             // "<i>Responders : </i>" + hits[i]["_source"]["responders"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
-            "    <a href="+window.location.href +"&num="+hits[i]["_source"]["num"]+" target=\"_blank\">Link for this mail :" + window.location.href +"&num="+hits[i]["_source"]["num"]+"</a></br></br>"+
+            "    <a href=\""+url+"\" target=\"_blank\">Link for this mail :" + url +"</a></br></br>"+
             "    <i>FROM : </i>" + hits[i]["_source"]["from"].replace(/</g,"&lt").replace(">","&gt") +
             "<i>&emsp; TO : </i>" + hits[i]["_source"]["to"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
             "<i>SUBJECT : </i>"+ hits[i]["_source"]["subject"]+
             "<i>&emsp; DATE : </i>"+ date +" <br>" +
-            "<br><pre>" + hits[i]["_source"]["body"] + "</pre><br>" +
+            "<br><pre>" + highlight(hits[i]["_source"]["body"]) + "</pre><br>" +
             "</div>\n" + "" +
             "<button class=\"btn btn-link closeThread\" aria-controls=\"collapseOne1\" aria-expanded=\"true\" data-toggle=\"collapse\" href=\"#result" + i + "\">\n" +
             "    Close Mail\n" +
@@ -48,9 +54,12 @@ function traitementMessage(hits) {
             "</div>\n" +
             "</div>\n" +
             "</fieldset>")
-        threads.addModal(i)
+        if(thread === "thread" && i === 0){
+            threads.addModal(i,true)
+        }else{
+            threads.addModal(i,false)
+        }
         threads.findThread(mailList,hits[i]["_source"]["numThread"],i)
-
     }
 }
 
@@ -238,7 +247,7 @@ function formQuery(exec) {
     return query
 }
 
-function executeQuery(query, mailList) {
+function executeQuery(query, mailList,thread) {
     $("#accordionEx").empty()
     return axios.get(elastic_search_url + mailList + "/_search", {
         params: {
@@ -246,7 +255,7 @@ function executeQuery(query, mailList) {
             source_content_type: 'application/json'
         }
     }).then((res) => {
-        traitementMessage(res.data.hits.hits);
+        traitementMessage(res.data.hits.hits,thread);
     }).catch(function (e) {
         console.log(e)
     })
@@ -296,7 +305,41 @@ function defaultQuery(){
             }
         }
         executeQuery(query,params["num"].split("_")[0])
+    }else if (params["thread"] !== undefined){
+        let query = {
+            "query":{
+                "term":{
+                    "numThread":{
+                        "value": params["thread"].split("_")[1]
+                    }
+                }
+            },
+            "sort":{
+                "timestamp": {"order": "asc"}
+            },
+            "size": 1
+        }
+        console.log(query)
+        executeQuery(query,params["thread"].split("_")[0],"thread")
     }
+}
+
+function highlight(content){
+    let cont = JSON.stringify(content).split("\\n")
+    let total = ""
+    cont.forEach(elem => {
+            if (elem.startsWith('>')){
+                if(elem.substring(1).includes('>')){
+                    total += "<span class=\"greaterthan\">></span>"
+                    total += "<span class=\"greatergreaterthan\">"+elem.substring(1)+"</span>" + "\n"
+                }else{
+                    total += "<span class=\"greaterthan\">"+elem+"</span>" + "\n"
+                }
+            }else{
+                total += elem + "\n"
+            }
+    })
+    return total.toString()
 }
 
 export default {
@@ -305,5 +348,6 @@ export default {
     seeQuery: seeQuery,
     executeQuery: executeQuery,
     manageDates: manageDates,
-    defaultQuery: defaultQuery
+    defaultQuery: defaultQuery,
+    highlight:highlight,
 }

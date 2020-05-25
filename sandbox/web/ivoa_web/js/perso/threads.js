@@ -54,26 +54,29 @@ function addThreadModal(refs,num){
     return [total,compteur]
 }
 
-function addModal(num) {
-    $("#modal_container").append("<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\"edu_result_" + num + "\" role=\"dialog\"\n" +
-        "     tabindex=\"-1\">\n" +
-        "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">\n" +
-        "        <div class=\"modal-content\">\n" +
-        "            <div class=\"modal-header\">\n" +
-        "                <h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\">Thread Content</h5>\n" +
-        "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">\n" +
-        "                    <span class=\"thread_content\"" + num + " aria-hidden=\"true\">&times;</span>\n" +
-        "                </button>\n" +
-        "            </div>\n" +
-        "            <div class=\"modal-body\" id=\"modal-body-" + num + "\">" +
-        "<div id=\"accordionEx" + num + "\" aria-multiselectable=\"true\" class=\"accordion md-accordion\" role=\"tablist\"></div>" +
-        "            </div>\n" +
-        "            <div class=\"modal-footer\">\n" +
-        "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>\n" +
-        "            </div>\n" +
-        "        </div>\n" +
-        "    </div>\n" +
-        "</div>")
+function addModal(num,thread) {
+        $("#modal_container").append("<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\"edu_result_" + num + "\" role=\"dialog\"\n" +
+            "     tabindex=\"-1\">\n" +
+            "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">\n" +
+            "        <div class=\"modal-content\">\n" +
+            "            <div class=\"modal-header\">\n" +
+            "                <h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\">Thread Content</h5>\n" +
+            "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">\n" +
+            "                    <span class=\"thread_content\"" + num + " aria-hidden=\"true\">&times;</span>\n" +
+            "                </button>\n" +
+            "            </div>\n" +
+            "            <div class=\"modal-body\" id=\"modal-body-" + num + "\">" +
+            "<div id=\"accordionEx" + num + "\" aria-multiselectable=\"true\" class=\"accordion md-accordion\" role=\"tablist\"></div>" +
+            "            </div>\n" +
+            "            <div class=\"modal-footer\">\n" +
+            "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>\n" +
+            "            </div>\n" +
+            "        </div>\n" +
+            "    </div>\n" +
+            "</div>")
+    if (thread === true){
+        $("#edu_result_"+num).modal('show')
+    }
 }
 
 // function testRequest() {

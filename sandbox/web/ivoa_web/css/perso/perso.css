@@ -82,3 +82,11 @@ body {
 .contenuMails {
     overflow:auto;
 }
+
+.greaterthan {
+    color : blue;
+}
+
+.greatergreaterthan {
+    color : orangered;
+}

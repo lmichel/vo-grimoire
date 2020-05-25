@@ -10,5 +10,5 @@ if __name__ == '__main__':
     print(configManager.mbox_dir())
     downloader = downloader()
     downloader.analyzeJson()
-    percevaler = percevaler()
-    percevaler.buildReposAndIndex()
+    # percevaler = percevaler()
+    # percevaler.buildReposAndIndex()

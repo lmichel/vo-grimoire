@@ -19,6 +19,10 @@ class configManager(object):
     @staticmethod
     def readFile():
         base_path = os.path.dirname(os.path.realpath(__file__))
+        # os.path.join pour join les deux url
+        # path = os.path.join(base_path, config[...])
+        # base_path = os.path.dirname(os.path.realpath(__file__))
+        # os.path.realpath
         config_path = base_path.replace("modules", "launcher")
         if os.path.exists(config_path + '/config.json'):
             with open(config_path + '/config.json') as conf_json:
@@ -26,6 +30,9 @@ class configManager(object):
                 configManager.__download_uri = conf_dict["download_uri"]
                 configManager.__elastic_search_uri = conf_dict["elastic_search_url"]
                 configManager.__mbox_dir = conf_dict["mbox_dir"]
+                print(os.path.join(base_path,configManager.__mbox_dir))
+                print(os.path.exists(os.path.join(base_path,configManager.__mbox_dir)))
+                print(os.path.exists(configManager.__mbox_dir))
                 configManager.__reset_index = conf_dict["reset_index"]
                 configManager.__mailing_lists = conf_dict["mailing_lists"]
                 configManager.validateMboxPath()

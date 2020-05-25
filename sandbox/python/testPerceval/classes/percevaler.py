@@ -1,11 +1,33 @@
 import json
+import mailbox
+import os
 from collections import deque
+from perceval.backends.core.mbox import MBox
 class percevaler(object):
 
     def getAllMessage(self,repo):
         print("\nWORK IN PROGRESS !")
-        for message in repo.fetch():
-            print(json.dumps(message, indent=4))
+        base_path = os.path.dirname(os.path.realpath(__file__))
+        mbox_path = base_path.replace("/python/testPerceval/classes", "/data/mbox")
+        dict = repo.parse_mbox(mbox_path+"/dm.mbox")
+        for mail in dict:
+            print(mail["body"])
+        # for message in mbox:
+        #     if message.get_content_maintype() == 'multipart':
+        #         for part in message.walk():
+        #             if part.get_content_maintype() == 'multipart': continue
+        #             if part.get('Content-Disposition') is None: continue
+        #             filename = part.get_filename()
+        #             print(filename)
+        #             fb = open(filename, 'wb')
+        #             print(part.get('Content-Type'))
+        #             # print(part.get_payload(decode=True))
+        #             fb.write(part.get_payload(decode=True))
+        #             fb.close()
+        # for message in repo.fetch():
+        #     print(json.dumps(message, indent=4))
+        # for message in repo.fetch_items("message"):
+        #     print(json.dumps(message, indent=4))
 
     def getMessageCounterName(self, repo, nom):
         print("\nWORK IN PROGRESS !")
