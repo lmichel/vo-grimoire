@@ -5,16 +5,10 @@
   "reset_index": true,
   "mailing_lists":[
     {
-      "label": "Interop",
-      "index_name": "interop",
-      "prefix": "interop_",
-      "download_mbox": "interop.mbox/interop.mbox"
-    },
-    {
-      "label": "Standing Committee on Standard & Processes",
-      "index_name": "stdproc",
-      "prefix": "stdproc_",
-      "download_mbox": "stdproc.mbox/stdproc.mbox"
+      "label": "Data Model",
+      "index_name": "dm",
+      "prefix": "dm_",
+      "download_mbox": "dm.mbox/dm.mbox"
     }
   ]
 }

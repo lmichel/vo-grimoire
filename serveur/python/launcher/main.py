@@ -8,7 +8,7 @@ from modules import elasticer
 if __name__ == '__main__':
     config = configManager()
     print(configManager.mbox_dir())
-    downloader = downloader()
-    downloader.analyzeJson()
-    # percevaler = percevaler()
-    # percevaler.buildReposAndIndex()
+    # downloader = downloader()
+    # downloader.analyzeJson()
+    percevaler = percevaler()
+    percevaler.buildReposAndIndex()

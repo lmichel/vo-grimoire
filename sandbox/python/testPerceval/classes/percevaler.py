@@ -9,9 +9,12 @@ class percevaler(object):
         print("\nWORK IN PROGRESS !")
         base_path = os.path.dirname(os.path.realpath(__file__))
         mbox_path = base_path.replace("/python/testPerceval/classes", "/data/mbox")
-        dict = repo.parse_mbox(mbox_path+"/dm.mbox")
-        for mail in dict:
-            print(mail["body"])
+        dict = MBox.parse_mbox(mbox_path+"/dm.mbox")
+        for mes in dict:
+            print(mes.get_content_maintype())
+        repo.fetch()
+        # for mail in dict:
+        #     print(mail)
         # for message in mbox:
         #     if message.get_content_maintype() == 'multipart':
         #         for part in message.walk():

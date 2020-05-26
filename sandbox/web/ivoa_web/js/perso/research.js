@@ -35,11 +35,7 @@ function traitementMessage(hits,thread) {
             "<button class=\"btn btn-link\" data-target=\"#edu_result_"+i+"\" data-toggle=\"modal\" type=\"button\">\n" +
             "    View Thread\n" +
             "</button>\n" +
-            "    <div class=\"m-2 card-body p-1 contenuMails\">\n" +
-            // "<i>ID : </i>" + hits[i]["_source"]["id"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
-            // "<i>References : </i>" + hits[i]["_source"]["references"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
-            // "<i>In-Reply-To : </i>" + hits[i]["_source"]["in-reply-to"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
-            // "<i>Responders : </i>" + hits[i]["_source"]["responders"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
+            "    <div class=\"m-2 card-body p-1 contenuMails result_body_"+i+"\">\n" +
             "    <a href=\""+url+"\" target=\"_blank\">Link for this mail :" + url +"</a></br></br>"+
             "    <i>FROM : </i>" + hits[i]["_source"]["from"].replace(/</g,"&lt").replace(">","&gt") +
             "<i>&emsp; TO : </i>" + hits[i]["_source"]["to"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
@@ -54,11 +50,19 @@ function traitementMessage(hits,thread) {
             "</div>\n" +
             "</div>\n" +
             "</fieldset>")
-        if(thread === "thread" && i === 0){
-            threads.addModal(i,true)
-        }else{
-            threads.addModal(i,false)
-        }
+        // if(thread === "thread" && i === 0){
+        //     threads.addModal(i,true)
+        // }else{
+        //     threads.addModal(i,false)
+        // }
+        // if (hits[i]["_source"]["attachements"].length > 0){
+        //     for (const [key, value] of Object.entries(hits[i]["_source"]["attachements"])){
+        //         let type = key.split("__")[0]
+        //         if (type === 'image/png'){
+        //             // $(".result_body_"+i).append("<img alt='attachement_png' class='img-fluid' height='50%' src='data:image/png;base64, " + encodeURI(value) + "' width='50%'>")
+        //         }
+        //     }
+        // }
         threads.findThread(mailList,hits[i]["_source"]["numThread"],i)
     }
 }

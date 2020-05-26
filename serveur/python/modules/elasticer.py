@@ -1,74 +1,79 @@
 import elasticsearch
 from datetime import datetime
 from modules.configManager import configManager
-
+import email
+import json
+import mailbox
 # This class is made for indexing the mails in Elastic Search
 class elasticer(object):
 
     # This method save the mail in Elastic Search
     # Delete the duplicates
     # Choose the index name in function of existing indexes
-    def saveMailsToElastic(self, repo, mailList, es_url, prefix_name):
+    def saveMailsToElastic(self, mbox, mailList, es_url, prefix_name):
         es = elasticsearch.Elasticsearch([es_url])
         index_name = self.chooseName(es_url, mailList)
         es.indices.create(index_name)
         prefix = 0
         compteur = 0
-        isUseful = 1
+        useful = 1
         allIds = []
         refus = 0
         valides = 0
-        for message in repo.fetch():
+        for message in mbox:
             prefix += 1
             try:
-                if message['data']['Message-ID'] not in allIds:
-                    item = {'from': message['data']['From'].encode('utf-8', 'ignore').decode('utf-8', 'ignore'),
+                if message['Message-ID'] not in allIds:
+                    item = {'from': message['From'].encode('utf-8', 'ignore').decode('utf-8', 'ignore'),
                             'body': 'none',
                             'in-reply-to': 'none',
                             'timestamp': self.returnTimestamp(message),
-                            'id': message['data']['Message-ID'].encode('utf-8', 'ignore').decode('utf-8', 'ignore'),
+                            'id': message['Message-ID'].encode('utf-8', 'ignore').decode('utf-8', 'ignore'),
                             'references': 'none',
                             'subject': 'none',
                             'data': 'none',
                             'to': 'none',
                             'num': prefix_name + str(prefix),
                             'maillist': mailList.encode('utf-8', 'ignore').decode('utf-8', 'ignore'),
-                            'numThread': -1}
-                    if 'plain' in message['data']['body']:
-                        item['body'] = message['data']['body']['plain'].encode('utf-8', 'ignore').decode('utf-8',
-                                                                                                         'ignore')
-                    if 'html' in message['data']['body']:
-                        if item['body'] == 'none':
-                            item['body'] = message['data']['body']['html'].encode('utf-8', 'ignore').decode('utf-8',
-                                                                                                            'ignore')
-                    if 'From' in message['data'] and 'body' in message['data']:
-                        item['from'] = message['data']['From'].encode('utf-8', 'ignore').decode('utf-8', 'ignore')
-                    else:
-                        isUseful = 0
-                    if 'Date' in message['data'] and message['data']['Date'] is not None:
-                        item['date'] = message['data']['Date'].encode('utf-8', 'ignore').decode('utf-8', 'ignore')
-                    if 'To' in message['data'] and message['data']['To'] is not None:
-                        item['to'] = message['data']['To'].encode('utf-8', 'ignore').decode('utf-8', 'ignore')
-                    if 'Subject' in message['data'] and message['data']['Subject'] is not None:
-                        item['subject'] = message['data']['Subject'].encode('utf-8', 'ignore').decode('utf-8', 'ignore')
-                    if 'In-Reply-To' in message['data'] and message['data']['In-Reply-To'] is not None:
-                        item['in-reply-to'] = message['data']['In-Reply-To'].encode('utf-8', 'ignore').decode('utf-8',
-                                                                                                              'ignore')
-                    if 'References' in message['data'] and message['data']['References'] is not None:
-                        item['references'] = message['data']['References'].encode('utf-8', 'ignore').decode('utf-8',
-                                                                                                            'ignore')
-                    if isUseful == 1:
+                            'numThread': -1,
+                            'attachements': {},}
+                    id_part = 0
+                    print("DEBUT PARTIE MAIL")
+                    for part in message.walk():
+                        print("TYPE : " + part.get_content_type())
+                        if 'text' in part.get_content_type():
+                            item["body"] = part.get_payload().encode('utf-8', 'ignore').decode('utf-8', 'ignore')
+                        elif 'application' in part.get_content_type() or 'image' in part.get_content_type():
+                            item["attachements"][part.get_content_type() + "__" + str(id_part)] = part.get_payload()
+                            id_part += 1
+                    print("FIN PARTIE MAIL")
+                    if 'From' in message:
+                        item['from'] = message['From'].encode('utf-8', 'ignore').decode('utf-8', 'ignore')
+                    if 'Date' in message and message['Date'] is not None:
+                        item['date'] = message['Date'].encode('utf-8', 'ignore').decode('utf-8', 'ignore')
+                    if 'To' in message and message['To'] is not None:
+                        item['to'] = message['To'].encode('utf-8', 'ignore').decode('utf-8', 'ignore')
+                    if 'Subject' in message and message['Subject'] is not None:
+                        try:
+                            item['subject'] = message['Subject'].encode('utf-8', 'ignore').decode('utf-8', 'ignore')
+                        except Exception:
+                            print(message["Subject"])
+                    if 'In-Reply-To' in message and message['In-Reply-To'] is not None:
+                        item['in-reply-to'] = message['In-Reply-To'].encode('utf-8', 'ignore').decode('utf-8','ignore')
+                    if 'References' in message and message['References'] is not None:
+                        item['references'] = message['References'].encode('utf-8', 'ignore').decode('utf-8','ignore')
+                    if useful == 1:
                         allIds.append(item["id"])
                         compteur += 1
                         valides += 1
                         es.index(index=index_name, doc_type='keyword', body=item)
                     else:
                         print("\nMail ignoré")
-                        isUseful = 1
+                        useful = 1
                 else:
                     refus += 1
-            except KeyError:
-                print("Useless Mail")
+            except KeyError as e:
+                print("ERROR : " + e)
         print("Compteur : " + str(prefix))
         print("Refusés : " + str(refus))
         print("Validés : " + str(valides))
@@ -181,7 +186,7 @@ class elasticer(object):
     # Returns timestamp of a message date
     def returnTimestamp(self,message):
         try:
-            date_string = message['data']['Date']
+            date_string = message['Date']
             if '(' in date_string:
                 date_string = date_string.split('(')[0]
             date = datetime.strptime(date_string.strip(), '%a, %d %b %Y %H:%M:%S %z')
