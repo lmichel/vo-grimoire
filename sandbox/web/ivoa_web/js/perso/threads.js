@@ -1,12 +1,12 @@
 let compteur = 0
 let elastic_search_url = "http://192.168.1.48:9200/"
 
-function findThread(mailList, numThread,num){
+function findThread(mailList, numThread, num) {
     let query = {
-        "query":{
-            "term":{
-                "numThread":{
-                    "value" : numThread
+        "query": {
+            "term": {
+                "numThread": {
+                    "value": numThread
                 }
             }
         },
@@ -20,18 +20,18 @@ function findThread(mailList, numThread,num){
             source_content_type: 'application/json'
         }
     }).then((res) => {
-        addThreadModal(res.data.hits.hits,num)
+        addThreadModal(res.data.hits.hits, num)
     }).catch(function (e) {
         console.log(e)
     })
 }
 
-function addThreadModal(refs,num){
+function addThreadModal(refs, num) {
     let total = ""
     compteur = 1
     refs.forEach(elem => {
         let date = moment(elem["_source"]["timestamp"] * 1000).format("DD/MM/YYYY")
-        $("#accordionEx" + num).append("<fieldset class=\"field-modal\" style=\"margin-left:"+compteur+"%\">\n" +
+        $("#accordionEx" + num).append("<fieldset class=\"field-modal\" style=\"margin-left:" + compteur + "%\">\n" +
             "    <legend class=\"lef-modal\">\n" +
             "        <a aria-controls=\"collapseOne1\" aria-expanded=\"true\" class=\"lienLegend\" data-toggle=\"collapse\" href=\"#result_" + compteur + "\">" +
             total + "           <strong>N°:" + compteur + " </strong>" + date + "<strong> From : </strong> " + elem["_source"]["from"].replace("<", "&lt").replace(">", "&gt") + "" +
@@ -43,39 +43,39 @@ function addThreadModal(refs,num){
             "    <i>From : </i>\n" + elem["_source"]["from"] +
             "    <i>&emsp;To : </i>\n" + elem["_source"]["to"] +
             "    <pre>\n" +
-            elem["_source"]["body"] +
+            elem["_source"]["body"].replace(/<img[^>]*>/,"") +
             "    </pre>\n" +
-            "</div>"+
+            "</div>" +
             "    </div>\n" +
             "</fieldset>"
         )
         compteur += 1
     })
-    return [total,compteur]
+    return [total, compteur]
 }
 
-function addModal(num,thread) {
-        $("#modal_container").append("<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\"edu_result_" + num + "\" role=\"dialog\"\n" +
-            "     tabindex=\"-1\">\n" +
-            "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">\n" +
-            "        <div class=\"modal-content\">\n" +
-            "            <div class=\"modal-header\">\n" +
-            "                <h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\">Thread Content</h5>\n" +
-            "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">\n" +
-            "                    <span class=\"thread_content\"" + num + " aria-hidden=\"true\">&times;</span>\n" +
-            "                </button>\n" +
-            "            </div>\n" +
-            "            <div class=\"modal-body\" id=\"modal-body-" + num + "\">" +
-            "<div id=\"accordionEx" + num + "\" aria-multiselectable=\"true\" class=\"accordion md-accordion\" role=\"tablist\"></div>" +
-            "            </div>\n" +
-            "            <div class=\"modal-footer\">\n" +
-            "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>\n" +
-            "            </div>\n" +
-            "        </div>\n" +
-            "    </div>\n" +
-            "</div>")
-    if (thread === true){
-        $("#edu_result_"+num).modal('show')
+function addModal(num, thread) {
+    $("#modal_container").append("<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\"edu_result_" + num + "\" role=\"dialog\"\n" +
+        "     tabindex=\"-1\">\n" +
+        "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">\n" +
+        "        <div class=\"modal-content\">\n" +
+        "            <div class=\"modal-header\">\n" +
+        "                <h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\">Thread Content</h5>\n" +
+        "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">\n" +
+        "                    <span class=\"thread_content\"" + num + " aria-hidden=\"true\">&times;</span>\n" +
+        "                </button>\n" +
+        "            </div>\n" +
+        "            <div class=\"modal-body\" id=\"modal-body-" + num + "\">" +
+        "<div id=\"accordionEx" + num + "\" aria-multiselectable=\"true\" class=\"accordion md-accordion\" role=\"tablist\"></div>" +
+        "            </div>\n" +
+        "            <div class=\"modal-footer\">\n" +
+        "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>\n" +
+        "            </div>\n" +
+        "        </div>\n" +
+        "    </div>\n" +
+        "</div>")
+    if (thread === true) {
+        $("#edu_result_" + num).modal('show')
     }
 }
 

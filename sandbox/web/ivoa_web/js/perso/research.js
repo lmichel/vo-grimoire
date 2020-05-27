@@ -50,11 +50,11 @@ function traitementMessage(hits,thread) {
             "</div>\n" +
             "</div>\n" +
             "</fieldset>")
-        // if(thread === "thread" && i === 0){
-        //     threads.addModal(i,true)
-        // }else{
-        //     threads.addModal(i,false)
-        // }
+        if(thread === "thread" && i === 0){
+            threads.addModal(i,true)
+        }else{
+            threads.addModal(i,false)
+        }
         // if (hits[i]["_source"]["attachements"].length > 0){
         //     for (const [key, value] of Object.entries(hits[i]["_source"]["attachements"])){
         //         let type = key.split("__")[0]
@@ -329,7 +329,11 @@ function defaultQuery(){
 }
 
 function highlight(content){
-    let cont = JSON.stringify(content).split("\\n")
+    let replace = content.replace(/<img[^>]*>/,"")
+    // if (content.includes("<img")){
+    //     console.log(content)
+    // }
+    let cont = JSON.stringify(replace).split("\\n")
     let total = ""
     cont.forEach(elem => {
             if (elem.startsWith('>')){
@@ -337,7 +341,7 @@ function highlight(content){
                     total += "<span class=\"greaterthan\">></span>"
                     total += "<span class=\"greatergreaterthan\">"+elem.substring(1)+"</span>" + "\n"
                 }else{
-                    total += "<span class=\"greaterthan\">"+elem+"</span>" + "\n"
+                    total += "<span class=\"greaterthan\">"+elem+ "</span>" + "\n"
                 }
             }else{
                 total += elem + "\n"

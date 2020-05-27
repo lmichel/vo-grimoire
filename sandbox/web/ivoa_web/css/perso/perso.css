@@ -6,13 +6,6 @@ body {
     width: auto;
 }
 
-/*fieldset {*/
-/*    padding: 0 0.5em 1em !important;*/
-/*    margin: 1em !important;*/
-/*    border: 1px solid darkgrey;*/
-/*    border-radius: 0.5em;*/
-/*}*/
-
 .field-mails {
     padding: 0 0.5em 1em !important;
     margin: 1em !important;
@@ -40,15 +33,6 @@ body {
     margin-left: 0.5em !important;
     border : none !important;
 }
-
-/*legend {*/
-/*    width: inherit !important;*/
-/*    padding-left: 0.5em !important;*/
-/*    padding-right: 0.5em !important;*/
-/*    margin-left: 0.5em !important;*/
-/*    border : none !important;*/
-/*}*/
-
 
 .lienLegend {
     color : #656565;

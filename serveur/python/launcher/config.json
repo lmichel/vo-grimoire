@@ -5,10 +5,10 @@
   "reset_index": true,
   "mailing_lists":[
     {
-      "label": "Data Model",
-      "index_name": "dm",
-      "prefix": "dm_",
-      "download_mbox": "dm.mbox/dm.mbox"
+      "label": "Test Mails",
+      "index_name": "test",
+      "prefix": "test",
+      "download_mbox": "test.mbox/test.mbox"
     }
   ]
 }

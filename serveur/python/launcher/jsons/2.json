@@ -1,0 +1,18 @@
+{
+    "from": "Laurent MICHEL <laurent.michel@astro.unistra.fr>",
+    "body": "Code\r\n-- \r\n---- English version:\r\n      https://www.deepl.com/\r\n\r\n---- Laurent MICHEL              Tel  (33 0) 3 68 85 24 37\r\n      Observatoire de Strasbourg  Fax  (33 0) 3 68 85 24 32\r\n      11 Rue de l'Universite      Mail laurent.michel@astro.unistra.fr\r\n      67000 Strasbourg (France)   Web  http://astro.u-strasbg.fr/~michel\r\n---\r\n",
+    "in-reply-to": "none",
+    "timestamp": 1590495402.0,
+    "id": "<a6fd4ce9-50ff-47c0-30fb-66748f02cb20@astro.unistra.fr>",
+    "references": "none",
+    "subject": "PYTHON",
+    "data": "none",
+    "to": "cisternino enzo <enzo_cisternino@hotmail.fr>",
+    "num": "test3",
+    "maillist": "test",
+    "numThread": -1,
+    "attachements": {
+        "text/x-python-script__0": "'''\r\nCreated on 1 avr. 2020\r\n\r\n@author: laurentmichel\r\n'''\r\n\r\nimport json\r\nimport numpy\r\n\r\nclass MyEncoder(json.JSONEncoder):\r\n    def default(self, obj):\r\n        if isinstance(obj, numpy.integer):\r\n            return int(obj)\r\n        elif isinstance(obj, numpy.floating):\r\n            return float(obj)\r\n        elif isinstance(obj, numpy.ndarray):\r\n            return obj.tolist()\r\n        else:\r\n            return super(MyEncoder, self).default(obj)\r\n\r\n"
+    },
+    "date": "Tue, 26 May 2020 14:16:42 +0200"
+}

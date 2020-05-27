@@ -38,12 +38,22 @@ class elasticer(object):
                             'numThread': -1,
                             'attachements': {},}
                     id_part = 0
+                    text_plain = 0
                     print("DEBUT PARTIE MAIL")
                     for part in message.walk():
+                        type = part["Content-Type"]
                         print("TYPE : " + part.get_content_type())
-                        if 'text' in part.get_content_type():
-                            item["body"] = part.get_payload().encode('utf-8', 'ignore').decode('utf-8', 'ignore')
-                        elif 'application' in part.get_content_type() or 'image' in part.get_content_type():
+                        if type is None:
+                            type = ""
+                        if 'text' in part.get_content_type() and text_plain == 0:
+                            text_plain += 1
+                            if 'iso-8859-1' in type:
+                                item["body"] = part.get_payload().encode('iso-8859-1', 'ignore').decode('utf-8', 'ignore')
+                            if 'ascii' in type:
+                                item["body"] = part.get_payload().encode('ascii', 'ignore').decode('utf-8', 'ignore')
+                            else:
+                                item["body"] = part.get_payload().encode('utf-8', 'ignore').decode('utf-8', 'ignore')
+                        elif 'multipart' not in part.get_content_type():
                             item["attachements"][part.get_content_type() + "__" + str(id_part)] = part.get_payload()
                             id_part += 1
                     print("FIN PARTIE MAIL")
@@ -63,6 +73,8 @@ class elasticer(object):
                     if 'References' in message and message['References'] is not None:
                         item['references'] = message['References'].encode('utf-8', 'ignore').decode('utf-8','ignore')
                     if useful == 1:
+                        with open("jsons/" + str(compteur)+'.json', 'w', encoding='utf-8') as f:
+                            f.write(json.dumps(item,indent=4))
                         allIds.append(item["id"])
                         compteur += 1
                         valides += 1
