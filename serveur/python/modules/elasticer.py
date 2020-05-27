@@ -39,10 +39,11 @@ class elasticer(object):
                             'attachements': {},}
                     id_part = 0
                     text_plain = 0
-                    print("DEBUT PARTIE MAIL")
+                    print("SUJET : " + message["Subject"])
                     for part in message.walk():
                         type = part["Content-Type"]
                         print("TYPE : " + part.get_content_type())
+                        print("CHARSET : " + type)
                         if type is None:
                             type = ""
                         if 'text' in part.get_content_type() and text_plain == 0:

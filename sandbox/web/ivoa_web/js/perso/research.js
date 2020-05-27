@@ -4,6 +4,34 @@ let toReg = new RegExp("\\(To:[^)]*\\)", 'g')
 let subjectReg = new RegExp("\\(Subject:[^)]*\\)", 'g')
 let contentReg = new RegExp("\\(Content:[^)]*\\)", 'g')
 let elastic_search_url = "http://192.168.1.48:9200/"
+let mime = {
+    "text/plain" : ".txt",
+    "text/x-python-script" : ".py",
+    "application/x-javascript" : ".js",
+    "text/html" : ".html",
+    "image/gif" : ".gif",
+    "video/mp4" : ".mp4",
+    "application/x-tex" : ".latex",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document" : ".docx",
+    "application/pdf" : ".pdf",
+    "image/jpeg" : ".jpeg",
+    "text/xml" : ".xml",
+    "audio/mpeg" : ".mp3"
+}
+let charset = {
+    "text/plain" : "base64,",
+    "text/x-python-script" : "charset=utf-8,",
+    "application/x-javascript" : "charset=utf-8,",
+    "text/html" : "base64,",
+    "image/gif" : "base64,",
+    "video/mp4" : "base64,",
+    "application/x-tex" : "charset=utf-8,",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document" : "base64,",
+    "application/pdf" : "base64,",
+    "image/jpeg" : "base64,",
+    "text/xml" : "charset=utf-8,",
+    "audio/mpeg" : "base64,"
+}
 function addSearchAttribute(input) {
     let search_bar = $("#search_bar");
     search_bar.val(search_bar.val() + " " + input + " ")
@@ -13,6 +41,8 @@ function addSearchAttribute(input) {
 }
 
 function traitementMessage(hits,thread) {
+    $("#accordionEx").empty()
+    $("#modal_container").empty()
     for (let i = 0; i < hits.length; i++) {
         let timestamp = new Date(hits[i]["_source"]["timestamp"] * 1000)
         let date = moment(timestamp).format("DD/MM/YYYY")
@@ -41,6 +71,7 @@ function traitementMessage(hits,thread) {
             "<i>&emsp; TO : </i>" + hits[i]["_source"]["to"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
             "<i>SUBJECT : </i>"+ hits[i]["_source"]["subject"]+
             "<i>&emsp; DATE : </i>"+ date +" <br>" +
+            addAttachements(hits[i]["_source"]["attachements"]) +
             "<br><pre>" + highlight(hits[i]["_source"]["body"]) + "</pre><br>" +
             "</div>\n" + "" +
             "<button class=\"btn btn-link closeThread\" aria-controls=\"collapseOne1\" aria-expanded=\"true\" data-toggle=\"collapse\" href=\"#result" + i + "\">\n" +
@@ -55,18 +86,44 @@ function traitementMessage(hits,thread) {
         }else{
             threads.addModal(i,false)
         }
-        // if (hits[i]["_source"]["attachements"].length > 0){
+        // if (hits[i]["_source"]["attachements"]){
+        //     console.log("PIECE JOINTE")
         //     for (const [key, value] of Object.entries(hits[i]["_source"]["attachements"])){
         //         let type = key.split("__")[0]
-        //         if (type === 'image/png'){
-        //             // $(".result_body_"+i).append("<img alt='attachement_png' class='img-fluid' height='50%' src='data:image/png;base64, " + encodeURI(value) + "' width='50%'>")
-        //         }
+        //         console.log("TYPE : " + type)
+        //         let nom = key.split("__")[1]
+        //         var element = document.createElement('a')
+        //         element.setAttribute('href','data:'+type+";"+charset[type]+encodeURI(value))
+        //         element.setAttribute('download',nom+mime[type])
+        //         element.style.display = 'none'
+        //         element.click()
+        //         // document.body.removeChild(element)
+        //         let a = "<a href='data:"+type+";"+charset[type]+encodeURI(value)+"'>"+mime[type].replace(".","").toUpperCase()+"</a>"
         //     }
         // }
         threads.findThread(mailList,hits[i]["_source"]["numThread"],i)
     }
 }
 
+function addAttachements(attachements){
+    let a = ""
+    if (attachements){
+        for (const [key, value] of Object.entries(attachements)){
+            let type = key.split("__")[0]
+            console.log("TYPE : " + type)
+            let nom = key.split("__")[1]
+            // var element = document.createElement('a')
+            // element.setAttribute('href','data:'+type+";"+charset[type]+encodeURI(value))
+            // element.setAttribute('download',nom+mime[type])
+            // element.style.display = 'none'
+            // element.click()
+            // // document.body.removeChild(element)
+            var d = new Date()
+            a += "<a href='data:"+type+";"+charset[type]+encodeURI(value)+"' download='"+mime[type].replace(".","").toUpperCase()+"_" + d.getDate()+"/"+d.getMonth()+1+"'>"+mime[type].replace(".","").toUpperCase()+"_" + d.getDate()+"/"+d.getMonth()+1+"</a>" + "\n"
+        }
+    }
+    return a
+}
 function formQuery(exec) {
     let mailListInput = $("#mailList");
     let totalString = $("#search_bar").val();
@@ -330,9 +387,6 @@ function defaultQuery(){
 
 function highlight(content){
     let replace = content.replace(/<img[^>]*>/,"")
-    // if (content.includes("<img")){
-    //     console.log(content)
-    // }
     let cont = JSON.stringify(replace).split("\\n")
     let total = ""
     cont.forEach(elem => {
