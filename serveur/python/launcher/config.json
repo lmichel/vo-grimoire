@@ -2,12 +2,12 @@
   "download_uri" : "http://mail.ivoa.net/pipermail/",
   "elastic_search_url" : "http://localhost:9200",
   "mbox_dir": "../mbox",
-  "reset_index": true,
-  "mailing_lists":[
+  "reset_index": 0,
+  "mailing_lists": [
     {
       "label": "Test Mails",
       "index_name": "test",
-      "prefix": "test",
+      "prefix": "test_",
       "download_mbox": "test.mbox/test.mbox"
     }
   ]

@@ -11,6 +11,9 @@ $(document).ready(function(){
     $("#subject_but").click(function(){
         research.addSearchAttribute("(Subject:)")
     })
+    $("#attachements_but").click(function(){
+        research.addSearchAttribute("(Attachements:)")
+    })
     $("#content_but").click(function(){
         research.addSearchAttribute("(Content:)")
     })

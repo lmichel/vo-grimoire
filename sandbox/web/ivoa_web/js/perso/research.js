@@ -1,6 +1,7 @@
 import threads from "./threads.js"
 let fromReg = new RegExp("\\(From:[^)]*\\)", 'g')
 let toReg = new RegExp("\\(To:[^)]*\\)", 'g')
+let attachementsReg = new RegExp("\\(Attachements:[^)]*\\)", 'g')
 let subjectReg = new RegExp("\\(Subject:[^)]*\\)", 'g')
 let contentReg = new RegExp("\\(Content:[^)]*\\)", 'g')
 let elastic_search_url = "http://192.168.1.48:9200/"
@@ -16,7 +17,8 @@ let mime = {
     "application/pdf" : ".pdf",
     "image/jpeg" : ".jpeg",
     "text/xml" : ".xml",
-    "audio/mpeg" : ".mp3"
+    "audio/mpeg" : ".mp3",
+    "text/x-patch" : ".patch"
 }
 let charset = {
     "text/plain" : "base64,",
@@ -29,6 +31,7 @@ let charset = {
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document" : "base64,",
     "application/pdf" : "base64,",
     "image/jpeg" : "base64,",
+    "image/png" : "base64,",
     "text/xml" : "charset=utf-8,",
     "audio/mpeg" : "base64,"
 }
@@ -70,8 +73,8 @@ function traitementMessage(hits,thread) {
             "    <i>FROM : </i>" + hits[i]["_source"]["from"].replace(/</g,"&lt").replace(">","&gt") +
             "<i>&emsp; TO : </i>" + hits[i]["_source"]["to"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
             "<i>SUBJECT : </i>"+ hits[i]["_source"]["subject"]+
-            "<i>&emsp; DATE : </i>"+ date +" <br>" +
-            addAttachements(hits[i]["_source"]["attachements"]) +
+            "<i>&emsp; DATE : </i>"+ date +" <br><br>" +
+            addAttachements(hits[i]["_source"]["attachements"]) + "</br>"+
             "<br><pre>" + highlight(hits[i]["_source"]["body"]) + "</pre><br>" +
             "</div>\n" + "" +
             "<button class=\"btn btn-link closeThread\" aria-controls=\"collapseOne1\" aria-expanded=\"true\" data-toggle=\"collapse\" href=\"#result" + i + "\">\n" +
@@ -86,21 +89,6 @@ function traitementMessage(hits,thread) {
         }else{
             threads.addModal(i,false)
         }
-        // if (hits[i]["_source"]["attachements"]){
-        //     console.log("PIECE JOINTE")
-        //     for (const [key, value] of Object.entries(hits[i]["_source"]["attachements"])){
-        //         let type = key.split("__")[0]
-        //         console.log("TYPE : " + type)
-        //         let nom = key.split("__")[1]
-        //         var element = document.createElement('a')
-        //         element.setAttribute('href','data:'+type+";"+charset[type]+encodeURI(value))
-        //         element.setAttribute('download',nom+mime[type])
-        //         element.style.display = 'none'
-        //         element.click()
-        //         // document.body.removeChild(element)
-        //         let a = "<a href='data:"+type+";"+charset[type]+encodeURI(value)+"'>"+mime[type].replace(".","").toUpperCase()+"</a>"
-        //     }
-        // }
         threads.findThread(mailList,hits[i]["_source"]["numThread"],i)
     }
 }
@@ -110,26 +98,51 @@ function addAttachements(attachements){
     if (attachements){
         for (const [key, value] of Object.entries(attachements)){
             let type = key.split("__")[0]
-            console.log("TYPE : " + type)
-            let nom = key.split("__")[1]
-            // var element = document.createElement('a')
-            // element.setAttribute('href','data:'+type+";"+charset[type]+encodeURI(value))
-            // element.setAttribute('download',nom+mime[type])
-            // element.style.display = 'none'
-            // element.click()
-            // // document.body.removeChild(element)
-            var d = new Date()
-            a += "<a href='data:"+type+";"+charset[type]+encodeURI(value)+"' download='"+mime[type].replace(".","").toUpperCase()+"_" + d.getDate()+"/"+d.getMonth()+1+"'>"+mime[type].replace(".","").toUpperCase()+"_" + d.getDate()+"/"+d.getMonth()+1+"</a>" + "\n"
+            let nom = key.split("__")[2]
+            let encode = key.split("__")[1]
+            if (type.includes("text/")){
+                a += addTextAttachementModal(type,encode,nom.split(".")[0],value)
+            }
+            if(nom.length > 1){
+                a += "<a href='data:"+type+";"+encode+','+encodeURI(value)+"' download='"+nom+"' >"+nom+"</a>" + "\n"
+            }else{
+                a += "<a href='data:"+type+";"+encode+','+encodeURI(value)+"' download='"+nom+"' >"+"No Name : " + nom+"</a>" + "\n"
+            }
         }
     }
     return a
 }
+
+function addTextAttachementModal(type,encode,nom,value){
+    return "<a class=\"nav-link text-black\" data-target=\"#"+nom+"\" data-toggle=\"modal\" target=\"_blank\">"+nom+"</a>\n" +
+        "<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\""+nom+"\" role=\"dialog\" tabindex=\"-1\">\n" +
+        "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">\n" +
+        "        <div class=\"modal-content\">\n" +
+        "            <div class=\"modal-header\">\n" +
+        "                <h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\">"+nom+"</h5>\n" +
+        "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">\n" +
+        "                    <span class=\"thread_content\" aria-hidden=\"true\"></span>\n" +
+        "                </button>\n" +
+        "            </div>\n" +
+        "            <div class=\"modal-body\">\n" +
+                     "<pre>"+atob(value)+"</pre>" +
+        "            </div>\n" +
+        "            <div class=\"modal-footer\">\n" +
+        "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>\n" +
+        "            </div>\n" +
+        "        </div>\n" +
+        "    </div>\n" +
+        "</div>"
+}
+
+
 function formQuery(exec) {
     let mailListInput = $("#mailList");
     let totalString = $("#search_bar").val();
     if (totalString === "") {
         return 0
     }
+    let attachementsRes = totalString.match(attachementsReg)
     let fromRes = totalString.match(fromReg)
     let toRes = totalString.match(toReg)
     let subjectRes = totalString.match(subjectReg)
@@ -138,6 +151,7 @@ function formQuery(exec) {
     totalString = totalString.replace(toReg, "")
     totalString = totalString.replace(subjectReg, "")
     totalString = totalString.replace(contentReg, "")
+    totalString = totalString.replace(attachementsReg, "")
     totalString = totalString.trim()
     let numberInput = $("#inputQuerySize");
     let startPeriodInput = $("#datepicker");
@@ -177,6 +191,14 @@ function formQuery(exec) {
             all.forEach(second_element => {
                 query["query"]["bool"]["must"].push({
                     "wildcard": {"from": {"value": "*" + second_element + "*"}}
+                })
+            })
+        })
+        if (attachementsRes !== null) attachementsRes.forEach(element => {
+            let all = element.replace("(Attachements:", "").replace(")", "").trim().toLowerCase().split(" ")
+            all.forEach(second_element => {
+                query["query"]["bool"]["must"].push({
+                    "wildcard": {"attachements_name": {"value": "*" + second_element + "*"}}
                 })
             })
         })
@@ -240,6 +262,14 @@ function formQuery(exec) {
             all.forEach(second_element => {
                 query["query"]["bool"]["should"].push({
                     "wildcard": {"from": {"value": "*" + second_element + "*"}}
+                })
+            })
+        })
+        if (attachementsRes !== null) attachementsRes.forEach(element => {
+            let all = element.replace("(Attachements:", "").replace(")", "").trim().toLowerCase().split(" ")
+            all.forEach(second_element => {
+                query["query"]["bool"]["should"].push({
+                    "wildcard": {"attachements_name": {"value": "*" + second_element + "*"}}
                 })
             })
         })
@@ -310,6 +340,7 @@ function formQuery(exec) {
 
 function executeQuery(query, mailList,thread) {
     $("#accordionEx").empty()
+    console.log(query)
     return axios.get(elastic_search_url + mailList + "/_search", {
         params: {
             source: JSON.stringify(query),
@@ -387,21 +418,21 @@ function defaultQuery(){
 
 function highlight(content){
     let replace = content.replace(/<img[^>]*>/,"")
-    let cont = JSON.stringify(replace).split("\\n")
+    let cont = JSON.stringify(replace).split(/(?=\\n)/g)
     let total = ""
     cont.forEach(elem => {
             if (elem.startsWith('>')){
                 if(elem.substring(1).includes('>')){
                     total += "<span class=\"greaterthan\">></span>"
-                    total += "<span class=\"greatergreaterthan\">"+elem.substring(1)+"</span>" + "\n"
+                    total += "<span class=\"greatergreaterthan\">"+elem.substring(1).replace("\\n","")+"</span>" + "\n"
                 }else{
-                    total += "<span class=\"greaterthan\">"+elem+ "</span>" + "\n"
+                    total += "<span class=\"greaterthan\">"+elem.replace("\\n","")+ "</span>" + "\n"
                 }
-            }else{
-                total += elem + "\n"
+            }else {
+                total += elem.replace("\\n","") + "\n"
             }
     })
-    return total.toString()
+    return total.toString().substring(1,(total.toString().length)-2)
 }
 
 export default {

@@ -4,6 +4,7 @@ from modules.configManager import configManager
 import email
 import json
 import mailbox
+import re
 # This class is made for indexing the mails in Elastic Search
 class elasticer(object):
 
@@ -36,34 +37,43 @@ class elasticer(object):
                             'num': prefix_name + str(prefix),
                             'maillist': mailList.encode('utf-8', 'ignore').decode('utf-8', 'ignore'),
                             'numThread': -1,
+                            'attachements_name': "",
                             'attachements': {},}
                     id_part = 0
-                    text_plain = 0
-                    print("SUJET : " + message["Subject"])
+                    first_plain_present = 0
+                    #         print("Content-Transfer-Encoding : " + part["Content-Transfer-Encoding"])
                     for part in message.walk():
-                        type = part["Content-Type"]
-                        print("TYPE : " + part.get_content_type())
-                        print("CHARSET : " + type)
-                        if type is None:
-                            type = ""
-                        if 'text' in part.get_content_type() and text_plain == 0:
-                            text_plain += 1
-                            if 'iso-8859-1' in type:
-                                item["body"] = part.get_payload().encode('iso-8859-1', 'ignore').decode('utf-8', 'ignore')
-                            if 'ascii' in type:
-                                item["body"] = part.get_payload().encode('ascii', 'ignore').decode('utf-8', 'ignore')
+                        content_type = part.get_content_maintype()
+                        charset = part.get_content_charset()
+                        if charset is None:
+                            charset = 'utf-8'
+                        filename = part.get_filename()
+                        encode = part.__getitem__("Content-Transfer-Encoding")
+                        if encode is None:
+                            encode = 'utf-8'
+                        if 'multipart' in content_type:
+                            continue
+                        if 'text/plain' in part.get_content_type() and first_plain_present == 0:
+                            try:
+                                item["body"] = part.get_payload().encode(charset,'ignore').decode('utf-8','ignore')
+                            except LookupError:
+                                print("Encodage non Trouvé")
+                                useful = 0
+                            first_plain_present += 1
+                        elif 'message' not in content_type:
+                            if filename is not None:
+                                item["attachements"][part.get_content_type() + "__" + encode + "__" + filename] = part.get_payload()
+                                item["attachements_name"] += " " + filename.split(".")[1]
                             else:
-                                item["body"] = part.get_payload().encode('utf-8', 'ignore').decode('utf-8', 'ignore')
-                        elif 'multipart' not in part.get_content_type():
-                            item["attachements"][part.get_content_type() + "__" + str(id_part)] = part.get_payload()
+                                item["attachements"][part.get_content_type() + "__" + encode + "__" + str(id_part)] = part.get_payload()
+                                item["attachements_name"] += " " + part.get_content_type()
                             id_part += 1
-                    print("FIN PARTIE MAIL")
                     if 'From' in message:
-                        item['from'] = message['From'].encode('utf-8', 'ignore').decode('utf-8', 'ignore')
+                        item['from'] = message.__getitem__('From')
                     if 'Date' in message and message['Date'] is not None:
                         item['date'] = message['Date'].encode('utf-8', 'ignore').decode('utf-8', 'ignore')
                     if 'To' in message and message['To'] is not None:
-                        item['to'] = message['To'].encode('utf-8', 'ignore').decode('utf-8', 'ignore')
+                        item['to'] = message['To']
                     if 'Subject' in message and message['Subject'] is not None:
                         try:
                             item['subject'] = message['Subject'].encode('utf-8', 'ignore').decode('utf-8', 'ignore')
@@ -74,14 +84,12 @@ class elasticer(object):
                     if 'References' in message and message['References'] is not None:
                         item['references'] = message['References'].encode('utf-8', 'ignore').decode('utf-8','ignore')
                     if useful == 1:
-                        with open("jsons/" + str(compteur)+'.json', 'w', encoding='utf-8') as f:
-                            f.write(json.dumps(item,indent=4))
                         allIds.append(item["id"])
                         compteur += 1
                         valides += 1
                         es.index(index=index_name, doc_type='keyword', body=item)
                     else:
-                        print("\nMail ignoré")
+                        print("Mail ignoré")
                         useful = 1
                 else:
                     refus += 1
@@ -207,3 +215,12 @@ class elasticer(object):
         except ValueError:
             print("Une Date Ignorée")
             return 0
+
+# if 'text' in part.get_content_type() and text_plain == 0 and 'text/html' not in part.get_content_type():
+#     text_plain += 1
+#     if 'iso-8859-1' in type:
+#         item["body"] = part.get_payload().encode('iso-8859-1', 'ignore').decode('utf-8', 'ignore').replace("\r","").replace("\t","")
+#     if 'ascii' in type:
+#         item["body"] = part.get_payload().encode('ascii', 'ignore').decode('utf-8', 'ignore').replace("\r","").replace("\t","")
+#     else:
+#         item["body"] = part.get_payload().encode('utf-8', 'ignore').decode('utf-8', 'ignore').replace("\r","").replace("\t","")

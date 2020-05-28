@@ -41,7 +41,7 @@ function addThreadModal(refs, num) {
             "    <div aria-labelledby=\"headingOne1\" class=\"collapse\" data-parent=\"#accordionEx" + compteur + "\" id=\"result_" + compteur + "\" role=\"tabpanel\" style=\"\">\n" +
             "<div class=\"m-2 card-body p-1\">\n" +
             "    <i>From : </i>\n" + elem["_source"]["from"] +
-            "    <i>&emsp;To : </i>\n" + elem["_source"]["to"] +
+            "    <i>&emsp;To : </i>\n" + elem["_source"]["to"] + "<br>" + addAttachements(elem["_source"]["attachements"]) + "<br>" +
             "    <pre>\n" +
             elem["_source"]["body"].replace(/<img[^>]*>/,"") +
             "    </pre>\n" +
@@ -52,6 +52,30 @@ function addThreadModal(refs, num) {
         compteur += 1
     })
     return [total, compteur]
+}
+
+function addAttachements(attachements){
+    let a = ""
+    if (attachements){
+        for (const [key, value] of Object.entries(attachements)){
+            let type = key.split("__")[0]
+            let nom = key.split("__")[2]
+            let encode = key.split("__")[1]
+            // if (type.includes("text/")){
+            //     a += addTextAttachementModal(type,encode,nom,value)
+            // }
+            if(nom.length > 1){
+                a += "<a href='data:"+type+";"+encode+','+encodeURI(value)+"' download='"+nom+"' >"+nom+"</a>" + "\n"
+            }else{
+                a += "<a href='data:"+type+";"+encode+','+encodeURI(value)+"' download='"+nom+"' >"+"No Name : " + nom+"</a>" + "\n"
+            }
+        }
+    }
+    return a
+}
+
+function addPdfAttachement(){
+
 }
 
 function addModal(num, thread) {

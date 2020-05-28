@@ -12,7 +12,7 @@ class configManager(object):
         self.__elastic_search_uri = None
         self.__mbox_dir = None
         self.__mailing_lists = None
-        self.__reset_index = None
+        self.__resetindex = None
         configManager.readFile()
 
     # This method will read the config.json file and implement values in the attributes
@@ -33,7 +33,7 @@ class configManager(object):
                 print(os.path.join(base_path,configManager.__mbox_dir))
                 print(os.path.exists(os.path.join(base_path,configManager.__mbox_dir)))
                 print(os.path.exists(configManager.__mbox_dir))
-                configManager.__reset_index = conf_dict["reset_index"]
+                configManager.__resetindex = conf_dict["reset_index"]
                 configManager.__mailing_lists = conf_dict["mailing_lists"]
                 configManager.validateMboxPath()
                 return conf_dict
@@ -42,8 +42,11 @@ class configManager(object):
 
     # Getter of reset_index
     @staticmethod
-    def reset_index():
-        return configManager.reset_index
+    def reset():
+        if configManager.__resetindex == 1:
+            return True
+        else:
+            return False
 
     # Return true if the mbox path is valid
     @staticmethod

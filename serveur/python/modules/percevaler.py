@@ -10,14 +10,14 @@ class percevaler(object):
 
     def buildReposAndIndex(self):
         elastic = elasticer()
-        if configManager.reset_index:
+        if configManager.reset():
             elastic.deleteMails(configManager.elastic_search_uri())
             print("Mails Deleted.")
         for mList in configManager.mailing_lists():
             mbox = self.createRepo(mList["index_name"])
             allIds = elastic.saveMailsToElastic(mbox, mList["index_name"], configManager.elastic_search_uri(),
                                                   mList["prefix"])
-            time.sleep(5)
+            time.sleep(4)
             elastic.addThreads(allIds[0], allIds[1], configManager.elastic_search_uri())
             elastic.mergeIndex(configManager.elastic_search_uri(), mList["index_name"], allIds[1])
 
