@@ -1,6 +1,8 @@
 import os
 import mailbox
 import json
+import time
+from modules.elasticer import elasticer
 from modules.configManager import configManager
 
 class percevaler(object):
@@ -19,11 +21,5 @@ class percevaler(object):
             elastic.mergeIndex(configManager.elastic_search_uri(), mList["index_name"], allIds[1])
 
     def createRepo(self,mailList):
-        # mbox_uri = mailList + ".mbox"
-        # repo = MBox(uri=mbox_uri, dirpath=configManager.mbox_dir() + '/' + mailList)
-        # return repo
         mbox = mailbox.mbox(configManager.mbox_dir() + '/' + mailList + '/' + mailList + ".mbox")
-        # for mes in mbox:
-        #     print(mes.keys())
-        #     print("\n")
         return mbox

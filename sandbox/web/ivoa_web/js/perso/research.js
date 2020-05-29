@@ -74,8 +74,8 @@ function traitementMessage(hits,thread) {
             "    <i>FROM : </i>" + hits[i]["_source"]["from"].replace(/</g,"&lt").replace(">","&gt") +
             "<i>&emsp; TO : </i>" + hits[i]["_source"]["to"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
             "<i>SUBJECT : </i>"+ hits[i]["_source"]["subject"]+
-            "<i>&emsp; DATE : </i>"+ date +" <br><br>" +
-            res[0]+ "</br>"+
+            "<i>&emsp; DATE : </i>"+ date +"<br>" +
+            res[0]+ "<br>"+
             "<br><pre>" + highlight(hits[i]["_source"]["body"]) + "</pre><br>" +
             "</div>\n" + "" +
             "<button class=\"btn btn-link closeThread\" aria-controls=\"collapseOne1\" aria-expanded=\"true\" data-toggle=\"collapse\" href=\"#result" + i + "\">\n" +
@@ -93,6 +93,7 @@ function traitementMessage(hits,thread) {
         res[1].forEach(elem => {
             Prism.highlightElement(document.getElementById(elem))
         })
+        threads.findThread(mailList,hits[i]["_source"]["numThread"],i)
     }
 }
 
@@ -106,15 +107,10 @@ function addAttachements(attachements){
             let encode = key.split("__")[1]
             if (type.includes("text/")){
                 let res = addTextAttachementModal(type,encode,nom.split(".")[0],value,nom)
-                a += res[0] + "<br>\n"
+                a += res[0] + "<br>"
                 ids.push(res[1])
             }
-            a += "<a href='data:"+type+";"+encode+','+encodeURI(value).replace(/</g,"&lt").replace(/>/g,"&gt")+"' download='"+nom+"' >"+nom+"</a>" + "\n"
-            // if(nom.matches("[0-9]+") === false){
-            //     a += "<a href='data:"+type+";"+encode+','+encodeURI(value).replace(/</g,"&lt").replace(/>/g,"&gt")+"' download='"+nom+"' >"+nom+"</a>" + "\n"
-            // }else{
-            //     a += "<a href='data:"+type+";"+encode+','+encodeURI(value).replace(/</g,"&lt").replace(/>/g,"&gt")+"' download='"+nom+"' >"+"No Name : " + nom+"</a>" + "\n"
-            // }
+            a += "<a href='data:"+type+";"+encode+','+encodeURI(value).replace(/</g,"&lt").replace(/>/g,"&gt")+"' download='"+nom+"' >Download Link : "+nom+"</a>" + "\n"
         }
     }
     return [a,ids]
@@ -134,12 +130,12 @@ function addTextAttachementModal(type,encode,nom,value,fullName){
         content = decodeURI(value)
     }
     let id = nom + "_prism"
-    return ["<a class=\"nav-link text-black\" data-target=\"#"+nom+"\" data-toggle=\"modal\" target=\"_blank\">"+nom+"</a>\n" +
+    return ["<a class=\"btn btn-secondary text-white mt-3 mb-3\" data-target=\"#"+nom+"\" data-toggle=\"modal\" target=\"_blank\">Show "+fullName+"</a>\n" +
         "<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\""+nom+"\" role=\"dialog\" tabindex=\"-1\">\n" +
         "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">\n" +
         "        <div class=\"modal-content\">\n" +
         "            <div class=\"modal-header\">\n" +
-        "                <h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\">"+nom+"</h5>\n" +
+        "                <h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\">"+fullName+"</h5>\n" +
         "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">\n" +
         "                    <span class=\"thread_content\" aria-hidden=\"true\"></span>\n" +
         "                </button>\n" +
@@ -154,7 +150,6 @@ function addTextAttachementModal(type,encode,nom,value,fullName){
         "    </div>\n" +
         "</div>",id]
 }
-
 
 function formQuery(exec) {
     let mailListInput = $("#mailList");
@@ -176,7 +171,7 @@ function formQuery(exec) {
     let numberInput = $("#inputQuerySize");
     let startPeriodInput = $("#datepicker");
     let endPeriodInput = $("#datepicker2");
-    let querySize = 50
+    let querySize = 20
     if (numberInput.val() != null && numberInput.val() > 0 && numberInput.val() <= 50) {
         querySize = numberInput.val();
     }

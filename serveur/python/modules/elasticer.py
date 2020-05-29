@@ -5,6 +5,7 @@ import email
 import json
 import mailbox
 import re
+import base64
 # This class is made for indexing the mails in Elastic Search
 class elasticer(object):
 
@@ -18,7 +19,10 @@ class elasticer(object):
         prefix = 0
         compteur = 0
         useful = 1
+        allMails = {}
         allIds = []
+        uselessMails = 0
+        encodingErrors = 0
         refus = 0
         valides = 0
         for message in mbox:
@@ -41,7 +45,6 @@ class elasticer(object):
                             'attachements': {},}
                     id_part = 0
                     first_plain_present = 0
-                    #         print("Content-Transfer-Encoding : " + part["Content-Transfer-Encoding"])
                     for part in message.walk():
                         content_type = part.get_content_maintype()
                         charset = part.get_content_charset()
@@ -55,11 +58,10 @@ class elasticer(object):
                             continue
                         if 'text/plain' in part.get_content_type() and first_plain_present == 0:
                             try:
-                                item["body"] = part.get_payload().encode(charset,'ignore').decode('utf-8','ignore')
+                                item["body"] = part.get_payload().encode(charset, 'ignore').decode('utf-8','ignore').replace("\r", "")
                             except LookupError:
-                                item["body"] = part.get_payload().encode('utf-8','ignore').decode('utf-8','ignore')
-                                print(encode + " : Encodage non Trouvé")
-                                useful = 0
+                                item["body"] = part.get_payload().encode('utf-8','ignore').decode('utf-8','ignore').replace("\r","")
+                                encodingErrors += 1
                             first_plain_present += 1
                         elif 'message' not in content_type:
                             try:
@@ -79,26 +81,29 @@ class elasticer(object):
                         try:
                             item['subject'] = message['Subject'].encode('utf-8', 'ignore').decode('utf-8', 'ignore')
                         except Exception:
-                            print(message["Subject"])
+                            print("One Error On Mail Subject")
                     if 'In-Reply-To' in message and message['In-Reply-To'] is not None:
                         item['in-reply-to'] = message['In-Reply-To'].encode('utf-8', 'ignore').decode('utf-8','ignore')
                     if 'References' in message and message['References'] is not None:
                         item['references'] = message['References'].encode('utf-8', 'ignore').decode('utf-8','ignore')
                     if useful == 1:
                         allIds.append(item["id"])
+                        allMails[message["Message-ID"]] = item
                         compteur += 1
                         valides += 1
                         es.index(index=index_name, doc_type='keyword', body=item,request_timeout=30)
                     else:
-                        print("Mail ignoré")
+                        uselessMails += 1
                         useful = 1
                 else:
                     refus += 1
             except KeyError as e:
                 print("ERROR : " + e)
-        print("Compteur : " + str(prefix))
-        print("Refusés : " + str(refus))
-        print("Validés : " + str(valides))
+        print("Total : " + str(prefix))
+        print("Duplicates : " + str(refus))
+        print("Useless : " + str(uselessMails))
+        print("Original encoding not found, decoding it in UTF-8 : " + str(encodingErrors))
+        print("Validates : " + str(valides))
         return allIds, index_name
 
     # This method build a dictionnary
@@ -214,7 +219,6 @@ class elasticer(object):
             date = datetime.strptime(date_string.strip(), '%a, %d %b %Y %H:%M:%S %z')
             return date.timestamp()
         except ValueError:
-            print("Une Date Ignorée")
             return 0
 
 # if 'text' in part.get_content_type() and text_plain == 0 and 'text/html' not in part.get_content_type():
