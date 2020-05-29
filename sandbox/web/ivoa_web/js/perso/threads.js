@@ -61,9 +61,9 @@ function addAttachements(attachements){
             let type = key.split("__")[0]
             let nom = key.split("__")[2]
             let encode = key.split("__")[1]
-            // if (type.includes("text/")){
-            //     a += addTextAttachementModal(type,encode,nom,value)
-            // }
+            if (type.includes("text/")){
+                a += addTextAttachementModal(type,encode,nom,value)
+            }
             if(nom.length > 1){
                 a += "<a href='data:"+type+";"+encode+','+encodeURI(value)+"' download='"+nom+"' >"+nom+"</a>" + "\n"
             }else{

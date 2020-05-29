@@ -1,8 +1,5 @@
 import os
 import mailbox
-from perceval.backends.core.mbox import MBox
-from modules.elasticer import elasticer
-import time
 import json
 from modules.configManager import configManager
 
@@ -17,7 +14,7 @@ class percevaler(object):
             mbox = self.createRepo(mList["index_name"])
             allIds = elastic.saveMailsToElastic(mbox, mList["index_name"], configManager.elastic_search_uri(),
                                                   mList["prefix"])
-            time.sleep(4)
+            time.sleep(5)
             elastic.addThreads(allIds[0], allIds[1], configManager.elastic_search_uri())
             elastic.mergeIndex(configManager.elastic_search_uri(), mList["index_name"], allIds[1])
 

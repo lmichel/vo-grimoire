@@ -57,17 +57,18 @@ class elasticer(object):
                             try:
                                 item["body"] = part.get_payload().encode(charset,'ignore').decode('utf-8','ignore')
                             except LookupError:
-                                print("Encodage non Trouvé")
+                                item["body"] = part.get_payload().encode('utf-8','ignore').decode('utf-8','ignore')
+                                print(encode + " : Encodage non Trouvé")
                                 useful = 0
                             first_plain_present += 1
                         elif 'message' not in content_type:
-                            if filename is not None:
-                                item["attachements"][part.get_content_type() + "__" + encode + "__" + filename] = part.get_payload()
-                                item["attachements_name"] += " " + filename.split(".")[1]
-                            else:
-                                item["attachements"][part.get_content_type() + "__" + encode + "__" + str(id_part)] = part.get_payload()
-                                item["attachements_name"] += " " + part.get_content_type()
-                            id_part += 1
+                            try:
+                                if filename is not None:
+                                    item["attachements"][part.get_content_type() + "__" + encode + "__" + filename] = part.get_payload()
+                                    item["attachements_name"] += " " + filename.split(".")[1]
+                                id_part += 1
+                            except IndexError:
+                                print(filename)
                     if 'From' in message:
                         item['from'] = message.__getitem__('From')
                     if 'Date' in message and message['Date'] is not None:
@@ -87,7 +88,7 @@ class elasticer(object):
                         allIds.append(item["id"])
                         compteur += 1
                         valides += 1
-                        es.index(index=index_name, doc_type='keyword', body=item)
+                        es.index(index=index_name, doc_type='keyword', body=item,request_timeout=30)
                     else:
                         print("Mail ignoré")
                         useful = 1

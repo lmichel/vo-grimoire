@@ -56,6 +56,7 @@ function traitementMessage(hits,thread) {
         }else{
             url = window.location.href+"?num="+hits[i]["_source"]["num"]
         }
+        let res = addAttachements(hits[i]["_source"]["attachements"])
         $("#accordionEx").append("<fieldset id=\"ID"+i+"\" class=\"field-mails\">\n" +
             "<legend class=\"leg-mails\">\n" +
             "<a aria-controls=\"collapseOne1\" aria-expanded=\"false\" class=\"lienLegend\"\n" +
@@ -74,7 +75,7 @@ function traitementMessage(hits,thread) {
             "<i>&emsp; TO : </i>" + hits[i]["_source"]["to"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
             "<i>SUBJECT : </i>"+ hits[i]["_source"]["subject"]+
             "<i>&emsp; DATE : </i>"+ date +" <br><br>" +
-            addAttachements(hits[i]["_source"]["attachements"]) + "</br>"+
+            res[0]+ "</br>"+
             "<br><pre>" + highlight(hits[i]["_source"]["body"]) + "</pre><br>" +
             "</div>\n" + "" +
             "<button class=\"btn btn-link closeThread\" aria-controls=\"collapseOne1\" aria-expanded=\"true\" data-toggle=\"collapse\" href=\"#result" + i + "\">\n" +
@@ -89,32 +90,51 @@ function traitementMessage(hits,thread) {
         }else{
             threads.addModal(i,false)
         }
-        threads.findThread(mailList,hits[i]["_source"]["numThread"],i)
+        res[1].forEach(elem => {
+            Prism.highlightElement(document.getElementById(elem))
+        })
     }
 }
 
 function addAttachements(attachements){
     let a = ""
+    let ids = []
     if (attachements){
         for (const [key, value] of Object.entries(attachements)){
             let type = key.split("__")[0]
             let nom = key.split("__")[2]
             let encode = key.split("__")[1]
             if (type.includes("text/")){
-                a += addTextAttachementModal(type,encode,nom.split(".")[0],value)
+                let res = addTextAttachementModal(type,encode,nom.split(".")[0],value,nom)
+                a += res[0] + "<br>\n"
+                ids.push(res[1])
             }
-            if(nom.length > 1){
-                a += "<a href='data:"+type+";"+encode+','+encodeURI(value)+"' download='"+nom+"' >"+nom+"</a>" + "\n"
-            }else{
-                a += "<a href='data:"+type+";"+encode+','+encodeURI(value)+"' download='"+nom+"' >"+"No Name : " + nom+"</a>" + "\n"
-            }
+            a += "<a href='data:"+type+";"+encode+','+encodeURI(value).replace(/</g,"&lt").replace(/>/g,"&gt")+"' download='"+nom+"' >"+nom+"</a>" + "\n"
+            // if(nom.matches("[0-9]+") === false){
+            //     a += "<a href='data:"+type+";"+encode+','+encodeURI(value).replace(/</g,"&lt").replace(/>/g,"&gt")+"' download='"+nom+"' >"+nom+"</a>" + "\n"
+            // }else{
+            //     a += "<a href='data:"+type+";"+encode+','+encodeURI(value).replace(/</g,"&lt").replace(/>/g,"&gt")+"' download='"+nom+"' >"+"No Name : " + nom+"</a>" + "\n"
+            // }
         }
     }
-    return a
+    return [a,ids]
 }
 
-function addTextAttachementModal(type,encode,nom,value){
-    return "<a class=\"nav-link text-black\" data-target=\"#"+nom+"\" data-toggle=\"modal\" target=\"_blank\">"+nom+"</a>\n" +
+function addTextAttachementModal(type,encode,nom,value,fullName){
+    let extension = ""
+    if (fullName.includes(".")){
+        extension = fullName.split(".")[1]
+    }else{
+        extension = "html"
+    }
+    let content = ""
+    if (encode.includes("base64")){
+        content = atob(value)
+    }else{
+        content = decodeURI(value)
+    }
+    let id = nom + "_prism"
+    return ["<a class=\"nav-link text-black\" data-target=\"#"+nom+"\" data-toggle=\"modal\" target=\"_blank\">"+nom+"</a>\n" +
         "<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\""+nom+"\" role=\"dialog\" tabindex=\"-1\">\n" +
         "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">\n" +
         "        <div class=\"modal-content\">\n" +
@@ -125,14 +145,14 @@ function addTextAttachementModal(type,encode,nom,value){
         "                </button>\n" +
         "            </div>\n" +
         "            <div class=\"modal-body\">\n" +
-                     "<pre>"+atob(value)+"</pre>" +
+                     "<pre><code id='"+id+"' class='language-"+extension+"'>"+content.replace(/</g,"&lt").replace(/>/g,"&gt")+"</code></pre>" +
         "            </div>\n" +
         "            <div class=\"modal-footer\">\n" +
         "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>\n" +
         "            </div>\n" +
         "        </div>\n" +
         "    </div>\n" +
-        "</div>"
+        "</div>",id]
 }
 
 
