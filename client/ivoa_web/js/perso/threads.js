@@ -1,5 +1,6 @@
 let compteur = 0
-let elastic_search_url = "http://192.168.1.48:9200/"
+//let elastic_search_url = "http://192.168.1.48:9200/"
+let elastic_search_url = "http://saada.unistra.fr/elasticsearch/"
 
 function findThread(mailList, numThread,num){
     let query = {
