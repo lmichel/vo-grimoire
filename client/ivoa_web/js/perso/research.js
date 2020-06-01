@@ -3,7 +3,10 @@ let fromReg = new RegExp("\\(From:[^)]*\\)", 'g')
 let toReg = new RegExp("\\(To:[^)]*\\)", 'g')
 let subjectReg = new RegExp("\\(Subject:[^)]*\\)", 'g')
 let contentReg = new RegExp("\\(Content:[^)]*\\)", 'g')
-let elastic_search_url = "http://192.168.1.48:9200/"
+//let elastic_search_url = "http://192.168.1.48:9200/"
+//let elastic_search_url = "http://saada.unistra.fr/elasticsearch/"
+let elastic_search_url = "http://saada.unistra.fr/elasticsearch/"
+
 function addSearchAttribute(input) {
     let search_bar = $("#search_bar");
     search_bar.val(search_bar.val() + " " + input + " ")
