@@ -83,12 +83,6 @@
       "download_mbox": "voevent.mbox/voevent.mbox"
     },
     {
-      "label": "Radio",
-      "index_name": "radioig",
-      "prefix": "radioig_",
-      "download_mbox": "radioig.mbox/radioig.mbox"
-    },
-    {
       "label": "Interop",
       "index_name": "interop",
       "prefix": "interop_",

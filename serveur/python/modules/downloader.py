@@ -22,7 +22,7 @@ class downloader(object):
             print("No file found.")
         if os.path.exists(mbox_path + '/' + mailList) is False:
             os.mkdir(mbox_path + '/' + mailList)
-        print("Downloading the mbox file.")
+        print("Downloading the mbox file from " + uri + url)
         urllib.request.urlretrieve(uri + url, mbox_path + '/' + mailList + '/' + mailList + '.mbox',
                                    reporthook=self.showProgress)
         print("\nDownload Finished !")
