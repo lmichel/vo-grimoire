@@ -5,19 +5,20 @@
 <head>
     <meta charset="UTF-8">
     <title>IVOA Mailiing List</title>
-    <link rel="icon" href="../src/ivoa.jpg">
+    <link rel="icon" href="src/ivoa.jpg">
     <!--    StyleSheets-->
-    <link href="../css/plugins/bootstrap.min.css" rel="stylesheet">
-    <link href="../css/perso/perso.css" rel="stylesheet">
-    <link href="../src/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/plugins/bootstrap.min.css" rel="stylesheet">
+    <link href="css/perso/perso.css" rel="stylesheet">
+    <link href="src/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <!--    Scripts-->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="../js/plugins/bootstrap.min.js"></script>
-    <script src="../js/plugins/bootstrap.bundle.min.js"></script>
+    <script src="js/plugins/bootstrap.min.js"></script>
+    <script src="js/plugins/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <!--    <script src="../node_modules/axios/lib/axios.js"></script>-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.js"></script>
-    <script src="../js/perso/listeners.js" type="module"></script>
+    <script src="js/perso/listeners.js" type="module"></script>
+    <link rel="stylesheet" href="css/plugins/prism.css">
+    <script src="js/plugins/prism.js"></script>
 </head>
 
 <body>
@@ -70,15 +71,16 @@
 </div>
 </div>
 
+
 <form class="ml-2">
     <div class="col-md-3 float-right">
-        <img alt="ivoa_logo" class="img-fluid" height="143" src="../src/ivoa.jpg" width="233">
+        <img alt="ivoa_logo" class="img-fluid" height="143" src="src/ivoa.jpg" width="233">
     </div>
     <div class="form-row align-items-center justify-content-center">
         <span class="attributes">
             <label class="" for="mailList">Mailing List:</label>
             <select class="form-control line" id="mailList" name="filtermailinglist">
-                <option value="default">None</option>
+                <option value="ivoa_all">All (For Global Index)</option>
                 <option value="apps">Applications</option>
                 <option value="dal">Data Access Layer</option>
                 <option value="dm">Data Model</option>
@@ -99,13 +101,13 @@
             <button class="btn btn-link" id="to_but" type="button">To</button>
             <button class="btn btn-link" id="subject_but" type="button">Subject</button>
             <button class="btn btn-link" id="content_but" type="button">Content</button>
+            <button class="btn btn-link" id="attachements_but" type="button">Attachements</button>
             <button aria-controls="collapseOne" aria-expanded="true" class="btn btn-link advanced"
                     data-target="#collapseOne"
                     data-toggle="collapse"
                     type="button">
                 <i>Advanced parameters</i>
             </button>
-
         </span>
     </div>
     <div class="form-row ml-2 mb-2 mt-2">
@@ -200,7 +202,6 @@
     <div id="accordionEx" aria-multiselectable="true" class="accordion md-accordion" role="tablist"></div>
 
 </div>
-
 </body>
 
 </html>

@@ -26,6 +26,7 @@ class configManager(object):
                 configManager.__mbox_dir = conf_dict["mbox_dir"]
                 configManager.__resetindex = conf_dict["reset_index"]
                 configManager.__mailing_lists = conf_dict["mailing_lists"]
+                configManager.__global_index = conf_dict["global_index"]
                 configManager.validateMboxPath()
                 return conf_dict
         else:
@@ -44,6 +45,10 @@ class configManager(object):
     def validateMboxPath():
         if os.path.exists(configManager.__mbox_dir) is False:
             raise Exception("The path for mbox_dir is not valid")
+
+    @staticmethod
+    def globalIndex():
+        return configManager.__global_index
 
     # Getter of download_uri
     @staticmethod

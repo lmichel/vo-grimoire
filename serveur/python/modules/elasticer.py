@@ -12,10 +12,15 @@ class elasticer(object):
     # This method save the mail in Elastic Search
     # Delete the duplicates
     # Choose the index name in function of existing indexes
-    def saveMailsToElastic(self, mbox, mailList, es_url, prefix_name):
+    def saveMailsToElastic(self, mbox, mailList, es_url, prefix_name, global_index):
         es = elasticsearch.Elasticsearch([es_url])
-        index_name = self.chooseName(es_url, mailList)
-        es.indices.create(index_name)
+        index_name = ""
+        if global_index == "none":
+            index_name = self.chooseName(es_url, mailList)
+            es.indices.create(index_name)
+        else:
+            print("GLOBAL_INDEX : " + global_index)
+            index_name = global_index
         prefix = 0
         compteur = 0
         useful = 1
@@ -58,9 +63,11 @@ class elasticer(object):
                             continue
                         if 'text/plain' in part.get_content_type() and first_plain_present == 0:
                             try:
-                                item["body"] = part.get_payload().encode(charset, 'ignore').decode('utf-8','ignore').replace("\r", "")
+                                # item["body"] = part.get_payload().encode(charset, 'ignore').decode('utf-8','ignore').replace("\r", "")
+                                # print(part.get_payload(decode=True).decode('utf-8','ignore'))
+                                item["body"] = part.get_payload(decode=True).decode('utf-8','ignore')
                             except LookupError:
-                                item["body"] = part.get_payload().encode('utf-8','ignore').decode('utf-8','ignore').replace("\r","")
+                                item["body"] = "Cannot decode the message"
                                 encodingErrors += 1
                             first_plain_present += 1
                         elif 'message' not in content_type:
@@ -71,8 +78,9 @@ class elasticer(object):
                                 id_part += 1
                             except IndexError:
                                 print(filename)
+                    item["attachements"] = json.dumps(item["attachements"])
                     if 'From' in message:
-                        item['from'] = message.__getitem__('From')
+                        item['from'] = message.get("From", failobj="None").encode('utf-8', 'ignore').decode('utf-8', 'ignore').replace("=?[^=]*?=","")
                     if 'Date' in message and message['Date'] is not None:
                         item['date'] = message['Date'].encode('utf-8', 'ignore').decode('utf-8', 'ignore')
                     if 'To' in message and message['To'] is not None:
@@ -109,9 +117,9 @@ class elasticer(object):
     # This method build a dictionnary
     # Each key is a string with multiple message Id
     # Each element is a number of Thread
-    def addThreads(self,allIds, mailList, es_url):
+    def addThreads(self,allIds, mailList, es_url,x):
         es = elasticsearch.Elasticsearch([es_url])
-        compteur = 0
+        compteur = x
         threads = {}
         for id in allIds:
             res = [value for key, value in threads.items() if id in key]
@@ -136,6 +144,7 @@ class elasticer(object):
                 self.modifyThreads(mailList, id, compteur, es_url)
                 compteur += 1
         print("Fin Ajout Threads")
+        return compteur
 
     # This method returns a string of all message id who contains the id of a certain mail
     def findResponders(self,id, mailList, es_url):
@@ -221,11 +230,33 @@ class elasticer(object):
         except ValueError:
             return 0
 
-# if 'text' in part.get_content_type() and text_plain == 0 and 'text/html' not in part.get_content_type():
-#     text_plain += 1
-#     if 'iso-8859-1' in type:
-#         item["body"] = part.get_payload().encode('iso-8859-1', 'ignore').decode('utf-8', 'ignore').replace("\r","").replace("\t","")
-#     if 'ascii' in type:
-#         item["body"] = part.get_payload().encode('ascii', 'ignore').decode('utf-8', 'ignore').replace("\r","").replace("\t","")
-#     else:
-#         item["body"] = part.get_payload().encode('utf-8', 'ignore').decode('utf-8', 'ignore').replace("\r","").replace("\t","")
+    def createIndex(self, es_url):
+        settings = {
+          "settings":{
+            "index.mapping.total_fields.limit": 2000
+          }}
+        es = elasticsearch.Elasticsearch([es_url])
+        if es.indices.exists(index="ivoa_all_new"):
+            es.indices.delete(index="ivoa_all_temp", ignore=[400,404])
+            es.indices.create(index="ivoa_all_temp")
+            return "ivoa_all_temp"
+        elif es.indices.exists(index="ivoa_all_temp"):
+            es.indices.delete(index="ivoa_all_new", ignore=[400,404])
+            es.indices.exists(index="ivoa_all_new")
+            return "ivoa_all_new"
+        else:
+            return "ivoa_all_new"
+
+    def newMergeIndex(self,es_url,index_name):
+        es = elasticsearch.Elasticsearch([es_url])
+        if index_name == "ivoa_all_new":
+            es.indices.delete(index="ivoa_all_temp", ignore=[400,404])
+            es.indices.put_alias(index="ivoa_all_new",name="ivoa_all")
+            return 1
+        if index_name == "ivoa_all_temp":
+            es.indices.delete(index="ivoa_all_new", ignore=[400,404])
+            es.indices.put_alias(index="ivoa_all_temp", name="ivoa_all")
+            return 1
+
+
+
