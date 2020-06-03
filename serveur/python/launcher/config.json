@@ -6,10 +6,10 @@
   "global_index": 1,
   "mailing_lists": [
     {
-      "label": "Data Access Layer",
-      "index_name": "dal",
-      "prefix": "dal_",
-      "download_mbox": "dal.mbox/dal.mbox"
+      "label": "Data Model",
+      "index_name": "dm",
+      "prefix": "dm_",
+      "download_mbox": "dm.mbox/dm.mbox"
     }
   ]
 }

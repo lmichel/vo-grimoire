@@ -56,9 +56,11 @@ function traitementMessage(hits,thread) {
         let mailList = hits[i]["_source"]["maillist"]
         let url = ""
         if(window.location.href.includes('?')){
-            url = window.location.href+"&num="+hits[i]["_source"]["num"]
+            // url = window.location.href
+            url = location.protocol + '//' + location.host + location.pathname +"&num="+hits[i]["_source"]["num"]
         }else{
-            url = window.location.href+"?num="+hits[i]["_source"]["num"]
+            // url = window.location.href+"?num="+hits[i]["_source"]["num"]
+            url = location.protocol + '//' + location.host + location.pathname +"?num="+hits[i]["_source"]["num"]
         }
         let res = addAttachements(hits[i]["_source"]["attachements"])
         $("#accordionEx").append("<fieldset id=\"ID"+i+"\" class=\"field-mails\">\n" +
@@ -90,9 +92,9 @@ function traitementMessage(hits,thread) {
             "</div>\n" +
             "</fieldset>")
         if(thread === "thread" && i === 0){
-            threads.addModal(i,true)
+            threads.addModal(i,true,hits[i]["_source"]["numThread"],hits[i]["_source"]["maillist"])
         }else{
-            threads.addModal(i,false)
+            threads.addModal(i,false,hits[i]["_source"]["numThread"],hits[i]["_source"]["maillist"])
         }
         res[1].forEach(elem => {
             Prism.highlightElement(document.getElementById(elem))
@@ -113,11 +115,64 @@ function addAttachements(attachements){
                 let res = addTextAttachementModal(type,encode,nom.split(".")[0],value,nom)
                 a += res[0] + "<br>"
                 ids.push(res[1])
+            }else if (type.includes("png") || type.includes("jpeg")){
+                let res = addImageAttachementModal(type,encode,nom.split(".")[0],value,nom)
+                a += res + "<br>"
+            }else if (type.includes("pdf") || nom.includes(".pdf")){
+                let res = addPdfAttachementModal(type,encode,nom.split(".")[0],value,nom)
+                a += res + "<br>"
             }
             a += "<a href='data:"+type+";"+encode+','+encodeURI(value).replace(/</g,"&lt").replace(/>/g,"&gt")+"' download='"+nom+"' >Download Link : "+nom+"</a>" + "\n"
         }
     }
     return [a,ids]
+}
+
+function addImageAttachementModal(type,encode,nom,value,fullName){
+    let id = Math.floor(Math.random() * 10000)
+    return "<a class=\"btn btn-secondary text-white mt-3 mb-3 d-block\" data-target=\"#mail"+id+"\" data-toggle=\"modal\" target=\"_blank\">Show "+fullName+"</a>\n" +
+    "<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\"mail"+id+"\" role=\"dialog\" tabindex=\"-1\">\n" +
+    "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">\n" +
+    "        <div class=\"modal-content\">\n" +
+    "            <div class=\"modal-header\">\n" +
+    "                <h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\">"+fullName+"</h5>\n" +
+    "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">\n" +
+    "                    <span class=\"thread_content\" aria-hidden=\"true\"></span>\n" +
+    "                </button>\n" +
+    "            </div>\n" +
+    "            <div class=\"modal-body\">\n" +
+    " <img style='display:block;width:100%;height:100%' class='base64image' src='data:"+type+";"+encode+","+encodeURI(value)+"'  alt='base64image'/>" +
+    "            </div>\n" +
+    "            <div class=\"modal-footer\">\n" +
+    "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>"
+}
+
+function addPdfAttachementModal(type,encode,nom,value,fullName){
+    let id = Math.floor(Math.random() * 10000)
+    return "<a class=\"btn btn-secondary text-white mt-3 mb-3 d-block\" data-target=\"#mail"+id+"\" data-toggle=\"modal\" target=\"_blank\">Show "+fullName+"</a>\n" +
+    "<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\"mail"+id+"\" role=\"dialog\" tabindex=\"-1\">\n" +
+    "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">\n" +
+    "        <div class=\"modal-content\" style='height:60em'>\n" +
+    "            <div class=\"modal-header\">\n" +
+    "                <h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\">"+fullName+"</h5>\n" +
+    "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">\n" +
+    "                    <span class=\"thread_content\" aria-hidden=\"true\"></span>\n" +
+    "                </button>\n" +
+    "            </div>\n" +
+    "            <div class=\"modal-body\"  style='height:50%'>\n" +
+    "<object width='100%' height='100%' data='data:application/pdf;"+encode+","+encodeURI(value)+"' type='application/pdf' class='pdf_modal'>" +
+    " <embed src='data:application/pdf;"+encode+","+encodeURI(value)+"' type='application/pdf' ></object>" +
+    "            </div>\n" +
+    "            <div class=\"modal-footer\">\n" +
+    "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>"
 }
 
 function addTextAttachementModal(type,encode,nom,value,fullName){
@@ -132,11 +187,15 @@ function addTextAttachementModal(type,encode,nom,value,fullName){
     if (encode.toLowerCase().includes("base64")){
         content = atob(value)
     }else{
-        content = decodeURI(value)
+        try{
+            content = decodeURI(value)
+        }catch {
+            console.log("Erreur Pièce Jointe")
+        }
     }
     let id = nom + "_prism"
-    return ["<a class=\"btn btn-secondary text-white mt-3 mb-3 d-block\" data-target=\"#"+nom+"\" data-toggle=\"modal\" target=\"_blank\">Show "+fullName+"</a>\n" +
-        "<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\""+nom+"\" role=\"dialog\" tabindex=\"-1\">\n" +
+    return ["<a class=\"btn btn-secondary text-white mt-3 mb-3 d-block\" data-target=\"#mail"+id+"\" data-toggle=\"modal\" target=\"_blank\">Show "+fullName+"</a>\n" +
+        "<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\"mail"+id+"\" role=\"dialog\" tabindex=\"-1\">\n" +
         "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">\n" +
         "        <div class=\"modal-content\">\n" +
         "            <div class=\"modal-header\">\n" +
@@ -198,6 +257,7 @@ function formQuery(exec) {
     }
     let query = ""
     if ($("#query_method").val() === "and") {
+        let shoulds = 0
         query = {
             "size": querySize,
             "query": {
@@ -215,45 +275,75 @@ function formQuery(exec) {
         }
         if (fromRes !== null) fromRes.forEach(element => {
             let all = element.replace("(From:", "").replace(")", "").trim().toLowerCase().split(" ")
+            let should = {
+                "bool":{
+                    "should":[]
+                }
+            }
             all.forEach(second_element => {
-                query["query"]["bool"]["must"].push({
+                should["bool"]["should"].push({
                     "wildcard": {"from": {"value": "*" + second_element + "*"}}
                 })
             })
+            query["query"]["bool"]["must"].push(should)
         })
         if (attachementsRes !== null) attachementsRes.forEach(element => {
             let all = element.replace("(Attachements:", "").replace(")", "").trim().toLowerCase().split(" ")
+            let should = {
+                "bool":{
+                    "should":[]
+                }
+            }
             all.forEach(second_element => {
-                query["query"]["bool"]["must"].push({
+                should["bool"]["should"].push({
                     "wildcard": {"attachements_name": {"value": "*" + second_element + "*"}}
                 })
             })
+            query["query"]["bool"]["must"].push(should)
         })
         if (toRes !== null) toRes.forEach(element => {
             let all = element.replace("(To:", "").replace(")", "").trim().toLowerCase().split(" ")
+            let should = {
+                "bool":{
+                    "should":[]
+                }
+            }
             all.forEach(second_element => {
-                query["query"]["bool"]["must"].push({
+                should["bool"]["should"].push({
                     "wildcard": {"to": {"value": "*" + second_element + "*"}}
                 })
             })
+            query["query"]["bool"]["must"].push(should)
         })
         if (subjectRes !== null) subjectRes.forEach(element => {
             let all = element.replace("(Subject:", "").replace(")", "").trim().toLowerCase().split(" ")
+            let should = {
+                "bool":{
+                    "should":[]
+                }
+            }
             all.forEach(second_element => {
-                query["query"]["bool"]["must"].push({
+                should["bool"]["should"].push({
                     "wildcard": {"subject": {"value": "*" + second_element + "*"}}
                 })
             })
+            query["query"]["bool"]["must"].push(should)
         })
         if (contentRes !== null) contentRes.forEach(element => {
             let all = element.replace("(Content:", "").replace(")", "").trim().toLowerCase().split(" ")
+            let should = {
+                "bool":{
+                    "should":[]
+                }
+            }
             all.forEach(second_element => {
-                query["query"]["bool"]["must"].push({
+                should["bool"]["should"].push({
                     "wildcard": {"body": {"value": "*" + second_element + "*"}}
                 })
             })
+            query["query"]["bool"]["must"].push(should)
         })
-        if (totalString.split(" ") !== null) totalString.split(" ").forEach(element => {
+        if (totalString.match(/^[0-9a-zA-Z]+$/)) totalString.split(" ").forEach(element => {
             query["query"]["bool"]["must"].push({
                 "bool": {
                     "should": [
@@ -293,45 +383,75 @@ function formQuery(exec) {
         }
         if (fromRes !== null) fromRes.forEach(element => {
             let all = element.replace("(From:", "").replace(")", "").trim().toLowerCase().split(" ")
+            let should = {
+                "bool":{
+                    "should":[]
+                }
+            }
             all.forEach(second_element => {
-                query["query"]["bool"]["should"].push({
+                should["bool"]["should"].push({
                     "wildcard": {"from": {"value": "*" + second_element + "*"}}
                 })
             })
+            query["query"]["bool"]["should"].push(should)
         })
         if (attachementsRes !== null) attachementsRes.forEach(element => {
             let all = element.replace("(Attachements:", "").replace(")", "").trim().toLowerCase().split(" ")
+            let should = {
+                "bool":{
+                    "should":[]
+                }
+            }
             all.forEach(second_element => {
-                query["query"]["bool"]["should"].push({
+                should["bool"]["should"].push({
                     "wildcard": {"attachements_name": {"value": "*" + second_element + "*"}}
                 })
             })
+            query["query"]["bool"]["should"].push(should)
         })
         if (toRes !== null) toRes.forEach(element => {
             let all = element.replace("(To:", "").replace(")", "").trim().toLowerCase().split(" ")
+            let should = {
+                "bool":{
+                    "should":[]
+                }
+            }
             all.forEach(second_element => {
-                query["query"]["bool"]["should"].push({
+                should["bool"]["should"].push({
                     "wildcard": {"to": {"value": "*" + second_element + "*"}}
                 })
             })
+            query["query"]["bool"]["should"].push(should)
         })
         if (subjectRes !== null) subjectRes.forEach(element => {
             let all = element.replace("(Subject:", "").replace(")", "").trim().toLowerCase().split(" ")
+            let should = {
+                "bool":{
+                    "should":[]
+                }
+            }
             all.forEach(second_element => {
-                query["query"]["bool"]["should"].push({
+                should["bool"]["should"].push({
                     "wildcard": {"subject": {"value": "*" + second_element + "*"}}
                 })
             })
+            query["query"]["bool"]["should"].push(should)
         })
         if (contentRes !== null) contentRes.forEach(element => {
             let all = element.replace("(Content:", "").replace(")", "").trim().toLowerCase().split(" ")
+            let should = {
+                "bool":{
+                    "should":[]
+                }
+            }
             all.forEach(second_element => {
-                query["query"]["bool"]["should"].push({
+                should["bool"]["should"].push({
                     "wildcard": {"body": {"value": "*" + second_element + "*"}}
                 })
             })
+            query["query"]["bool"]["should"].push(should)
         })
-        if (totalString.split(" ") !== null) totalString.split(" ").forEach(element => {
+        if (totalString.match(/^[0-9a-zA-Z]+$/)) totalString.split(" ").forEach(element => {
             query["query"]["bool"]["should"].push({
                 "bool": {
                     "should": [
@@ -374,6 +494,7 @@ function formQuery(exec) {
 
 function executeQuery(query, mailList,thread) {
     $("#accordionEx").empty()
+    console.log(query)
     if (global_index === 1){
         return axios.get(elastic_search_url + "ivoa_all/_search", {
             params: {
@@ -448,7 +569,7 @@ function defaultQuery(){
             "query":{
                 "term":{
                     "numThread":{
-                        "value": params["thread"].split("_")[1]
+                        "value": params["thread"]
                     }
                 }
             },

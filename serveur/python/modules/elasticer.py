@@ -6,6 +6,10 @@ import json
 import mailbox
 import re
 import base64
+from modules.logger import LoggerSetup
+LoggerSetup.set_warning_level()
+log = LoggerSetup.get_logger()
+log.propagate = False
 # This class is made for indexing the mails in Elastic Search
 class elasticer(object):
 
@@ -19,7 +23,6 @@ class elasticer(object):
             index_name = self.chooseName(es_url, mailList)
             es.indices.create(index_name)
         else:
-            print("GLOBAL_INDEX : " + global_index)
             index_name = global_index
         prefix = 0
         compteur = 0
@@ -45,7 +48,7 @@ class elasticer(object):
                             'to': 'none',
                             'num': prefix_name + str(prefix),
                             'maillist': mailList.encode('utf-8', 'ignore').decode('utf-8', 'ignore'),
-                            'numThread': -1,
+                            'numThread': "none",
                             'attachements_name': "",
                             'attachements': {},}
                     id_part = 0
@@ -64,7 +67,6 @@ class elasticer(object):
                         if 'text/plain' in part.get_content_type() and first_plain_present == 0:
                             try:
                                 # item["body"] = part.get_payload().encode(charset, 'ignore').decode('utf-8','ignore').replace("\r", "")
-                                # print(part.get_payload(decode=True).decode('utf-8','ignore'))
                                 item["body"] = part.get_payload(decode=True).decode('utf-8','ignore')
                             except LookupError:
                                 item["body"] = "Cannot decode the message"
@@ -76,8 +78,8 @@ class elasticer(object):
                                     item["attachements"][part.get_content_type() + "__" + encode + "__" + filename] = part.get_payload()
                                     item["attachements_name"] += " " + filename.split(".")[1]
                                 id_part += 1
-                            except IndexError:
-                                print(filename)
+                            except IndexError as e:
+                                log.error(e)
                     item["attachements"] = json.dumps(item["attachements"])
                     if 'From' in message:
                         item['from'] = message.get("From", failobj="None").encode('utf-8', 'ignore').decode('utf-8', 'ignore').replace("=?[^=]*?=","")
@@ -88,8 +90,8 @@ class elasticer(object):
                     if 'Subject' in message and message['Subject'] is not None:
                         try:
                             item['subject'] = message['Subject'].encode('utf-8', 'ignore').decode('utf-8', 'ignore')
-                        except Exception:
-                            print("One Error On Mail Subject")
+                        except Exception as e:
+                            log.error(e)
                     if 'In-Reply-To' in message and message['In-Reply-To'] is not None:
                         item['in-reply-to'] = message['In-Reply-To'].encode('utf-8', 'ignore').decode('utf-8','ignore')
                     if 'References' in message and message['References'] is not None:
@@ -106,20 +108,19 @@ class elasticer(object):
                 else:
                     refus += 1
             except KeyError as e:
-                print("ERROR : " + e)
-        print("Total : " + str(prefix))
-        print("Duplicates : " + str(refus))
-        print("Useless : " + str(uselessMails))
-        print("Original encoding not found, decoding it in UTF-8 : " + str(encodingErrors))
-        print("Validates : " + str(valides))
+                log.error(e)
+        log.warn("Total Mails in MBOX : " + str(prefix))
+        log.warn("Duplicates Mails in MBOX : " + str(refus))
+        log.warn("Useless Mails of MBOX : " + str(uselessMails))
+        log.warn("Number of Mails indexed in ES : " + str(valides))
         return allIds, index_name
 
     # This method build a dictionnary
     # Each key is a string with multiple message Id
     # Each element is a number of Thread
-    def addThreads(self,allIds, mailList, es_url,x):
+    def addThreads(self,allIds, mailList, es_url):
         es = elasticsearch.Elasticsearch([es_url])
-        compteur = x
+        compteur = 0
         threads = {}
         for id in allIds:
             res = [value for key, value in threads.items() if id in key]
@@ -143,7 +144,7 @@ class elasticer(object):
                 threads[total] = compteur
                 self.modifyThreads(mailList, id, compteur, es_url)
                 compteur += 1
-        print("Fin Ajout Threads")
+        log.warn("Threads are indexed.")
         return compteur
 
     # This method returns a string of all message id who contains the id of a certain mail
@@ -178,25 +179,25 @@ class elasticer(object):
         es_result = es.search(index=mailList, body=query)
         if len(es_result["hits"]["hits"]) > 0:
             es.update(index=mailList, doc_type='keyword', id=es_result["hits"]["hits"][0]["_id"],
-                      body={"doc": {"numThread": numThread}})
+                      body={"doc": {"numThread": es_result["hits"]["hits"][0]["_source"]["maillist"] + "_" +str(numThread)}})
 
     # This method delete all the index in Elastic Search
     def deleteMails(self,es_url):
         es = elasticsearch.Elasticsearch([es_url])
         for index in es.indices.get('*'):
-            es.indices.delete(index=index,ignore=[400,404])
+            if '_mails' in index:
+                es.indices.delete(index=index,ignore=[400,404])
+                log.warn("Index : " + index + " deleted.")
 
     # This method return the name of index to store mails into
     # Eg : edu_new if edu_temp exists
     # Eg : edu_temp if edu_new exists
     def chooseName(self,es_url, mailList):
         es = elasticsearch.Elasticsearch([es_url])
-        if es.indices.exists(index=mailList + "_temp") and es.indices.exists(index=mailList + "_new") is False:
-            print("CHOOSE NAME : "+mailList+"_new")
-            return mailList + "_new"
+        if es.indices.exists(index=mailList + "_temp_mails") and es.indices.exists(index=mailList + "_new_mails") is False:
+            return mailList + "_new_mails"
         else:
-            print("CHOOSE NAME : "+mailList+"_temp")
-            return mailList + "_temp"
+            return mailList + "_temp_mails"
 
     # This method will delete the older index
     # And will put an allias for the new index
@@ -204,20 +205,18 @@ class elasticer(object):
     def mergeIndex(self,es_url, mailList, index_name):
         compteur = 0
         es = elasticsearch.Elasticsearch([es_url])
-        if es.indices.exists(index=mailList + "_temp"):
+        if es.indices.exists(index=mailList + "_temp_mails"):
             compteur += 1
-        if es.indices.exists(index=mailList + "_new"):
+        if es.indices.exists(index=mailList + "_new_mails"):
             compteur += 1
         if compteur < 2:
             es.indices.put_alias(index=index_name, name=mailList)
-        if es.indices.exists(index=mailList + "_temp") and mailList + "_new" in index_name:
-            print("MERGE INDEX : "+mailList+"_temp")
-            es.indices.delete(index=mailList + "_temp", ignore=[400, 404])
-            es.indices.put_alias(index=mailList + "_new", name=mailList)
-        if es.indices.exists(index=mailList + "_new") and mailList + "_temp" in index_name:
-            print("MERGE INDEX : "+mailList+"_new")
-            es.indices.delete(index=mailList + "_new", ignore=[400, 404])
-            es.indices.put_alias(index=mailList + "_temp", name=mailList)
+        if es.indices.exists(index=mailList + "_temp_mails") and mailList + "_new_mails" in index_name:
+            es.indices.delete(index=mailList + "_temp_mails", ignore=[400, 404])
+            es.indices.put_alias(index=mailList + "_new_mails", name=mailList)
+        if es.indices.exists(index=mailList + "_new_mails") and mailList + "_temp_mails" in index_name:
+            es.indices.delete(index=mailList + "_new_mails", ignore=[400, 404])
+            es.indices.put_alias(index=mailList + "_temp_mails", name=mailList)
 
     # Returns timestamp of a message date
     def returnTimestamp(self,message):
@@ -236,26 +235,26 @@ class elasticer(object):
             "index.mapping.total_fields.limit": 2000
           }}
         es = elasticsearch.Elasticsearch([es_url])
-        if es.indices.exists(index="ivoa_all_new"):
-            es.indices.delete(index="ivoa_all_temp", ignore=[400,404])
-            es.indices.create(index="ivoa_all_temp")
-            return "ivoa_all_temp"
-        elif es.indices.exists(index="ivoa_all_temp"):
-            es.indices.delete(index="ivoa_all_new", ignore=[400,404])
-            es.indices.exists(index="ivoa_all_new")
-            return "ivoa_all_new"
+        if es.indices.exists(index="ivoa_all_new_mails"):
+            es.indices.delete(index="ivoa_all_temp_mails", ignore=[400,404])
+            es.indices.create(index="ivoa_all_temp_mails")
+            return "ivoa_all_temp_mails"
+        elif es.indices.exists(index="ivoa_all_temp_mails"):
+            es.indices.delete(index="ivoa_all_new_mails", ignore=[400,404])
+            es.indices.exists(index="ivoa_all_new_mails")
+            return "ivoa_all_new_mails"
         else:
-            return "ivoa_all_new"
+            return "ivoa_all_new_mails"
 
     def newMergeIndex(self,es_url,index_name):
         es = elasticsearch.Elasticsearch([es_url])
-        if index_name == "ivoa_all_new":
-            es.indices.delete(index="ivoa_all_temp", ignore=[400,404])
-            es.indices.put_alias(index="ivoa_all_new",name="ivoa_all")
+        if index_name == "ivoa_all_new_mails":
+            es.indices.delete(index="ivoa_all_temp_mails", ignore=[400,404])
+            es.indices.put_alias(index="ivoa_all_new_mails",name="ivoa_all")
             return 1
-        if index_name == "ivoa_all_temp":
-            es.indices.delete(index="ivoa_all_new", ignore=[400,404])
-            es.indices.put_alias(index="ivoa_all_temp", name="ivoa_all")
+        if index_name == "ivoa_all_temp_mails":
+            es.indices.delete(index="ivoa_all_new_mails", ignore=[400,404])
+            es.indices.put_alias(index="ivoa_all_temp_mails", name="ivoa_all")
             return 1
 
 
