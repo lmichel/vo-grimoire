@@ -66,7 +66,7 @@ class elasticer(object):
                             continue
                         if 'text/plain' in part.get_content_type() and first_plain_present == 0:
                             try:
-                                item["body"] = part.get_payload(decode=True).decode('utf-8','ignore')
+                                item["body"] = part.get_payload(decode=True).decode('utf-8','ignore').replace("\t")
                             except LookupError:
                                 item["body"] = "Cannot decode the message"
                                 encodingErrors += 1

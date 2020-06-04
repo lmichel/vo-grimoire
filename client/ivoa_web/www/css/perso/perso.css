@@ -67,10 +67,18 @@ body {
     overflow:auto;
 }
 
-.greaterthan {
+.gthan{
     color : blue;
 }
 
-.greatergreaterthan {
+.ggthan{
     color : orangered;
+}
+
+.gggthan{
+    color : red;
+}
+
+.ggggthan{
+    color : saddlebrown;
 }

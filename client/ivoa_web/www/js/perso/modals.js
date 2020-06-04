@@ -41,57 +41,63 @@ function addAttachements(attachements,numMail){
                 let res = addImageAttachementModal(type,encode,nom.split(".")[0],value,nom,"image_modal_"+numMail+"_"+compteur)
                 a += res + "<br>"
             }else if (type.includes("pdf") || nom.includes(".pdf")){
+                console.log("PDF")
                 let res = addPdfAttachementModal(type,encode,nom.split(".")[0],value,nom,"pdf_modal_"+numMail+"_"+compteur)
                 a += res + "<br>"
             }
-            a += "<a href='data:"+type+";"+encode+','+encodeURI(value).replace(/</g,"&lt").replace(/>/g,"&gt")+"' download='"+nom+"' >Download Link : "+nom+"</a>" + "\n"
+            a += "<a href='data:"+type+";"+encode+','+encodeURI(value).replace(/</g,"&lt").replace(/>/g,"&gt")+"' download='"+nom+
+                "' ><span class=\"fa fa-download\"> Download "+nom+"</span></a>" + "\n"
         }
     }
     return [a,ids]
 }
 
 function addImageAttachementModal(type,encode,nom,value,fullName,id){
-    return "<a class=\"btn btn-secondary text-white mt-3 mb-3 d-block\" data-target=\"#"+id+"\" data-toggle=\"modal\" target=\"_blank\">Show "+fullName+"</a>\n" +
-        "<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\""+id+"\" role=\"dialog\" tabindex=\"-1\">\n" +
-        "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">\n" +
-        "        <div class=\"modal-content\">\n" +
-        "            <div class=\"modal-header\">\n" +
-        "                <h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\">"+fullName+"</h5>\n" +
-        "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">\n" +
-        "                    <span class=\"thread_content\" aria-hidden=\"true\"></span>\n" +
-        "                </button>\n" +
-        "            </div>\n" +
-        "            <div class=\"modal-body\">\n" +
+    return "<button type=\"button\" class=\"btn btn-outline-secondary btn_url_mails\" data-target=\"#"+id+"\" data-toggle=\"modal\">" +
+        "<span class=\"fa fa-eye\"> Show "+fullName+"</span>" +
+        "</button>" +
+        "<div aria-hidden=\"true\" class=\"modal fade\" id=\""+id+"\" role=\"dialog\" tabindex=\"-1\">" +
+        "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">" +
+        "        <div class=\"modal-content\">" +
+        "            <div class=\"modal-header\">" +
+        "                <h5 class=\"modal-title\">"+fullName+"</h5>" +
+        "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">" +
+        "                    <span class=\"thread_content\" aria-hidden=\"true\"></span>" +
+        "                </button>" +
+        "            </div>" +
+        "            <div class=\"modal-body\">" +
         " <img style='display:block;width:100%;height:100%' class='base64image' src='data:"+type+";"+encode+","+encodeURI(value)+"'  alt='base64image'/>" +
-        "            </div>\n" +
-        "            <div class=\"modal-footer\">\n" +
-        "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>\n" +
-        "            </div>\n" +
-        "        </div>\n" +
-        "    </div>\n" +
+        "            </div>" +
+        "            <div class=\"modal-footer\">" +
+        "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>" +
+        "            </div>" +
+        "        </div>" +
+        "    </div>" +
         "</div>"
 }
 
 function addPdfAttachementModal(type,encode,nom,value,fullName,id){
-    return "<a class=\"btn btn-secondary text-white mt-3 mb-3 d-block\" data-target=\"#"+id+"\" data-toggle=\"modal\" target=\"_blank\">Show "+fullName+"</a>\n" +
-        "<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\""+id+"\" role=\"dialog\" tabindex=\"-1\">\n" +
-        "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">\n" +
-        "        <div class=\"modal-content\" style='height:60em'>\n" +
-        "            <div class=\"modal-header\">\n" +
-        "                <h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\">"+fullName+"</h5>\n" +
-        "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">\n" +
-        "                    <span class=\"thread_content\" aria-hidden=\"true\"></span>\n" +
-        "                </button>\n" +
-        "            </div>\n" +
-        "            <div class=\"modal-body\"  style='height:50%'>\n" +
+    return "<button type=\"button\" class=\"btn btn-outline-secondary btn_url_mails\" data-target=\"#"+id+"\" data-toggle=\"modal\">" +
+        "<span class=\"fa fa-eye\"> Show "+fullName+"</span>" +
+        "</button>" +
+        "<div aria-hidden=\"true\" class=\"modal fade\" id=\""+id+"\" role=\"dialog\" tabindex=\"-1\">" +
+        "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">" +
+        "        <div class=\"modal-content\" style='height:60em'>" +
+        "            <div class=\"modal-header\">" +
+        "                <h5 class=\"modal-title\" >"+fullName+"</h5>" +
+        "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">" +
+        "                    <span class=\"thread_content\" aria-hidden=\"true\"></span>" +
+        "                </button>" +
+        "            </div>" +
+        "            <div class=\"modal-body\"  style='height:50%'>" +
         "<object width='100%' height='100%' data='data:application/pdf;"+encode+","+encodeURI(value)+"' type='application/pdf' class='pdf_modal'>" +
         " <embed src='data:application/pdf;"+encode+","+encodeURI(value)+"' type='application/pdf' ></object>" +
-        "            </div>\n" +
-        "            <div class=\"modal-footer\">\n" +
-        "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>\n" +
-        "            </div>\n" +
-        "        </div>\n" +
-        "    </div>\n" +
+        "            </div>" +
+        "            <div class=\"modal-footer\">" +
+        "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>" +
+        "            </div>" +
+        "        </div>" +
+        "    </div>" +
         "</div>"
 }
 
@@ -113,24 +119,26 @@ function addTextAttachementModal(type,encode,nom,value,fullName,id){
         }
     }
     let id2 = id + "_prism"
-    return ["<a class=\"btn btn-secondary text-white mt-3 mb-3 d-block\" data-target=\"#"+id2+"\" data-toggle=\"modal\" target=\"_blank\">Show "+fullName+"</a>\n" +
-    "<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\""+id2+"\" role=\"dialog\" tabindex=\"-1\">\n" +
-    "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">\n" +
-    "        <div class=\"modal-content\">\n" +
-    "            <div class=\"modal-header\">\n" +
-    "                <h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\">"+fullName+"</h5>\n" +
-    "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">\n" +
-    "                    <span class=\"thread_content\" aria-hidden=\"true\"></span>\n" +
-    "                </button>\n" +
-    "            </div>\n" +
-    "            <div class=\"modal-body\">\n" +
+    return ["<button type=\"button\" class=\"btn btn-outline-secondary btn_url_mails\" data-target=\"#"+id+"\" data-toggle=\"modal\">" +
+    "<span class=\"fa fa-eye\"> Show "+fullName+"</span>" +
+    "</button>" +
+    "<div aria-hidden=\"true\" class=\"modal fade\" id=\""+id2+"\" role=\"dialog\" tabindex=\"-1\">" +
+    "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">" +
+    "        <div class=\"modal-content\">" +
+    "            <div class=\"modal-header\">" +
+    "                <h5 class=\"modal-title\" >"+fullName+"</h5>" +
+    "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">" +
+    "                    <span class=\"thread_content\" aria-hidden=\"true\"></span>" +
+    "                </button>" +
+    "            </div>" +
+    "            <div class=\"modal-body\">" +
     "<pre><code id='"+id+"' class='language-"+extension+"'>"+content.replace(/</g,"&lt").replace(/>/g,"&gt")+"</code></pre>" +
-    "            </div>\n" +
-    "            <div class=\"modal-footer\">\n" +
-    "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
+    "            </div>" +
+    "            <div class=\"modal-footer\">" +
+    "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>" +
+    "            </div>" +
+    "        </div>" +
+    "    </div>" +
     "</div>",id2]
 }
 

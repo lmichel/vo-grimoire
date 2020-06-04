@@ -1,5 +1,6 @@
 import threads from "./threads.js"
 import modals from "./modals.js"
+import texts from "./texts.js"
 let fromReg = new RegExp("\\(From:[^)]*\\)", 'g')
 let toReg = new RegExp("\\(To:[^)]*\\)", 'g')
 let attachementsReg = new RegExp("\\(Attachements:[^)]*\\)", 'g')
@@ -56,47 +57,55 @@ function traitementMessage(hits,thread) {
         let date = moment(timestamp).format("DD/MM/YYYY")
         let mailList = hits[i]["_source"]["maillist"]
         let url = ""
-        url = location.protocol + '//' + location.host + location.pathname +"?num="+hits[i]["_source"]["num"]
-        let res = modals.addAttachements(hits[i]["_source"]["attachements"],i)
+        url = location.protocol + '//' + location.host + location.pathname + "?num=" + hits[i]["_source"]["num"]
+        let res = modals.addAttachements(hits[i]["_source"]["attachements"], i)
         $("#accordionEx").append(
-            "<fieldset id=\"ID"+i+"\" class=\"field-mails\">" +
+            "<fieldset id=\"ID" + i + "\" class=\"field-mails\">" +
             "<legend class=\"leg-mails\">" +
-            "<a aria-controls=\"collapseOne1\" aria-expanded=\"false\" class=\"lienLegend\" data-toggle=\"collapse\" href=\"#result" + i + "\">"+
-            "<strong>N°:" + (i+1) +"/"+hits.length+" </strong>"+
-            date + " (" + mailList + ") <strong>From</strong> : " + hits[i]["_source"]["from"].replace(/</g,"&lt").replace(">","&gt") +
+            "<a aria-controls=\"collapseOne1\" aria-expanded=\"false\" class=\"lienLegend\" data-toggle=\"collapse\" href=\"#result" + i + "\">" +
+            "<strong>N°:" + (i + 1) + "/" + hits.length + " </strong>" +
+            date + " (" + mailList + ") <strong>From</strong> : " + hits[i]["_source"]["from"].replace(/</g, "&lt").replace(">", "&gt") +
             "<strong>Subject</strong> : " + hits[i]["_source"]["subject"] + "" +
             "</a>" +
             "</legend>" +
-            "<div aria-labelledby=\"headingOne1\" class=\"collapse\" data-parent=\"#accordionEx\" id=\"result" + i + "\"" + "role=\"tabpanel\">" +
-            "<button class=\"btn btn-link\" data-target=\"#edu_result_"+i+"\" data-toggle=\"modal\" type=\"button\">" +
-            "View Thread" +
+            "<div aria-labelledby=\"headingOne1\" class=\"collapse\" data-parent=\"#accordionEx\" id=\"result" + i + "\"" + " role=\"tabpanel\">" +
+            // "<button class=\"btn btn-link\" data-target=\"#edu_result_"+i+"\" data-toggle=\"modal\" type=\"button\">" +
+            "<div class='m-2 p-1'>" +
+            "<button type=\"button\" class=\"btn btn-outline-secondary\">" +
+            "<span class=\"fa fa-list\" data-target=\"#edu_result_" + i + "\" data-toggle=\"modal\" type=\"button\"> View Thread</span>" +
             "</button>" +
-            "<div class=\"m-2 card-body p-1 contenuMails result_body_"+i+"\">" +
-            "<a href=\""+url+"\" target=\"_blank\">Link for this mail :" + url +"</a></br></br>"+
-            "<i>FROM : </i>" + hits[i]["_source"]["from"].replace(/</g,"&lt").replace(">","&gt") +
-            "<i>&emsp; TO : </i>" + hits[i]["_source"]["to"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
-            "<i>SUBJECT : </i>"+ hits[i]["_source"]["subject"]+
-            "<i>&emsp; DATE : </i>"+ date +"<br>" +
-            res[0]+ "<br>"+
-            "<br><pre>" + highlight(hits[i]["_source"]["body"].replace("\t","   ")) + "</pre><br>" +
+            "<button type=\"button\" class=\"btn btn-outline-secondary btn_url_mails\" value='" + url + "'>" +
+            "<span class=\"fa fa-files-o\"> Copy Mail URL</span>" +
+            "</button>" +
+            res[0] +
+            "</div>"+
+            "<div class=\"m-2 card-body p-1 contenuMails result_body_" + i + "\">" +
+            "<i>FROM : </i>" + hits[i]["_source"]["from"].replace(/</g, "&lt").replace(">", "&gt") +
+            "<i>&emsp; TO : </i>" + hits[i]["_source"]["to"].replace(/</g, "&lt").replace(">", "&gt") + "<br>" +
+            "<i>SUBJECT : </i>" + hits[i]["_source"]["subject"] +
+            "<i>&emsp; DATE : </i>" + date + "<br>" +
+            "<br><pre>" + texts.highlight(hits[i]["_source"]["body"]) + "</pre><br>" +
             "</div>" + "" +
             "<button class=\"btn btn-link closeThread\" aria-controls=\"collapseOne1\" aria-expanded=\"true\" data-toggle=\"collapse\" href=\"#result" + i + "\">" +
             "Close Mail" +
-            "</button>"+
+            "</button>" +
             "<div>" +
             "</div>" +
             "</div>" +
             "</fieldset>")
-        if(thread === "thread" && i === 0){
-            threads.addModal(i,true,hits[i]["_source"]["numThread"],hits[i]["_source"]["maillist"])
-        }else{
-            threads.addModal(i,false,hits[i]["_source"]["numThread"],hits[i]["_source"]["maillist"])
+        if (thread === "thread" && i === 0) {
+            threads.addModal(i, true, hits[i]["_source"]["numThread"], hits[i]["_source"]["maillist"])
+        } else {
+            threads.addModal(i, false, hits[i]["_source"]["numThread"], hits[i]["_source"]["maillist"])
         }
         res[1].forEach(elem => {
             Prism.highlightElement(document.getElementById(elem))
         })
-        threads.findThread(mailList,hits[i]["_source"]["numThread"],i)
+        threads.findThread(mailList, hits[i]["_source"]["numThread"], i)
     }
+    $(".btn_url_mails").click(function () {
+        texts.copyText(this.value)
+    })
 }
 
 function formQuery(exec) {
@@ -467,25 +476,6 @@ function defaultQuery(){
     }
 }
 
-function highlight(content){
-    let replace = content.replace(/<img[^>]*>/,"")
-    let cont = JSON.stringify(replace).split(/(?=\\n)/g)
-    let total = ""
-    cont.forEach(elem => {
-            if (elem.startsWith('>')){
-                if(elem.substring(1).includes('>')){
-                    total += "<span class=\"greaterthan\">></span>"
-                    total += "<span class=\"greatergreaterthan\">"+elem.substring(1).replace("\\n","")+"</span>" + "\n"
-                }else{
-                    total += "<span class=\"greaterthan\">"+elem.replace("\\n","")+ "</span>" + "\n"
-                }
-            }else {
-                total += elem.replace("\\n","") + "\n"
-            }
-    })
-    return total.toString().substring(1,(total.toString().length)-2)
-}
-
 export default {
     addSearchAttribute: addSearchAttribute,
     formQuery: formQuery,
@@ -493,5 +483,4 @@ export default {
     executeQuery: executeQuery,
     manageDates: manageDates,
     defaultQuery: defaultQuery,
-    highlight:highlight,
 }
