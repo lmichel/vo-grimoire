@@ -1,13 +1,11 @@
 import threads from "./threads.js"
+import modals from "./modals.js"
 let fromReg = new RegExp("\\(From:[^)]*\\)", 'g')
 let toReg = new RegExp("\\(To:[^)]*\\)", 'g')
 let attachementsReg = new RegExp("\\(Attachements:[^)]*\\)", 'g')
 let subjectReg = new RegExp("\\(Subject:[^)]*\\)", 'g')
 let contentReg = new RegExp("\\(Content:[^)]*\\)", 'g')
 let global_index = 1
-let elastic_search_url = "http://192.168.1.48:9200/"
-// let elastic_search_url = "http://saada.unistra.fr/elasticsearch/"
-
 let mime = {
     "text/plain" : ".txt",
     "text/x-python-script" : ".py",
@@ -47,49 +45,47 @@ function addSearchAttribute(input) {
     search_bar.prop('selectionEnd', cursorPos - 2)
 }
 
-function traitementMessage(hits,thread) {
-    $("#accordionEx").empty()
+function emptycontainers(){
     $("#modal_container").empty()
+    $("#accordionEx").empty()
+}
+
+function traitementMessage(hits,thread) {
     for (let i = 0; i < hits.length; i++) {
         let timestamp = new Date(hits[i]["_source"]["timestamp"] * 1000)
         let date = moment(timestamp).format("DD/MM/YYYY")
         let mailList = hits[i]["_source"]["maillist"]
         let url = ""
-        if(window.location.href.includes('?')){
-            // url = window.location.href
-            url = location.protocol + '//' + location.host + location.pathname +"&num="+hits[i]["_source"]["num"]
-        }else{
-            // url = window.location.href+"?num="+hits[i]["_source"]["num"]
-            url = location.protocol + '//' + location.host + location.pathname +"?num="+hits[i]["_source"]["num"]
-        }
-        let res = addAttachements(hits[i]["_source"]["attachements"])
-        $("#accordionEx").append("<fieldset id=\"ID"+i+"\" class=\"field-mails\">\n" +
-            "<legend class=\"leg-mails\">\n" +
-            "<a aria-controls=\"collapseOne1\" aria-expanded=\"false\" class=\"lienLegend\"\n" +
-            "data-toggle=\"collapse\" href=\"#result" + i + "\">\n"+ "<strong>N°:" + (i+1) +"/"+hits.length+" </strong>"+
-            date + " (" + mailList + ") <strong>From</strong> : " + hits[i]["_source"]["from"].replace(/</g,"&lt").replace(">","&gt") + " <strong>Subject</strong> : " + hits[i]["_source"]["subject"] + "\n" +
-            "</a>\n" +
-            "</legend>\n" +
-            "<div aria-labelledby=\"headingOne1\" class=\"collapse\" data-parent=\"#accordionEx\" id=\"result" + i + "\"\n" +
-            "role=\"tabpanel\">\n" +
-            "<button class=\"btn btn-link\" data-target=\"#edu_result_"+i+"\" data-toggle=\"modal\" type=\"button\">\n" +
-            "    View Thread\n" +
-            "</button>\n" +
-            "    <div class=\"m-2 card-body p-1 contenuMails result_body_"+i+"\">\n" +
-            "    <a href=\""+url+"\" target=\"_blank\">Link for this mail :" + url +"</a></br></br>"+
-            "    <i>FROM : </i>" + hits[i]["_source"]["from"].replace(/</g,"&lt").replace(">","&gt") +
+        url = location.protocol + '//' + location.host + location.pathname +"?num="+hits[i]["_source"]["num"]
+        let res = modals.addAttachements(hits[i]["_source"]["attachements"],i)
+        $("#accordionEx").append(
+            "<fieldset id=\"ID"+i+"\" class=\"field-mails\">" +
+            "<legend class=\"leg-mails\">" +
+            "<a aria-controls=\"collapseOne1\" aria-expanded=\"false\" class=\"lienLegend\" data-toggle=\"collapse\" href=\"#result" + i + "\">"+
+            "<strong>N°:" + (i+1) +"/"+hits.length+" </strong>"+
+            date + " (" + mailList + ") <strong>From</strong> : " + hits[i]["_source"]["from"].replace(/</g,"&lt").replace(">","&gt") +
+            "<strong>Subject</strong> : " + hits[i]["_source"]["subject"] + "" +
+            "</a>" +
+            "</legend>" +
+            "<div aria-labelledby=\"headingOne1\" class=\"collapse\" data-parent=\"#accordionEx\" id=\"result" + i + "\"" + "role=\"tabpanel\">" +
+            "<button class=\"btn btn-link\" data-target=\"#edu_result_"+i+"\" data-toggle=\"modal\" type=\"button\">" +
+            "View Thread" +
+            "</button>" +
+            "<div class=\"m-2 card-body p-1 contenuMails result_body_"+i+"\">" +
+            "<a href=\""+url+"\" target=\"_blank\">Link for this mail :" + url +"</a></br></br>"+
+            "<i>FROM : </i>" + hits[i]["_source"]["from"].replace(/</g,"&lt").replace(">","&gt") +
             "<i>&emsp; TO : </i>" + hits[i]["_source"]["to"].replace(/</g,"&lt").replace(">","&gt") + "<br>" +
             "<i>SUBJECT : </i>"+ hits[i]["_source"]["subject"]+
             "<i>&emsp; DATE : </i>"+ date +"<br>" +
             res[0]+ "<br>"+
             "<br><pre>" + highlight(hits[i]["_source"]["body"]) + "</pre><br>" +
-            "</div>\n" + "" +
-            "<button class=\"btn btn-link closeThread\" aria-controls=\"collapseOne1\" aria-expanded=\"true\" data-toggle=\"collapse\" href=\"#result" + i + "\">\n" +
-            "    Close Mail\n" +
-            "</button>\n"+
-            "<div>\n" +
-            "</div>\n" +
-            "</div>\n" +
+            "</div>" + "" +
+            "<button class=\"btn btn-link closeThread\" aria-controls=\"collapseOne1\" aria-expanded=\"true\" data-toggle=\"collapse\" href=\"#result" + i + "\">" +
+            "Close Mail" +
+            "</button>"+
+            "<div>" +
+            "</div>" +
+            "</div>" +
             "</fieldset>")
         if(thread === "thread" && i === 0){
             threads.addModal(i,true,hits[i]["_source"]["numThread"],hits[i]["_source"]["maillist"])
@@ -101,118 +97,6 @@ function traitementMessage(hits,thread) {
         })
         threads.findThread(mailList,hits[i]["_source"]["numThread"],i)
     }
-}
-
-function addAttachements(attachements){
-    let a = ""
-    let ids = []
-    if (attachements){
-        for (const [key, value] of Object.entries(JSON.parse(attachements))){
-            let type = key.split("__")[0]
-            let nom = key.split("__")[2]
-            let encode = key.split("__")[1]
-            if (type.includes("text/")){
-                let res = addTextAttachementModal(type,encode,nom.split(".")[0],value,nom)
-                a += res[0] + "<br>"
-                ids.push(res[1])
-            }else if (type.includes("png") || type.includes("jpeg")){
-                let res = addImageAttachementModal(type,encode,nom.split(".")[0],value,nom)
-                a += res + "<br>"
-            }else if (type.includes("pdf") || nom.includes(".pdf")){
-                let res = addPdfAttachementModal(type,encode,nom.split(".")[0],value,nom)
-                a += res + "<br>"
-            }
-            a += "<a href='data:"+type+";"+encode+','+encodeURI(value).replace(/</g,"&lt").replace(/>/g,"&gt")+"' download='"+nom+"' >Download Link : "+nom+"</a>" + "\n"
-        }
-    }
-    return [a,ids]
-}
-
-function addImageAttachementModal(type,encode,nom,value,fullName){
-    let id = Math.floor(Math.random() * 10000)
-    return "<a class=\"btn btn-secondary text-white mt-3 mb-3 d-block\" data-target=\"#mail"+id+"\" data-toggle=\"modal\" target=\"_blank\">Show "+fullName+"</a>\n" +
-    "<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\"mail"+id+"\" role=\"dialog\" tabindex=\"-1\">\n" +
-    "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">\n" +
-    "        <div class=\"modal-content\">\n" +
-    "            <div class=\"modal-header\">\n" +
-    "                <h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\">"+fullName+"</h5>\n" +
-    "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">\n" +
-    "                    <span class=\"thread_content\" aria-hidden=\"true\"></span>\n" +
-    "                </button>\n" +
-    "            </div>\n" +
-    "            <div class=\"modal-body\">\n" +
-    " <img style='display:block;width:100%;height:100%' class='base64image' src='data:"+type+";"+encode+","+encodeURI(value)+"'  alt='base64image'/>" +
-    "            </div>\n" +
-    "            <div class=\"modal-footer\">\n" +
-    "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "</div>"
-}
-
-function addPdfAttachementModal(type,encode,nom,value,fullName){
-    let id = Math.floor(Math.random() * 10000)
-    return "<a class=\"btn btn-secondary text-white mt-3 mb-3 d-block\" data-target=\"#mail"+id+"\" data-toggle=\"modal\" target=\"_blank\">Show "+fullName+"</a>\n" +
-    "<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\"mail"+id+"\" role=\"dialog\" tabindex=\"-1\">\n" +
-    "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">\n" +
-    "        <div class=\"modal-content\" style='height:60em'>\n" +
-    "            <div class=\"modal-header\">\n" +
-    "                <h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\">"+fullName+"</h5>\n" +
-    "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">\n" +
-    "                    <span class=\"thread_content\" aria-hidden=\"true\"></span>\n" +
-    "                </button>\n" +
-    "            </div>\n" +
-    "            <div class=\"modal-body\"  style='height:50%'>\n" +
-    "<object width='100%' height='100%' data='data:application/pdf;"+encode+","+encodeURI(value)+"' type='application/pdf' class='pdf_modal'>" +
-    " <embed src='data:application/pdf;"+encode+","+encodeURI(value)+"' type='application/pdf' ></object>" +
-    "            </div>\n" +
-    "            <div class=\"modal-footer\">\n" +
-    "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "</div>"
-}
-
-function addTextAttachementModal(type,encode,nom,value,fullName){
-    let extension = ""
-    if (fullName.includes(".")){
-        extension = fullName.split(".")[1]
-    }else{
-        extension = "html"
-    }
-    let content = ""
-    console.log("ENCODAGE : " + encode)
-    if (encode.toLowerCase().includes("base64")){
-        content = atob(value)
-    }else{
-        try{
-            content = decodeURI(value)
-        }catch {
-            console.log("Erreur Pièce Jointe")
-        }
-    }
-    let id = nom + "_prism"
-    return ["<a class=\"btn btn-secondary text-white mt-3 mb-3 d-block\" data-target=\"#mail"+id+"\" data-toggle=\"modal\" target=\"_blank\">Show "+fullName+"</a>\n" +
-        "<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\"mail"+id+"\" role=\"dialog\" tabindex=\"-1\">\n" +
-        "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">\n" +
-        "        <div class=\"modal-content\">\n" +
-        "            <div class=\"modal-header\">\n" +
-        "                <h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\">"+fullName+"</h5>\n" +
-        "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">\n" +
-        "                    <span class=\"thread_content\" aria-hidden=\"true\"></span>\n" +
-        "                </button>\n" +
-        "            </div>\n" +
-        "            <div class=\"modal-body\">\n" +
-                     "<pre><code id='"+id+"' class='language-"+extension+"'>"+content.replace(/</g,"&lt").replace(/>/g,"&gt")+"</code></pre>" +
-        "            </div>\n" +
-        "            <div class=\"modal-footer\">\n" +
-        "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>\n" +
-        "            </div>\n" +
-        "        </div>\n" +
-        "    </div>\n" +
-        "</div>",id]
 }
 
 function formQuery(exec) {
@@ -257,7 +141,6 @@ function formQuery(exec) {
     }
     let query = ""
     if ($("#query_method").val() === "and") {
-        let shoulds = 0
         query = {
             "size": querySize,
             "query": {
@@ -493,8 +376,7 @@ function formQuery(exec) {
 }
 
 function executeQuery(query, mailList,thread) {
-    $("#accordionEx").empty()
-    console.log(query)
+    emptycontainers()
     if (global_index === 1){
         return axios.get(elastic_search_url + "ivoa_all/_search", {
             params: {
@@ -526,14 +408,16 @@ function seeQuery() {
 }
 
 function manageDates(){
-    console.log($("#datepicker").val())
-    console.log($("#datepicker2").val())
-    if ($("#datepicker").val() !== "" && $("#datepicker2").val() === ""){
-        $("#datepicker2").val($("#datepicker").val())
+    let d1 = $("#datepicker")
+    let d2 = $("#datepicker2")
+    console.log(d1.val())
+    console.log(d2.val())
+    if (d1.val() !== "" && d2.val() === ""){
+        d2.val(d1.val())
         console.log("D1")
     }
-    if ($("#datepicker2").val() !== "" && $("#datepicker").val() === ""){
-        $("#datepicker").val($("#datepicker2").val())
+    if (d2.val() !== "" && d1.val() === ""){
+        d1.val(d2.val())
         console.log("D2")
     }
     formQuery(1)
