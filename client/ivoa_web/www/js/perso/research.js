@@ -78,7 +78,7 @@ function traitementMessage(hits,thread) {
             "<i>SUBJECT : </i>"+ hits[i]["_source"]["subject"]+
             "<i>&emsp; DATE : </i>"+ date +"<br>" +
             res[0]+ "<br>"+
-            "<br><pre>" + highlight(hits[i]["_source"]["body"]) + "</pre><br>" +
+            "<br><pre>" + highlight(hits[i]["_source"]["body"].replace("\t","   ")) + "</pre><br>" +
             "</div>" + "" +
             "<button class=\"btn btn-link closeThread\" aria-controls=\"collapseOne1\" aria-expanded=\"true\" data-toggle=\"collapse\" href=\"#result" + i + "\">" +
             "Close Mail" +

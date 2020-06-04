@@ -56,7 +56,7 @@ function addThreadModal(refs, num) {
             "<div class=\"m-2 card-body p-1\">" +
             "<i>From : </i>" + elem["_source"]["from"] +
             "<i>&emsp;To : </i>" + elem["_source"]["to"] + "<br>" + modals.addThreadAttachements(elem["_source"]["attachements"],num) + "<br>" +
-            "<pre>" + elem["_source"]["body"].replace(/<img[^>]*>/, "") +
+            "<pre>" + elem["_source"]["body"].replace(/<img[^>]*>/, "").replace("\t","  ") +
             "</pre>" +
             "</div>" +
             "</div>" +

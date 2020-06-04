@@ -90,7 +90,7 @@ class elasticer(object):
                         try:
                             item['subject'] = message['Subject'].encode('utf-8', 'ignore').decode('utf-8', 'ignore')
                         except Exception as e:
-                            log.error(e)
+                            log.warn("Error In Subject")
                     if 'In-Reply-To' in message and message['In-Reply-To'] is not None:
                         item['in-reply-to'] = message['In-Reply-To'].encode('utf-8', 'ignore').decode('utf-8','ignore')
                     if 'References' in message and message['References'] is not None:
