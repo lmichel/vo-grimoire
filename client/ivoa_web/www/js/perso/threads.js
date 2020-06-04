@@ -1,7 +1,6 @@
 let compteur = 0
 let global_index = 1
 import modals from "./modals.js"
-
 function findThread(mailList, numThread, num) {
     let query = {
         "query": {

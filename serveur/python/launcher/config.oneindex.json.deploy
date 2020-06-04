@@ -1,14 +1,15 @@
 {
   "download_uri" : "http://mail.ivoa.net/pipermail/",
   "elastic_search_url" : "http://localhost:9200",
-  "mbox_dir": "../mbox",
-  "reset_index": true,
-  "mailing_lists":[
+  "mbox_dir": "/rawdata/documentBase/mails",
+  "reset_index": 1,
+  "global_index": 1,
+  "mailing_lists": [
     {
-      "label": "Applications",
-      "index_name": "apps",
-      "prefix": "apps_",
-      "download_mbox": "apps.mbox/apps.mbox"
+      "label": "Data Model",
+      "index_name": "dm",
+      "prefix": "dm_",
+      "download_mbox": "dm.mbox/dm.mbox"
     },
     {
       "label": "Data Access Layer",
@@ -17,19 +18,19 @@
       "download_mbox": "dal.mbox/dal.mbox"
     },
     {
-      "label": "Data Model",
-      "index_name": "dm",
-      "prefix": "dm_",
-      "download_mbox": "dm.mbox/dm.mbox"
+      "label": "Applications",
+      "index_name": "apps",
+      "prefix": "apps_",
+      "download_mbox": "apps.mbox/apps.mbox"
     },
     {
-      "label": "Grid & Web Services",
+      "label": "Grid and Web Services",
       "index_name": "grid",
       "prefix": "grid_",
       "download_mbox": "grid.mbox/grid.mbox"
     },
     {
-      "label": "Registry",
+      "label": "Regsitry",
       "index_name": "registry",
       "prefix": "registry_",
       "download_mbox": "registry.mbox/registry.mbox"
@@ -41,7 +42,7 @@
       "download_mbox": "semantics.mbox/semantics.mbox"
     },
     {
-      "label": "Data Curation & Preservation",
+      "label": "Data Curation and Preservation",
       "index_name": "datacp",
       "prefix": "datacp_",
       "download_mbox": "datacp.mbox/datacp.mbox"
@@ -59,7 +60,7 @@
       "download_mbox": "kdd.mbox/kdd.mbox"
     },
     {
-      "label": "Operations",
+      "label": "operations",
       "index_name": "ops",
       "prefix": "ops_",
       "download_mbox": "ops.mbox/ops.mbox"
@@ -89,7 +90,7 @@
       "download_mbox": "interop.mbox/interop.mbox"
     },
     {
-      "label": "Standing Committee on Standard & Processes",
+      "label": "Standing Commitee on Standard and Processes",
       "index_name": "stdproc",
       "prefix": "stdproc_",
       "download_mbox": "stdproc.mbox/stdproc.mbox"
