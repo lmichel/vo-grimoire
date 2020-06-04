@@ -5,8 +5,8 @@ let attachementsReg = new RegExp("\\(Attachements:[^)]*\\)", 'g')
 let subjectReg = new RegExp("\\(Subject:[^)]*\\)", 'g')
 let contentReg = new RegExp("\\(Content:[^)]*\\)", 'g')
 let global_index = 1
-let elastic_search_url = "http://192.168.1.48:9200/"
-// let elastic_search_url = "http://saada.unistra.fr/elasticsearch/"
+//let elastic_search_url = "http://192.168.1.48:9200/"
+let elastic_search_url = "http://saada.unistra.fr/elasticsearch/"
 
 let mime = {
     "text/plain" : ".txt",

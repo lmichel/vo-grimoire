@@ -1,0 +1,15 @@
+{
+  "download_uri" : "http://mail.ivoa.net/pipermail/",
+  "elastic_search_url" : "http://localhost:9200",
+  "mbox_dir": "../mbox",
+  "reset_index": 1,
+  "global_index": 1,
+  "mailing_lists": [
+    {
+      "label": "Data Access Layer",
+      "index_name": "dal",
+      "prefix": "dal_",
+      "download_mbox": "dal.mbox/dal.mbox"
+    }
+  ]
+}

@@ -18,6 +18,7 @@ class percevaler(object):
             index = elastic.createIndex(configManager.elastic_search_uri())
             print("INDEX : " + index)
         for mList in configManager.mailing_lists():
+            print("Processing " + mList["index_name"])
             mbox = self.createRepo(mList["index_name"])
             if configManager.globalIndex() == 1:
                 print("GLOBAL_INDEX")
