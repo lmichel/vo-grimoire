@@ -1,7 +1,7 @@
 let compteur = 0
 let global_index = 1
-//let elastic_search_url = "http://192.168.1.48:9200/"
-let elastic_search_url = "http://saada.unistra.fr/elasticsearch/"
+import modals from "./modals.js"
+import texts from "./texts.js"
 function findThread(mailList, numThread, num) {
     let query = {
         "query": {
@@ -45,22 +45,22 @@ function addThreadModal(refs, num) {
     compteur = 1
     refs.forEach(elem => {
         let date = moment(elem["_source"]["timestamp"] * 1000).format("DD/MM/YYYY")
-        $("#accordionEx" + num).append("<fieldset class=\"field-modal\" style=\"margin-left:" + compteur + "%\">\n" +
-            "    <legend class=\"lef-modal\">\n" +
-            "        <a aria-controls=\"collapseOne1\" aria-expanded=\"true\" class=\"lienLegend\" data-toggle=\"collapse\" href=\"#result_" + compteur + "\">" +
-            total + "           <strong>N°:" + compteur + " </strong>" + date + "<strong> From : </strong> " + elem["_source"]["from"].replace("<", "&lt").replace(">", "&gt") + "" +
+        $("#accordionEx" + num).append(
+            "<fieldset class=\"field-modal\" style=\"margin-left:" + compteur + "%\">" +
+            "<legend class=\"lef-modal\">" +
+            "<a aria-controls=\"collapseOne1\" aria-expanded=\"true\" class=\"lienLegend\" data-toggle=\"collapse\" href=\"#result_" + compteur + "\">" + total +
+            "<strong>N°:" + compteur + " </strong>" + date + "<strong> From : </strong> " + elem["_source"]["from"].replace("<", "&lt").replace(">", "&gt") + "" +
             "<strong> Subject : </strong>" + elem["_source"]["subject"] +
-            "        </a>\n" +
-            "    </legend>\n" +
-            "    <div aria-labelledby=\"headingOne1\" class=\"collapse\" data-parent=\"#accordionEx" + num + "\" id=\"result_" + compteur + "\" role=\"tabpanel\" style=\"\">\n" +
-            "<div class=\"m-2 card-body p-1\">\n" +
-            "    <i>From : </i>\n" + elem["_source"]["from"] +
-            "    <i>&emsp;To : </i>\n" + elem["_source"]["to"] + "<br>" + addAttachements(elem["_source"]["attachements"]) + "<br>" +
-            "    <pre>\n" +
-            elem["_source"]["body"].replace(/<img[^>]*>/, "") +
-            "    </pre>\n" +
+            "</a>" +
+            "</legend>" +
+            "<div aria-labelledby=\"headingOne1\" class=\"collapse\" data-parent=\"#accordionEx" + num + "\" id=\"result_" + compteur + "\" role=\"tabpanel\" style=\"\">" +
+            "<div class=\"m-2 card-body p-1\">" +
+            "<i>From : </i>" + elem["_source"]["from"] +
+            "<i>&emsp;To : </i>" + elem["_source"]["to"] + "<br>" + modals.addThreadAttachements(elem["_source"]["attachements"],num) + "<br>" +
+            "<pre>" + texts.highlight(elem["_source"]["body"]) +
+            "</pre>" +
             "</div>" +
-            "    </div>\n" +
+            "</div>" +
             "</fieldset>"
         )
         compteur += 1
@@ -68,143 +68,27 @@ function addThreadModal(refs, num) {
     return [total, compteur]
 }
 
-function addAttachements(attachements) {
-    let a = ""
-    if (attachements) {
-        for (const [key, value] of Object.entries(JSON.parse(attachements))) {
-            let type = key.split("__")[0]
-            let nom = key.split("__")[2]
-            let encode = key.split("__")[1]
-            if (type.includes("text/")) {
-                a += addTextAttachementModal(type, encode, nom.split(".")[0], value, nom)
-            } else if (type.includes("png") || type.includes("jpeg")) {
-                let res = addImageAttachementModal(type, encode, nom.split(".")[0], value, nom)
-                a += res + "<br>"
-            } else if (type.includes("pdf") || nom.includes(".pdf")) {
-                let res = addPdfAttachementModal(type, encode, nom.split(".")[0], value, nom)
-                a += res + "<br>"
-            }
-            if (nom.length > 1) {
-                a += "<a href='data:" + type + ";" + encode + ',' + encodeURI(value) + "' download='" + nom + "' >" + nom + "</a>" + "\n"
-            } else {
-                a += "<a href='data:" + type + ";" + encode + ',' + encodeURI(value) + "' download='" + nom + "' >" + "No Name : " + nom + "</a>" + "\n"
-            }
-        }
-    }
-    return a
-}
-
-function addImageAttachementModal(type, encode, nom, value, fullName) {
-    let id = Math.floor(Math.random() * 10000)
-    return "<a class=\"btn btn-secondary text-white mt-3 mb-3 d-block\" data-target=\"#" + "thread" + id + "\" data-toggle=\"modal\" target=\"_blank\">Show " + fullName + "</a>\n" +
-        "<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\"" + "thread" + id + "\" role=\"dialog\" tabindex=\"-1\">\n" +
-        "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">\n" +
-        "        <div class=\"modal-content\">\n" +
-        "            <div class=\"modal-header\">\n" +
-        "                <h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\">" + fullName + "</h5>\n" +
-        "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">\n" +
-        "                    <span class=\"thread_content\" aria-hidden=\"true\"></span>\n" +
-        "                </button>\n" +
-        "            </div>\n" +
-        "            <div class=\"modal-body\">\n" +
-        " <img style='display:block;width:100%;height:100%' class='base64image' src='data:" + type + ";" + encode + "," + encodeURI(value) + "'  alt='base64image'/>" +
-        "            </div>\n" +
-        "            <div class=\"modal-footer\">\n" +
-        "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>\n" +
-        "            </div>\n" +
-        "        </div>\n" +
-        "    </div>\n" +
-        "</div>"
-}
-
-function addPdfAttachementModal(type, encode, nom, value, fullName) {
-    let id = Math.floor(Math.random() * 10000)
-    return "<a class=\"btn btn-secondary text-white mt-3 mb-3 d-block\" data-target=\"#" + "thread" + id + "\" data-toggle=\"modal\" target=\"_blank\">Show " + fullName + "</a>\n" +
-        "<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\"" + "thread" + id + "\" role=\"dialog\" tabindex=\"-1\">\n" +
-        "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">\n" +
-        "        <div class=\"modal-content\" style='height:60em'>\n" +
-        "            <div class=\"modal-header\">\n" +
-        "                <h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\">" + fullName + "</h5>\n" +
-        "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">\n" +
-        "                    <span class=\"thread_content\" aria-hidden=\"true\"></span>\n" +
-        "                </button>\n" +
-        "            </div>\n" +
-        "            <div class=\"modal-body\"  style='height:50%'>\n" +
-        "<object width='100%' height='100%' data='data:application/pdf;" + encode + "," + encodeURI(value) + "' type='application/pdf' class='pdf_modal'>" +
-        " <embed src='data:application/pdf;" + encode + "," + encodeURI(value) + "' type='application/pdf' ></object>" +
-        "            </div>\n" +
-        "            <div class=\"modal-footer\">\n" +
-        "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>\n" +
-        "            </div>\n" +
-        "        </div>\n" +
-        "    </div>\n" +
-        "</div>"
-}
-
-function addTextAttachementModal(type, encode, nom, value, fullName) {
-    let extension = ""
-    if (fullName.includes(".")) {
-        extension = fullName.split(".")[1]
-    } else {
-        extension = "html"
-    }
-    let content = ""
-    if (encode.includes("base64")) {
-        content = atob(value)
-    } else {
-        try{
-            content = decodeURI(value)
-        }catch {
-            console.log("Erreur Pièce Jointe")
-        }
-    }
-    let id = nom + "_prism"
-    return ["<a class=\"btn btn-secondary text-white mt-3 mb-3 d-block\" data-target=\"#thread_" + "thread" + id + "\" data-toggle=\"modal\" target=\"_blank\">Show " + fullName + "</a>\n" +
-    "<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\"" + "thread" + nom.replace(" ", "") + "\" role=\"dialog\" tabindex=\"-1\">\n" +
-    "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">\n" +
-    "        <div class=\"modal-content\">\n" +
-    "            <div class=\"modal-header\">\n" +
-    "                <h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\">" + fullName + "</h5>\n" +
-    "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">\n" +
-    "                    <span class=\"thread_content\" aria-hidden=\"true\"></span>\n" +
-    "                </button>\n" +
-    "            </div>\n" +
-    "            <div class=\"modal-body\">\n" +
-    "<pre><code id='" + id + "' class='language-" + extension + "'>" + content.replace(/</g, "&lt").replace(/>/g, "&gt") + "</code></pre>" +
-    "            </div>\n" +
-    "            <div class=\"modal-footer\">\n" +
-    "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "</div>", id]
-}
-
 function addModal(num, thread, numThread) {
     let url = ""
-    if (window.location.href.includes('?')) {
-        url = window.location.href + "&thread=" + numThread
-    } else {
-        url = window.location.href + "?thread=" + numThread
-    }
-    $("#modal_container").append("<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\"edu_result_" + num + "\" role=\"dialog\"\n" +
-        "     tabindex=\"-1\">\n" +
-        "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">\n" +
-        "        <div class=\"modal-content\">\n" +
-        "            <div class=\"modal-header\">\n" +
-        "                <h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\"><a class=\"modal-title\" href=\"" + url + "\" target=\"_blank\">Link for this thread :" + url + "</a></h5>" +
-        "                <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">\n" +
-        "                    <span class=\"thread_content\"" + num + " aria-hidden=\"true\">&times;</span>\n" +
-        "                </button>\n" +
-        "            </div>\n" +
-        "            <div class=\"modal-body\" id=\"modal-body-" + num + "\">" +
+    url = location.protocol + '//' + location.host + location.pathname +"?thread="+numThread
+    $("#modal_container").append(
+        "<div aria-hidden=\"true\" aria-labelledby=\"exampleModalCenterTitle\" class=\"modal fade\" id=\"edu_result_" + num + "\" role=\"dialog\" tabindex=\"-1\">" +
+        "<div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">" +
+        "<div class=\"modal-content\">" +
+        "<div class=\"modal-header\">" +
+        "<h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\"><a class=\"modal-title\" href=\"" + url + "\" target=\"_blank\">Link for this thread :" + url + "</a></h5>" +
+        "<button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">" +
+        "<span class=\"thread_content\"" + num + " aria-hidden=\"true\">&times;</span>" +
+        "</button>" +
+        "</div>" +
+        "<div class=\"modal-body\" id=\"modal-body-" + num + "\">" +
         "<div id=\"accordionEx" + num + "\" aria-multiselectable=\"true\" class=\"accordion md-accordion\" role=\"tablist\"></div>" +
-        "            </div>\n" +
-        "            <div class=\"modal-footer\">\n" +
-        "                <button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>\n" +
-        "            </div>\n" +
-        "        </div>\n" +
-        "    </div>\n" +
+        "</div>" +
+        "<div class=\"modal-footer\">" +
+        "<button class=\"btn btn-secondary\" data-dismiss=\"modal\" type=\"button\">Close</button>" +
+        "</div>" +
+        "</div>" +
+        "</div>" +
         "</div>")
     if (thread === true) {
         $("#edu_result_" + num).modal('show')

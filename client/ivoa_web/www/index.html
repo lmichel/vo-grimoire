@@ -17,12 +17,17 @@
     <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.js"></script>
     <script src="js/perso/listeners.js" type="module"></script>
+    <script src="js/perso/research.js" type="module"></script>
     <link rel="stylesheet" href="css/plugins/prism.css">
     <script src="js/plugins/prism.js"></script>
+    <script>
+        let elastic_search_url = "http://192.168.1.48:9200/"
+        // let elastic_search_url = "http://saada.unistra.fr/elasticsearch/"
+    </script>
 </head>
 
 <body>
-<!-- As a link -->
+<!--// NAVBAR-->
 <nav class="navbar navbar-expand-lg bg-dark mb-2">
     <div class="navbar-nav mr-auto">
         <a class="navbar-brand text-white" href="#">International Virtual<br>Observatory Alliance</a>
@@ -53,7 +58,7 @@
         </ul>
     </div>
 </nav>
-
+<!--// CREDITS-->
 <div aria-hidden="true" aria-labelledby="exampleModalCenterTitle" class="modal fade" id="credits" role="dialog" tabindex="-1">
 <div class="modal-dialog modal-dialog-centered modal_ivoa" role="document">
     <div class="modal-content">
@@ -72,8 +77,7 @@
     </div>
 </div>
 </div>
-
-
+<!--// FORM-->
 <form class="ml-2">
     <div class="col-md-3 float-right">
         <img alt="ivoa_logo" class="img-fluid" height="143" src="src/ivoa.jpg" width="233">
@@ -172,9 +176,9 @@
     </div>
     </div>
 </form>
-
+<!--// MODAL CONTAINER-->
 <div id="modal_container"></div>
-
+<!--// MODAL SEE QUERY-->
 <div aria-hidden="true" aria-labelledby="exampleModalCenterTitle" class="modal fade" id="see_query" role="dialog"
      tabindex="-1">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -197,9 +201,8 @@
         </div>
     </div>
 </div>
-
 <br><br>
-
+<!--// MAIL CONTAINER-->
 <div id="mails_container" class="card ml-2 mr-2">
 
     <div id="accordionEx" aria-multiselectable="true" class="accordion md-accordion" role="tablist"></div>

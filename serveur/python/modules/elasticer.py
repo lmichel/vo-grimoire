@@ -66,8 +66,7 @@ class elasticer(object):
                             continue
                         if 'text/plain' in part.get_content_type() and first_plain_present == 0:
                             try:
-                                # item["body"] = part.get_payload().encode(charset, 'ignore').decode('utf-8','ignore').replace("\r", "")
-                                item["body"] = part.get_payload(decode=True).decode('utf-8','ignore')
+                                item["body"] = part.get_payload(decode=True).decode('utf-8','ignore').replace("\t")
                             except LookupError:
                                 item["body"] = "Cannot decode the message"
                                 encodingErrors += 1
@@ -79,7 +78,7 @@ class elasticer(object):
                                     item["attachements_name"] += " " + filename.split(".")[1]
                                 id_part += 1
                             except IndexError as e:
-                                log.error(e)
+                                log.warn("Ignoring useless attachement")
                     item["attachements"] = json.dumps(item["attachements"])
                     if 'From' in message:
                         item['from'] = message.get("From", failobj="None").encode('utf-8', 'ignore').decode('utf-8', 'ignore').replace("=?[^=]*?=","")
@@ -91,7 +90,7 @@ class elasticer(object):
                         try:
                             item['subject'] = message['Subject'].encode('utf-8', 'ignore').decode('utf-8', 'ignore')
                         except Exception as e:
-                            log.error(e)
+                            log.warn("Error In Subject")
                     if 'In-Reply-To' in message and message['In-Reply-To'] is not None:
                         item['in-reply-to'] = message['In-Reply-To'].encode('utf-8', 'ignore').decode('utf-8','ignore')
                     if 'References' in message and message['References'] is not None:
