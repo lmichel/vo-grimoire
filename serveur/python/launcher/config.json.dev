@@ -1,0 +1,102 @@
+{
+  "download_uri" : "http://mail.ivoa.net/pipermail/",
+  "elastic_search_url" : "http://localhost:9200",
+  "mbox_dir": "/rawdata/documentBase/mails",
+  "reset_index": 1,
+  "global_index": 1,
+  "mailing_lists": [
+    {
+      "label": "Data Model",
+      "index_name": "dm",
+      "prefix": "dm_",
+      "download_mbox": "dm.mbox/dm.mbox"
+<<<<<<< HEAD
+    },
+    {
+      "label": "Data Access Layer",
+      "index_name": "dal",
+      "prefix": "dal_",
+      "download_mbox": "dal.mbox/dal.mbox"
+    },
+    {
+      "label": "Applications",
+      "index_name": "apps",
+      "prefix": "apps_",
+      "download_mbox": "apps.mbox/apps.mbox"
+    },
+    {
+      "label": "Grid and Web Services",
+      "index_name": "grid",
+      "prefix": "grid_",
+      "download_mbox": "grid.mbox/grid.mbox"
+    },
+    {
+      "label": "Regsitry",
+      "index_name": "registry",
+      "prefix": "registry_",
+      "download_mbox": "registry.mbox/registry.mbox"
+    },
+    {
+      "label": "Semantics",
+      "index_name": "semantics",
+      "prefix": "semantics_",
+      "download_mbox": "semantics.mbox/semantics.mbox"
+    },
+    {
+      "label": "Data Curation and Preservation",
+      "index_name": "datacp",
+      "prefix": "datacp_",
+      "download_mbox": "datacp.mbox/datacp.mbox"
+    },
+    {
+      "label": "Education",
+      "index_name": "edu",
+      "prefix": "edu_",
+      "download_mbox": "edu.mbox/edu.mbox"
+    },
+    {
+      "label": "Knowledge Discovery in Databases",
+      "index_name": "kdd",
+      "prefix": "kdd_",
+      "download_mbox": "kdd.mbox/kdd.mbox"
+    },
+    {
+      "label": "operations",
+      "index_name": "ops",
+      "prefix": "ops_",
+      "download_mbox": "ops.mbox/ops.mbox"
+    },
+    {
+      "label": "Solar System",
+      "index_name": "ssig",
+      "prefix": "ssig_",
+      "download_mbox": "ssig.mbox/ssig.mbox"
+    },
+    {
+      "label": "Theory",
+      "index_name": "theory",
+      "prefix": "theory_",
+      "download_mbox": "theory.mbox/theory.mbox"
+    },
+    {
+      "label": "Time Domain",
+      "index_name": "voevent",
+      "prefix": "voevent_",
+      "download_mbox": "voevent.mbox/voevent.mbox"
+    },
+    {
+      "label": "Interop",
+      "index_name": "interop",
+      "prefix": "interop_",
+      "download_mbox": "interop.mbox/interop.mbox"
+    },
+    {
+      "label": "Standing Commitee on Standard and Processes",
+      "index_name": "stdproc",
+      "prefix": "stdproc_",
+      "download_mbox": "stdproc.mbox/stdproc.mbox"
+=======
+>>>>>>> dd0dfb683f1ee09c3f76984fd661159597cb7661
+    }
+  ]
+}
