@@ -42,6 +42,9 @@
                 <a class="nav-link text-white" href="http://ivoa.net/documents/" target="_blank">Documents</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link text-white" href="http://saada.unistra.fr/esdoc/interfacePDF.html?index=ivoa#" target="_blank">Search Documentation</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link text-white" href="http://ivoa.net/members/index.html" target="_blank">Working Groups</a>
             </li>
             <li class="nav-item">
@@ -60,9 +63,8 @@
                 <span class="thread_content" aria-hidden="true"></span>
             </button>
         </div>
-        <div class="modal-body">
-            Laurent Michel <br>
-            Enzo Cisternino
+        <div class="modal-body credits_modal_content">
+            <script>$(".credits_modal_content").load("credits.html")</script>
         </div>
         <div class="modal-footer">
             <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
@@ -94,6 +96,7 @@
                 <option value="ssig">Solar System</option>
                 <option value="theory">Theory</option>
                 <option value="voevent">Time Domain</option>
+                <option value="radioig">Radio</option>
                 <option value="interop">Interop</option>
                 <option value="stdproc">Standing Committee on Standards & Processes</option>
             </select>

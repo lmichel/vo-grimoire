@@ -27,7 +27,6 @@ $(document).ready(function(){
         research.formQuery(1)
     })
     $("#modif_query").click(function(){
-        console.log(JSON.parse($("#body_query").val()));
         research.executeQuery(JSON.parse($("#body_query").val()),$("#mailList").val())
     })
     $('input[type=text]').on('keydown', function(e) {

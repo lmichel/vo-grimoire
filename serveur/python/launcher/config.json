@@ -10,6 +10,7 @@
       "index_name": "dm",
       "prefix": "dm_",
       "download_mbox": "dm.mbox/dm.mbox"
+<<<<<<< HEAD
     },
     {
       "label": "Data Access Layer",
@@ -94,6 +95,8 @@
       "index_name": "stdproc",
       "prefix": "stdproc_",
       "download_mbox": "stdproc.mbox/stdproc.mbox"
+=======
+>>>>>>> dd0dfb683f1ee09c3f76984fd661159597cb7661
     }
   ]
 }

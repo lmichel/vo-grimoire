@@ -3,6 +3,7 @@
   "elastic_search_url" : "http://localhost:9200",
   "mbox_dir": "/rawdata/documentBase/mails",
   "reset_index": 1,
+  "global_index": 1,
   "mailing_lists": [
     {
       "label": "Data Model",
