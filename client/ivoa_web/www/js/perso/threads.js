@@ -1,13 +1,7 @@
 let compteur = 0
 let global_index = 1
-<<<<<<< HEAD
 //let elastic_search_url = "http://192.168.1.48:9200/"
 let elastic_search_url = "http://saada.unistra.fr/elasticsearch/"
-=======
-let elastic_search_url = "http://192.168.1.48:9200/"
-
-// let elastic_search_url = "http://saada.unistra.fr/elasticsearch/"
->>>>>>> dd0dfb683f1ee09c3f76984fd661159597cb7661
 function findThread(mailList, numThread, num) {
     let query = {
         "query": {
