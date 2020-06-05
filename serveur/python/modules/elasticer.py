@@ -21,7 +21,12 @@ class elasticer(object):
         index_name = ""
         if global_index == "none":
             index_name = self.chooseName(es_url, mailList)
-            es.indices.create(index_name)
+            size = {
+                "settings":{
+                    "index.max_result_window" : configManager.sizeRequest()
+                }
+            }
+            es.indices.create(index=index_name,body=size)
         else:
             index_name = global_index
         prefix = 0
@@ -66,7 +71,7 @@ class elasticer(object):
                             continue
                         if 'text/plain' in part.get_content_type() and first_plain_present == 0:
                             try:
-                                item["body"] = part.get_payload(decode=True).decode('utf-8','ignore').replace("\t")
+                                item["body"] = part.get_payload(decode=True).decode('utf-8','ignore').replace("\t","")
                             except LookupError:
                                 item["body"] = "Cannot decode the message"
                                 encodingErrors += 1
@@ -229,20 +234,23 @@ class elasticer(object):
             return 0
 
     def createIndex(self, es_url):
-        settings = {
-          "settings":{
-            "index.mapping.total_fields.limit": 2000
-          }}
+        size = {
+            "settings": {
+                "index": {
+                    "max_result_window": configManager.sizeRequest()
+                }
+            }
+        }
+        print("Taille Index : " + str(configManager.sizeRequest()))
         es = elasticsearch.Elasticsearch([es_url])
         if es.indices.exists(index="ivoa_all_new_mails"):
-            es.indices.delete(index="ivoa_all_temp_mails", ignore=[400,404])
-            es.indices.create(index="ivoa_all_temp_mails")
+            es.indices.create(index="ivoa_all_temp_mails",body=size)
             return "ivoa_all_temp_mails"
         elif es.indices.exists(index="ivoa_all_temp_mails"):
-            es.indices.delete(index="ivoa_all_new_mails", ignore=[400,404])
-            es.indices.exists(index="ivoa_all_new_mails")
+            es.indices.create(index="ivoa_all_new_mails",body=size)
             return "ivoa_all_new_mails"
         else:
+            es.indices.create(index="ivoa_all_new_mails",body=size)
             return "ivoa_all_new_mails"
 
     def newMergeIndex(self,es_url,index_name):

@@ -27,10 +27,16 @@ class configManager(object):
                 configManager.__resetindex = conf_dict["reset_index"]
                 configManager.__mailing_lists = conf_dict["mailing_lists"]
                 configManager.__global_index = conf_dict["global_index"]
+                configManager.__query_size = conf_dict["limit_request"]
                 configManager.validateMboxPath()
                 return conf_dict
         else:
             raise Exception("No config.json file")
+
+    # Getter of query_size
+    @staticmethod
+    def sizeRequest():
+        return configManager.__query_size
 
     # Getter of reset_index
     @staticmethod

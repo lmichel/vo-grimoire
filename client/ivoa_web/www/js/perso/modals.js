@@ -45,7 +45,7 @@ function addAttachements(attachements,numMail){
                 let res = addPdfAttachementModal(type,encode,nom.split(".")[0],value,nom,"pdf_modal_"+numMail+"_"+compteur)
                 a += res + "<br>"
             }
-            a += "<a href='data:"+type+";"+encode+','+encodeURI(value).replace(/</g,"&lt").replace(/>/g,"&gt")+"' download='"+nom+
+            a += "<a title='Click here to download "+nom+"'href='data:"+type+";"+encode+','+encodeURI(value).replace(/</g,"&lt").replace(/>/g,"&gt")+"' download='"+nom+
                 "' ><span class=\"fa fa-download\"> Download "+nom+"</span></a>" + "\n"
         }
     }
@@ -53,7 +53,7 @@ function addAttachements(attachements,numMail){
 }
 
 function addImageAttachementModal(type,encode,nom,value,fullName,id){
-    return "<button type=\"button\" class=\"btn btn-outline-secondary btn_url_mails\" data-target=\"#"+id+"\" data-toggle=\"modal\">" +
+    return "<button title='Display in a modal box "+fullName+"' type=\"button\" class=\"btn btn-outline-secondary btn_url_mails\" data-target=\"#"+id+"\" data-toggle=\"modal\">" +
         "<span class=\"fa fa-eye\"> Show "+fullName+"</span>" +
         "</button>" +
         "<div aria-hidden=\"true\" class=\"modal fade\" id=\""+id+"\" role=\"dialog\" tabindex=\"-1\">" +
@@ -77,7 +77,7 @@ function addImageAttachementModal(type,encode,nom,value,fullName,id){
 }
 
 function addPdfAttachementModal(type,encode,nom,value,fullName,id){
-    return "<button type=\"button\" class=\"btn btn-outline-secondary btn_url_mails\" data-target=\"#"+id+"\" data-toggle=\"modal\">" +
+    return "<button title='Display in a modal box "+fullName+"' type=\"button\" class=\"btn btn-outline-secondary btn_url_mails\" data-target=\"#"+id+"\" data-toggle=\"modal\">" +
         "<span class=\"fa fa-eye\"> Show "+fullName+"</span>" +
         "</button>" +
         "<div aria-hidden=\"true\" class=\"modal fade\" id=\""+id+"\" role=\"dialog\" tabindex=\"-1\">" +
@@ -119,7 +119,7 @@ function addTextAttachementModal(type,encode,nom,value,fullName,id){
         }
     }
     let id2 = id + "_prism"
-    return ["<button type=\"button\" class=\"btn btn-outline-secondary btn_url_mails\" data-target=\"#"+id+"\" data-toggle=\"modal\">" +
+    return ["<button title='Display in a modal box "+fullName+"' type=\"button\" class=\"btn btn-outline-secondary btn_url_mails\" data-target=\"#"+id+"\" data-toggle=\"modal\">" +
     "<span class=\"fa fa-eye\"> Show "+fullName+"</span>" +
     "</button>" +
     "<div aria-hidden=\"true\" class=\"modal fade\" id=\""+id2+"\" role=\"dialog\" tabindex=\"-1\">" +

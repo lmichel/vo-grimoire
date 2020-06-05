@@ -49,14 +49,14 @@ function addThreadModal(refs, num) {
             "<fieldset class=\"field-modal\" style=\"margin-left:" + compteur + "%\">" +
             "<legend class=\"lef-modal\">" +
             "<a aria-controls=\"collapseOne1\" aria-expanded=\"true\" class=\"lienLegend\" data-toggle=\"collapse\" href=\"#result_" + compteur + "\">" + total +
-            "<strong>N°:" + compteur + " </strong>" + date + "<strong> From : </strong> " + elem["_source"]["from"].replace("<", "&lt").replace(">", "&gt") + "" +
+            "<strong>N°:" + compteur + " </strong>" + date + "<strong> From : </strong> " + texts.escapeBrackets(elem["_source"]["from"]) + "" +
             "<strong> Subject : </strong>" + elem["_source"]["subject"] +
             "</a>" +
             "</legend>" +
             "<div aria-labelledby=\"headingOne1\" class=\"collapse\" data-parent=\"#accordionEx" + num + "\" id=\"result_" + compteur + "\" role=\"tabpanel\" style=\"\">" +
             "<div class=\"m-2 card-body p-1\">" +
-            "<i>From : </i>" + elem["_source"]["from"] +
-            "<i>&emsp;To : </i>" + elem["_source"]["to"] + "<br>" + modals.addThreadAttachements(elem["_source"]["attachements"],num) + "<br>" +
+            "<i>From : </i>" + texts.escapeBrackets(elem["_source"]["from"]) +
+            "<i>&emsp;To : </i>" + texts.escapeBrackets(elem["_source"]["to"]) + "<br>" + modals.addThreadAttachements(elem["_source"]["attachements"],num) + "<br>" +
             "<pre>" + texts.highlight(elem["_source"]["body"]) +
             "</pre>" +
             "</div>" +

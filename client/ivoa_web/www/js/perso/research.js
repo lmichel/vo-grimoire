@@ -38,19 +38,6 @@ let charset = {
     "audio/mpeg" : "base64,"
 }
 
-function addSearchAttribute(input) {
-    let search_bar = $("#search_bar");
-    search_bar.val(search_bar.val() + " " + input + " ")
-    search_bar.focus();
-    var cursorPos = search_bar.prop('selectionStart');
-    search_bar.prop('selectionEnd', cursorPos - 2)
-}
-
-function emptycontainers(){
-    $("#modal_container").empty()
-    $("#accordionEx").empty()
-}
-
 function traitementMessage(hits,thread) {
     for (let i = 0; i < hits.length; i++) {
         let timestamp = new Date(hits[i]["_source"]["timestamp"] * 1000)
@@ -64,25 +51,24 @@ function traitementMessage(hits,thread) {
             "<legend class=\"leg-mails\">" +
             "<a aria-controls=\"collapseOne1\" aria-expanded=\"false\" class=\"lienLegend\" data-toggle=\"collapse\" href=\"#result" + i + "\">" +
             "<strong>N°:" + (i + 1) + "/" + hits.length + " </strong>" +
-            date + " (" + mailList + ") <strong>From</strong> : " + hits[i]["_source"]["from"].replace(/</g, "&lt").replace(">", "&gt") +
-            "<strong>Subject</strong> : " + hits[i]["_source"]["subject"] + "" +
+            date + " <i><strong>-"+mailList.toUpperCase()+"-</strong></i> " + "<strong>From</strong> : " + texts.escapeBrackets(hits[i]["_source"]["from"]) +
+            " <strong>Subject</strong> : " + texts.escapeBrackets(hits[i]["_source"]["subject"]) + "" +
             "</a>" +
             "</legend>" +
             "<div aria-labelledby=\"headingOne1\" class=\"collapse\" data-parent=\"#accordionEx\" id=\"result" + i + "\"" + " role=\"tabpanel\">" +
-            // "<button class=\"btn btn-link\" data-target=\"#edu_result_"+i+"\" data-toggle=\"modal\" type=\"button\">" +
             "<div class='m-2 p-1'>" +
-            "<button type=\"button\" class=\"btn btn-outline-secondary\">" +
+            "<button type=\"button\" class=\"btn btn-outline-secondary\" title='Click here to view all the mails of a thread'>" +
             "<span class=\"fa fa-list\" data-target=\"#edu_result_" + i + "\" data-toggle=\"modal\" type=\"button\"> View Thread</span>" +
             "</button>" +
-            "<button type=\"button\" class=\"btn btn-outline-secondary btn_url_mails\" value='" + url + "'>" +
+            "<button type=\"button\" class=\"btn btn-outline-secondary btn_url_mails\" value='" + url + "' title='Click here to copy the url of the mail to your clipboard'>" +
             "<span class=\"fa fa-files-o\"> Copy Mail URL</span>" +
             "</button>" +
             res[0] +
             "</div>"+
             "<div class=\"m-2 card-body p-1 contenuMails result_body_" + i + "\">" +
-            "<i>FROM : </i>" + hits[i]["_source"]["from"].replace(/</g, "&lt").replace(">", "&gt") +
-            "<i>&emsp; TO : </i>" + hits[i]["_source"]["to"].replace(/</g, "&lt").replace(">", "&gt") + "<br>" +
-            "<i>SUBJECT : </i>" + hits[i]["_source"]["subject"] +
+            "<i>FROM : </i>" + texts.escapeBrackets(hits[i]["_source"]["from"]) +
+            "<i>&emsp; TO : </i>" + texts.escapeBrackets(hits[i]["_source"]["to"]) + "<br>" +
+            "<i>SUBJECT : </i>" + texts.escapeBrackets(hits[i]["_source"]["subject"]) +
             "<i>&emsp; DATE : </i>" + date + "<br>" +
             "<br><pre>" + texts.highlight(hits[i]["_source"]["body"]) + "</pre><br>" +
             "</div>" + "" +
@@ -108,6 +94,20 @@ function traitementMessage(hits,thread) {
     })
 }
 
+
+function addSearchAttribute(input) {
+    let search_bar = $("#search_bar");
+    search_bar.val(search_bar.val() + " " + input + " ")
+    search_bar.focus();
+    var cursorPos = search_bar.prop('selectionStart');
+    search_bar.prop('selectionEnd', cursorPos - 2)
+}
+
+function emptycontainers(){
+    $("#modal_container").empty()
+    $("#accordionEx").empty()
+}
+
 function formQuery(exec) {
     let mailListInput = $("#mailList");
     let totalString = $("#search_bar").val();
@@ -129,7 +129,7 @@ function formQuery(exec) {
     let startPeriodInput = $("#datepicker");
     let endPeriodInput = $("#datepicker2");
     let querySize = 20
-    if (numberInput.val() != null && numberInput.val() > 0 && numberInput.val() <= 100) {
+    if (numberInput.val() != null && numberInput.val() > 0 && numberInput.val() <= 110) {
         querySize = numberInput.val();
     }
     let mailList = ""
@@ -395,6 +395,7 @@ function executeQuery(query, mailList,thread) {
         }).then((res) => {
             traitementMessage(res.data.hits.hits,thread);
         }).catch(function (e) {
+            alert("The server did not respond, please modify your request")
             console.log(e)
         })
     }else{
@@ -406,6 +407,7 @@ function executeQuery(query, mailList,thread) {
         }).then((res) => {
             traitementMessage(res.data.hits.hits,thread);
         }).catch(function (e) {
+            alert("The server did not respond, please modify your request")
             console.log(e)
         })
     }
