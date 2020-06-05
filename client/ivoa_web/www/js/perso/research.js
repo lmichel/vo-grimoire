@@ -57,12 +57,14 @@ function traitementMessage(hits,thread) {
             "</legend>" +
             "<div aria-labelledby=\"headingOne1\" class=\"collapse\" data-parent=\"#accordionEx\" id=\"result" + i + "\"" + " role=\"tabpanel\">" +
             "<div class='m-2 p-1'>" +
-            "<button type=\"button\" class=\"btn btn-outline-secondary\" title='Click here to view all the mails of a thread'>" +
+            "<div class='btn' style='cursor:default;border:1px solid; color:#6c757d;'>"+
+            "<button style='border-color: transparent' type=\"button\" class=\"btn btn-outline-secondary\" title='Click here to view all the mails of a thread'>" +
             "<span class=\"fa fa-list\" data-target=\"#edu_result_" + i + "\" data-toggle=\"modal\" type=\"button\"> View Thread</span>" +
             "</button>" +
-            "<button type=\"button\" class=\"btn btn-outline-secondary btn_url_mails\" value='" + url + "' title='Click here to copy the url of the mail to your clipboard'>" +
+            "<button style='border-color:transparent' type=\"button\" class=\"btn btn-outline-secondary btn_url_mails\" value='" + url + "' title='Click here to copy the url of the mail to your clipboard'>" +
             "<span class=\"fa fa-files-o\"> Copy Mail URL</span>" +
             "</button>" +
+            "</div>"+
             res[0] +
             "</div>"+
             "<div class=\"m-2 card-body p-1 contenuMails result_body_" + i + "\">" +
@@ -421,15 +423,11 @@ function seeQuery() {
 function manageDates(){
     let d1 = $("#datepicker")
     let d2 = $("#datepicker2")
-    console.log(d1.val())
-    console.log(d2.val())
     if (d1.val() !== "" && d2.val() === ""){
         d2.val(d1.val())
-        console.log("D1")
     }
     if (d2.val() !== "" && d1.val() === ""){
         d1.val(d2.val())
-        console.log("D2")
     }
     formQuery(1)
 }
@@ -473,7 +471,6 @@ function defaultQuery(){
             },
             "size": 1
         }
-        console.log(query)
         executeQuery(query,params["thread"].split("_")[0],"thread")
     }
 }

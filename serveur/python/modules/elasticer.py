@@ -22,8 +22,10 @@ class elasticer(object):
         if global_index == "none":
             index_name = self.chooseName(es_url, mailList)
             size = {
-                "settings":{
-                    "index.max_result_window" : configManager.sizeRequest()
+                "settings": {
+                    "index": {
+                        "max_result_window": configManager.sizeRequest()
+                    }
                 }
             }
             es.indices.create(index=index_name,body=size)

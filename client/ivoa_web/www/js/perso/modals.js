@@ -33,27 +33,28 @@ function addAttachements(attachements,numMail){
             let type = key.split("__")[0]
             let nom = key.split("__")[2]
             let encode = key.split("__")[1]
+            let temp = "<br><div class='btn mt-2' style='cursor:default;border:1px solid; color:#6c757d;'><span>ATT : "+nom+" </span>"
             if (type.includes("text/")){
                 let res = addTextAttachementModal(type,encode,nom.split(".")[0],value,nom,"text_modal_"+numMail+"_"+compteur)
-                a += res[0] + "<br>"
+                temp += res[0] + "<br>"
                 ids.push(res[1])
             }else if (type.includes("png") || type.includes("jpeg")){
                 let res = addImageAttachementModal(type,encode,nom.split(".")[0],value,nom,"image_modal_"+numMail+"_"+compteur)
-                a += res + "<br>"
+                temp += res + "<br>"
             }else if (type.includes("pdf") || nom.includes(".pdf")){
-                console.log("PDF")
                 let res = addPdfAttachementModal(type,encode,nom.split(".")[0],value,nom,"pdf_modal_"+numMail+"_"+compteur)
-                a += res + "<br>"
+                temp += res
             }
-            a += "<a title='Click here to download "+nom+"'href='data:"+type+";"+encode+','+encodeURI(value).replace(/</g,"&lt").replace(/>/g,"&gt")+"' download='"+nom+
-                "' ><span class=\"fa fa-download\"> Download "+nom+"</span></a>" + "\n"
+            temp += "<button style='border-color: transparent' class='btn btn-outline-secondary' title='Click here to download "+nom+"' href='data:"+type+";"+encode+','+encodeURI(value).replace(/</g,"&lt").replace(/>/g,"&gt")+"' download='"+nom+
+                "' ><span class=\"fa fa-download\"> Download </span></button>"
+            a+= temp + "</div>"
         }
     }
     return [a,ids]
 }
 
 function addImageAttachementModal(type,encode,nom,value,fullName,id){
-    return "<button title='Display in a modal box "+fullName+"' type=\"button\" class=\"btn btn-outline-secondary btn_url_mails\" data-target=\"#"+id+"\" data-toggle=\"modal\">" +
+    return "<button style='display: block' title='Display in a modal box "+fullName+"' type=\"button\" class=\"btn btn-outline-secondary btn_url_mails\" data-target=\"#"+id+"\" data-toggle=\"modal\">" +
         "<span class=\"fa fa-eye\"> Show "+fullName+"</span>" +
         "</button>" +
         "<div aria-hidden=\"true\" class=\"modal fade\" id=\""+id+"\" role=\"dialog\" tabindex=\"-1\">" +
@@ -77,8 +78,8 @@ function addImageAttachementModal(type,encode,nom,value,fullName,id){
 }
 
 function addPdfAttachementModal(type,encode,nom,value,fullName,id){
-    return "<button title='Display in a modal box "+fullName+"' type=\"button\" class=\"btn btn-outline-secondary btn_url_mails\" data-target=\"#"+id+"\" data-toggle=\"modal\">" +
-        "<span class=\"fa fa-eye\"> Show "+fullName+"</span>" +
+    return "<button title='Display in a modal box "+fullName+"' type=\"button\" style='border-color: transparent;' class=\"btn btn-outline-secondary btn_url_mails\" style='display: inline-block' data-target=\"#"+id+"\" data-toggle=\"modal\">" +
+        "<span class=\"fa fa-eye\"> Show </span>" +
         "</button>" +
         "<div aria-hidden=\"true\" class=\"modal fade\" id=\""+id+"\" role=\"dialog\" tabindex=\"-1\">" +
         "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">" +
@@ -119,7 +120,7 @@ function addTextAttachementModal(type,encode,nom,value,fullName,id){
         }
     }
     let id2 = id + "_prism"
-    return ["<button title='Display in a modal box "+fullName+"' type=\"button\" class=\"btn btn-outline-secondary btn_url_mails\" data-target=\"#"+id+"\" data-toggle=\"modal\">" +
+    return ["<button style='display: block' title='Display in a modal box "+fullName+"' type=\"button\" class=\"btn btn-outline-secondary btn_url_mails\" data-target=\"#"+id+"\" data-toggle=\"modal\">" +
     "<span class=\"fa fa-eye\"> Show "+fullName+"</span>" +
     "</button>" +
     "<div aria-hidden=\"true\" class=\"modal fade\" id=\""+id2+"\" role=\"dialog\" tabindex=\"-1\">" +

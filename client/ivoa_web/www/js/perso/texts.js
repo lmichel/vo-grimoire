@@ -1,5 +1,4 @@
 function highlight(content){
-    console.log(content.includes(">"))
     let cont = JSON.stringify(content).split(/(?=\\n)/g)
     let total = ""
     cont.forEach(elem => {
@@ -25,7 +24,6 @@ function highlight(content){
 }
 
 function copyText(url){
-    console.log(url)
     let el = document.createElement('textarea');
     el.value = url;
     document.body.appendChild(el);
