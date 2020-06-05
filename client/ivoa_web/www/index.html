@@ -35,22 +35,16 @@
     <div class="collapse navbar-collapse ml-auto" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                <p class="nav-link text-white">IVOA :</p>
+                <a title="Click Here to go to the IVOA home page" class="nav-link text-white" href="http://ivoa.net/" target="_blank">IVOA :</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white" href="http://ivoa.net/" target="_blank">Home</a>
+                <a title="Click here to see the Documents & Standards of IVOA" class="nav-link text-white" href="http://ivoa.net/documents/" target="_blank">Documents</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white" href="http://ivoa.net/members/index.html" target="_blank">Mailing Lists</a>
+                <a title="Click here to go to the documentation search engine of IVOA" class="nav-link text-white" href="http://saada.unistra.fr/esdoc/interfacePDF.html?index=ivoa#" target="_blank">Search Documentation</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white" href="http://ivoa.net/documents/" target="_blank">Documents</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white" href="http://saada.unistra.fr/esdoc/interfacePDF.html?index=ivoa#" target="_blank">Search Documentation</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white" href="http://ivoa.net/members/index.html" target="_blank">Working Groups</a>
+                <a title="Click here to go to the working groups page of IVOA" class="nav-link text-white" href="http://ivoa.net/members/index.html" target="_blank">Working Groups</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-white" data-target="#credits" data-toggle="modal" target="_blank">Credits</a>
@@ -100,7 +94,7 @@
                 <option value="ssig">Solar System</option>
                 <option value="theory">Theory</option>
                 <option value="voevent">Time Domain</option>
-                <option value="radioig">Radio</option>
+                <option value="radioig">Radio IG</option>
                 <option value="interop">Interop</option>
                 <option value="stdproc">Standing Committee on Standards & Processes</option>
             </select>
@@ -122,7 +116,10 @@
             <input class="form-control" id="search_bar" placeholder="Attributes and keywords to build query"
                    type="text"/>
             <span class="input-group-btn">
-            <button class="btn btn-dark" type="button" id="search_button">
+            <button type="reset" class="btn btn-dark" name="resetFields">
+                <i class="fa fa-trash-o"></i>
+            </button>
+            <button class="btn btn-dark" type="button" >
             <i class="fa fa-search"></i>
             </button>
         </span>
@@ -184,7 +181,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="query">Modal title</h5>
+                <h5 class="modal-title" id="query">See Query</h5>
                 <button aria-label="Close" class="close" data-dismiss="modal" type="button">
                     <span aria-hidden="true">&times;</span>
                 </button>

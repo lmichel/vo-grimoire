@@ -1,12 +1,11 @@
 function highlight(content){
-    console.log(content.includes(">"))
     let cont = JSON.stringify(content).split(/(?=\\n)/g)
     let total = ""
     cont.forEach(elem => {
-        if(elem.includes(">")){
-            if(elem.includes(">>")){
-                if (elem.includes(">>>")){
-                    if(elem.includes(">>>>")){
+        if(elem.replace(/ /g,"").includes(">")){
+            if(elem.replace(/ /g,"").includes(">>")){
+                if (elem.replace(/ /g,"").includes(">>>")){
+                    if(elem.replace(/ /g,"").includes(">>>>")){
                         total += "<span class='ggggthan'>"+elem.replace(/\\n/g,"")+"</span>"+"\n"
                     }else{
                         total += "<span class='gggthan'>"+elem.replace(/\\n/g,"")+"</span>"+"\n"
@@ -25,7 +24,6 @@ function highlight(content){
 }
 
 function copyText(url){
-    console.log(url)
     let el = document.createElement('textarea');
     el.value = url;
     document.body.appendChild(el);
@@ -34,7 +32,17 @@ function copyText(url){
     document.body.removeChild(el);
 }
 
+function escapeBrackets(text){
+    return text.replace(/</g,"&lt").replace(/>/g,"&gt")
+}
+
+function escapeSlashQuote(text){
+    return test.replace(/(\")/g,"\"")
+}
+
 export default {
     highlight,
     copyText,
+    escapeBrackets,
+    escapeSlashQuote
 }
