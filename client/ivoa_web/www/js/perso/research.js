@@ -238,16 +238,16 @@ function formQuery(exec) {
             })
             query["query"]["bool"]["must"].push(should)
         })
-        if (totalString.match(/^[0-9a-zA-Z]+$/)) totalString.split(" ").forEach(element => {
+        if (totalString.replace(/\s*/g,"") !== "") totalString.split(" ").forEach(element => {
             query["query"]["bool"]["must"].push({
-                "bool": {
-                    "should": [
-                        {"wildcard": {"from": {"value": "*" + element.toLowerCase() + "*"}}},
-                        {"wildcard": {"to": {"value": "*" + element.toLowerCase() + "*"}}},
-                        {"wildcard": {"subject": {"value": "*" + element.toLowerCase() + "*"}}},
-                        {"wildcard": {"body": {"value": "*" + element.toLowerCase() + "*"}}},
-                    ]
-                }
+                    "bool": {
+                        "should": [
+                            {"wildcard": {"from": {"value": "*" + element.toLowerCase() + "*"}}},
+                            {"wildcard": {"to": {"value": "*" + element.toLowerCase() + "*"}}},
+                            {"wildcard": {"subject": {"value": "*" + element.toLowerCase() + "*"}}},
+                            {"wildcard": {"body": {"value": "*" + element.toLowerCase() + "*"}}},
+                        ]
+                    }
             })
         })
         if (startTimestamp !== 0 && endTimestamp !== 0) {
@@ -346,16 +346,16 @@ function formQuery(exec) {
             })
             query["query"]["bool"]["should"].push(should)
         })
-        if (totalString.match(/^[0-9a-zA-Z]+$/)) totalString.split(" ").forEach(element => {
+        if (totalString.replace(/\s*/g,"") !== "") totalString.split(" ").forEach(element => {
             query["query"]["bool"]["should"].push({
-                "bool": {
-                    "should": [
-                        {"wildcard": {"from": {"value": "*" + element.toLowerCase() + "*"}}},
-                        {"wildcard": {"to": {"value": "*" + element.toLowerCase() + "*"}}},
-                        {"wildcard": {"subject": {"value": "*" + element.toLowerCase() + "*"}}},
-                        {"wildcard": {"body": {"value": "*" + element.toLowerCase() + "*"}}},
-                    ]
-                }
+                    "bool": {
+                        "should": [
+                            {"wildcard": {"from": {"value": "*" + element.toLowerCase() + "*"}}},
+                            {"wildcard": {"to": {"value": "*" + element.toLowerCase() + "*"}}},
+                            {"wildcard": {"subject": {"value": "*" + element.toLowerCase() + "*"}}},
+                            {"wildcard": {"body": {"value": "*" + element.toLowerCase() + "*"}}},
+                        ]
+                    }
             })
         })
         if (startTimestamp !== 0 && endTimestamp !== 0) {
