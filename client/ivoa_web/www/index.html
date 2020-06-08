@@ -209,6 +209,12 @@
 
 <script type="text/javascript">
 		var piwikSiteId = "saada";
+	</script>
+	<script type="text/javascript"
+		src="http://cdsannotations.u-strasbg.fr/piwikinit"></script>
+	<script type="text/javascript"
+		src="http://cdsannotations.u-strasbg.fr/piwiktracker"></script>
+    <script>
         function trackAction(action){
             if( elastic_search_url.indexOf("saada") > 0 ) {
                 _paq.push(['trackPageView',  action]);
@@ -216,11 +222,7 @@
                 console.log("TRACK " + action)
             }
         }
-	</script>
-	<script type="text/javascript"
-		src="http://cdsannotations.u-strasbg.fr/piwikinit"></script>
-	<script type="text/javascript"
-		src="http://cdsannotations.u-strasbg.fr/piwiktracker"></script>
+    </script>
 </body>
 
 </html>
