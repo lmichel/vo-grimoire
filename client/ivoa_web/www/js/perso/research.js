@@ -84,8 +84,43 @@ function formQuery(exec) {
     $("#query_status").text("fetching data")
     let mailListInput = $("#mailList");
     let totalString = $("#search_bar").val();
-    if (totalString === "") {
+    let mailList = ""
+    if (mailListInput.val() === "ivoa_all" && global_index !== 1) {
+        alert("No mailing list.")
         return 0
+    }
+    mailList = mailListInput.val()
+    if (totalString === "") {
+        if (mailList !== "" && mailList !== "ivoa_all") {
+            // query["sort"] = [
+            //     {"timestamp": {"order": "asc"}},
+            // ]
+            let query_all = {
+                "size": 20,
+                "query": {
+                    "bool": {
+                        "must": [
+                            {
+                                "term": {
+                                    "maillist": {
+                                        "value": mailList
+                                    }
+                                }
+                            },
+                        ]
+                    }
+                },
+                "sort":{
+                    "timestamp":{"order":"asc"}
+                }
+            }
+            if (exec === 1) {
+                executeQuery(query_all, mailList)
+            }
+            return query_all
+        }else{
+            return 0
+        }
     }
     let attachementsRes = totalString.match(attachementsReg)
     let fromRes = totalString.match(fromReg)
@@ -105,12 +140,6 @@ function formQuery(exec) {
     if (numberInput.val() != null && numberInput.val() > 0 && numberInput.val() <= 110) {
         querySize = numberInput.val();
     }
-    let mailList = ""
-    if (mailListInput.val() === "ivoa_all" && global_index !== 1) {
-        alert("No mailing list.")
-        return 0
-    }
-    mailList = mailListInput.val()
     let startTimestamp = 0;
     let endTimestamp = 0;
     if (startPeriodInput.val() != null) {
