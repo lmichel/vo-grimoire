@@ -7,36 +7,6 @@ let attachementsReg = new RegExp("\\(Attachements:[^)]*\\)", 'g')
 let subjectReg = new RegExp("\\(Subject:[^)]*\\)", 'g')
 let contentReg = new RegExp("\\(Content:[^)]*\\)", 'g')
 let global_index = 1
-let mime = {
-    "text/plain" : ".txt",
-    "text/x-python-script" : ".py",
-    "application/x-javascript" : ".js",
-    "text/html" : ".html",
-    "image/gif" : ".gif",
-    "video/mp4" : ".mp4",
-    "application/x-tex" : ".latex",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document" : ".docx",
-    "application/pdf" : ".pdf",
-    "image/jpeg" : ".jpeg",
-    "text/xml" : ".xml",
-    "audio/mpeg" : ".mp3",
-    "text/x-patch" : ".patch"
-}
-let charset = {
-    "text/plain" : "base64,",
-    "text/x-python-script" : "charset=utf-8,",
-    "application/x-javascript" : "charset=utf-8,",
-    "text/html" : "base64,",
-    "image/gif" : "base64,",
-    "video/mp4" : "base64,",
-    "application/x-tex" : "charset=utf-8,",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document" : "base64,",
-    "application/pdf" : "base64,",
-    "image/jpeg" : "base64,",
-    "image/png" : "base64,",
-    "text/xml" : "charset=utf-8,",
-    "audio/mpeg" : "base64,"
-}
 
 function traitementMessage(hits,thread) {
     for (let i = 0; i < hits.length; i++) {

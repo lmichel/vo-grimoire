@@ -1,3 +1,4 @@
+
 function highlight(content){
     let cont = JSON.stringify(content).split(/(?=\\n)/g)
     let total = ""
@@ -37,13 +38,12 @@ function escapeBrackets(text){
     return text.replace(/</g,"&lt").replace(/>/g,"&gt")
 }
 
-function escapeSlashQuote(text){
-    return test.replace(/(\")/g,"\"")
-}
+// function escapeSlashQuote(text){
+//     return text.replace(/(")/g,"\"")
+// }
 
 export default {
     highlight,
     copyText,
     escapeBrackets,
-    escapeSlashQuote,
 }
