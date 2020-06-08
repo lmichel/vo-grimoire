@@ -81,14 +81,11 @@ function emptycontainers(){
 }
 
 function formQuery(exec) {
-    $("#query_status").text("fetching data")
+    $("#query_status").text("Fetching data")
+    texts.orangeClass()
     let mailListInput = $("#mailList");
     let totalString = $("#search_bar").val();
     let mailList = ""
-    if (mailListInput.val() === "ivoa_all" && global_index !== 1) {
-        alert("No mailing list.")
-        return 0
-    }
     mailList = mailListInput.val()
     if (totalString === "") {
         if (mailList !== "" && mailList !== "ivoa_all") {
@@ -119,6 +116,8 @@ function formQuery(exec) {
             }
             return query_all
         }else{
+            $("#query_status").text("Query aborted : no mailing list")
+            texts.redClass()
             return 0
         }
     }
@@ -388,6 +387,7 @@ function formQuery(exec) {
 
 function executeQuery(query, mailList,thread) {
     emptycontainers()
+    let query_status = $("#query_status")
     if (global_index === 1){
         return axios.get(elastic_search_url + "ivoa_all/_search", {
             params: {
@@ -395,10 +395,13 @@ function executeQuery(query, mailList,thread) {
                 source_content_type: 'application/json'
             }
         }).then((res) => {
-            $("#query_status").text(res.data.hits.hits.length + " mails found")
+            query_status.text(res.data.hits.hits.length + " mails found")
+            texts.greenClass()
             traitementMessage(res.data.hits.hits,thread);
         }).catch(function (e) {
             alert("The server did not respond, please modify your request")
+            query_status.text("ERROR : " + e)
+            texts.redClass()
             console.log(e)
         })
     }else{
@@ -408,10 +411,13 @@ function executeQuery(query, mailList,thread) {
                 source_content_type: 'application/json'
             }
         }).then((res) => {
-            $("#query_status").text(res.data.hits.hits.length + " mails found")
+            query_status.text(res.data.hits.hits.length + " mails found")
+            texts.greenClass()
             traitementMessage(res.data.hits.hits,thread);
         }).catch(function (e) {
             alert("The server did not respond, please modify your request")
+            query_status.text("ERROR : " + e)
+            texts.redClass()
             console.log(e)
         })
     }

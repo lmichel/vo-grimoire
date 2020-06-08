@@ -42,8 +42,29 @@ function escapeBrackets(text){
 //     return text.replace(/(")/g,"\"")
 // }
 
+function redClass(){
+    $("#query_status").toggleClass("red")
+    $("#query_status").removeClass("orange")
+    $("#query_status").removeClass("green")
+}
+
+function greenClass(){
+    $("#query_status").removeClass("red")
+    $("#query_status").removeClass("orange")
+    $("#query_status").toggleClass("green")
+}
+
+function orangeClass(){
+    $("#query_status").removeClass("red")
+    $("#query_status").add("orange")
+    $("#query_status").removeClass("green")
+}
+
 export default {
     highlight,
     copyText,
     escapeBrackets,
+    redClass,
+    greenClass,
+    orangeClass
 }
