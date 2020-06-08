@@ -23,13 +23,6 @@
     <script>
         // let elastic_search_url = "http://192.168.1.48:9200/"
         let elastic_search_url = "http://saada.unistra.fr/elasticsearch/"
-        function trackAction(action){
-            if( elastic_search_url.indexOf("saada") > 0 ) {
-                _paq.push(['trackPageView',  action]);
-            } else {
-                console.log("TRACK " + action)
-            }
-        }
     </script>
 </head>
 
@@ -213,8 +206,16 @@
     <div id="accordionEx" aria-multiselectable="true" class="accordion md-accordion" role="tablist"></div>
 
 </div>
+
 <script type="text/javascript">
 		var piwikSiteId = "saada";
+        function trackAction(action){
+            if( elastic_search_url.indexOf("saada") > 0 ) {
+                _paq.push(['trackPageView',  action]);
+            } else {
+                console.log("TRACK " + action)
+            }
+        }
 	</script>
 	<script type="text/javascript"
 		src="http://cdsannotations.u-strasbg.fr/piwikinit"></script>
