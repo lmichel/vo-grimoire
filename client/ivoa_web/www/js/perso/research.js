@@ -63,6 +63,8 @@ function traitementMessage(hits,thread) {
     }
     $(".btn_url_mails").click(function () {
         texts.copyText(this.value)
+        $("#url").text(this.value)
+        $("#alertModal").modal("show")
     })
 }
 
