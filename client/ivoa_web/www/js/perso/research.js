@@ -59,9 +59,9 @@ function traitementMessage(hits,thread) {
             "<div class='m-2 p-1'>" +
             "<div class='btn' style='cursor:default;border:1px solid; color:#6c757d;'>"+
             "<button style='border-color: transparent' type=\"button\" class=\"btn btn-outline-secondary\" title='Click here to view all the mails of a thread'>" +
-            "<span class=\"fa fa-list\" data-target=\"#edu_result_" + i + "\" data-toggle=\"modal\" type=\"button\"> View Thread</span>" +
+            "<span class=\"fa fa-list\" data-target=\"#edu_result_" + i + "\" onclick='trackAction(\"User clicked View Thread\")' data-toggle=\"modal\" type=\"button\"> View Thread</span>" +
             "</button>" +
-            "<button style='border-color:transparent' type=\"button\" class=\"btn btn-outline-secondary btn_url_mails\" value='" + url + "' title='Click here to copy the url of the mail to your clipboard'>" +
+            "<button style='border-color:transparent' type=\"button\" onclick='trackAction(\"User clicked Copy URL\")' class=\"btn btn-outline-secondary btn_url_mails\" value='" + url + "' title='Click here to copy the url of the mail to your clipboard'>" +
             "<span class=\"fa fa-files-o\"> Copy Mail URL</span>" +
             "</button>" +
             "</div>"+

@@ -80,7 +80,9 @@ function addModal(num, thread, numThread) {
         "<div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">" +
         "<div class=\"modal-content\">" +
         "<div class=\"modal-header\">" +
-        "<h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\"><a class=\"modal-title\" href=\"" + url + "\" target=\"_blank\">Link for this thread :" + url + "</a></h5>" +
+        "<div class=\"btn\" style=\"cursor:default;border:1px solid; color:#6c757d;\">" +
+        "<button style=\"border-color:transparent\" type=\"button\" class=\"btn btn-outline-secondary btn_url_threads\" onclick='alert(\""+url+"\")' title=\"Click here to copy the url of the mail to your clipboard\"><span class=\"fa fa-files-o\"> Copy Thread URL</span></button></div>" +
+        // "<h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\"><a class=\"modal-title\" href=\"" + url + "\" target=\"_blank\">Link for this thread :" + url + "</a></h5>" +
         "<button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">" +
         "<span class=\"thread_content\"" + num + " aria-hidden=\"true\">&times;</span>" +
         "</button>" +

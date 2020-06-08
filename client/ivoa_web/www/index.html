@@ -24,6 +24,9 @@
     <script>
         let elastic_search_url = "http://192.168.1.48:9200/"
         // let elastic_search_url = "http://saada.unistra.fr/elasticsearch/"
+        trackAction = function(action){
+            console.log("TRACKING " + action);
+        }
     </script>
 </head>
 
@@ -120,7 +123,7 @@
             <button type="reset" class="btn btn-dark" name="resetFields">
                 <i class="fa fa-trash-o"></i>
             </button>
-            <button class="btn btn-dark" type="button" >
+            <button id='do_research' class="btn btn-dark" type="button" >
             <i class="fa fa-search"></i>
             </button>
         </span>
