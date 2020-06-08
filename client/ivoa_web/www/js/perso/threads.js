@@ -81,7 +81,7 @@ function addModal(num, thread, numThread) {
         "<div class=\"modal-content\">" +
         "<div class=\"modal-header\">" +
         "<div class=\"btn\" style=\"cursor:default;border:1px solid; color:#6c757d;\">" +
-        "<button style=\"border-color:transparent\" type=\"button\" class=\"btn btn-outline-secondary btn_url_threads\" onclick='alert(\""+url+"\")' title=\"Click here to copy the url of the mail to your clipboard\"><span class=\"fa fa-files-o\"> Copy Thread URL</span></button></div>" +
+        "<button style=\"border-color:transparent\" value='"+url+"' type=\"button\" class=\"btn btn-outline-secondary btn_url_threads\" title=\"Click here to copy the url of the mail to your clipboard\"><span class=\"fa fa-files-o\"> Copy Thread URL</span></button></div>" +
         // "<h5 class=\"modal-title\" id=\"exampleModalCenterTitle2\"><a class=\"modal-title\" href=\"" + url + "\" target=\"_blank\">Link for this thread :" + url + "</a></h5>" +
         "<button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type=\"button\">" +
         "<span class=\"thread_content\"" + num + " aria-hidden=\"true\">&times;</span>" +
@@ -99,6 +99,10 @@ function addModal(num, thread, numThread) {
     if (thread === true) {
         $("#edu_result_" + num).modal('show')
     }
+    $(".btn_url_threads").click(function () {
+        $("#url").text(this.value)
+        $("#alertModal").modal("show")
+    })
 }
 
 export default {

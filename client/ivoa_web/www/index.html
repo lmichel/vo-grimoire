@@ -200,11 +200,30 @@
 </div>
 <br><br>
 <!--// MAIL CONTAINER-->
-<p class="m-2 orange" id="query_status"></p>
+<p class="m-2 " id="query_status"></p>
 <div id="mails_container" class="card ml-2 mr-2">
 
     <div id="accordionEx" aria-multiselectable="true" class="accordion md-accordion" role="tablist"></div>
 
+</div>
+
+<div class="modal fade" id="alertModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Thread / Mail Link</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="url"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
 </div>
 
 <script type="text/javascript">
