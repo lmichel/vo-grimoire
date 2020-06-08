@@ -55,8 +55,9 @@ function addThreadModal(refs, num) {
             "</legend>" +
             "<div aria-labelledby=\"headingOne1\" class=\"collapse\" data-parent=\"#accordionEx" + num + "\" id=\"result_" + compteur + "\" role=\"tabpanel\" style=\"\">" +
             "<div class=\"m-2 card-body p-1\">" +
+            modals.addThreadAttachements(elem["_source"]["attachements"],num)[0] +"<br>"+
             "<i>From : </i>" + texts.escapeBrackets(elem["_source"]["from"]) +
-            "<i>&emsp;To : </i>" + texts.escapeBrackets(elem["_source"]["to"]) + "<br>" + modals.addThreadAttachements(elem["_source"]["attachements"],num) + "<br>" +
+            "<i>&emsp;To : </i>" + texts.escapeBrackets(elem["_source"]["to"]) +
             "<pre>" + texts.highlight(elem["_source"]["body"]) +
             "</pre>" +
             "</div>" +
@@ -64,6 +65,9 @@ function addThreadModal(refs, num) {
             "</fieldset>"
         )
         compteur += 1
+    })
+    $(".btn_url_mails").click(function () {
+        texts.copyText(this.value)
     })
     return [total, compteur]
 }

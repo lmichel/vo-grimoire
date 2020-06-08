@@ -243,7 +243,6 @@ class elasticer(object):
                 }
             }
         }
-        print("Taille Index : " + str(configManager.sizeRequest()))
         es = elasticsearch.Elasticsearch([es_url])
         if es.indices.exists(index="ivoa_all_new_mails"):
             es.indices.create(index="ivoa_all_temp_mails",body=size)

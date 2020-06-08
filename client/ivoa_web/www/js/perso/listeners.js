@@ -1,5 +1,6 @@
 import research from "./research.js";
 import threads from "./threads.js"
+import texts from "./texts.js";
 $(document).ready(function(){
     research.defaultQuery()
     $("#from_but").click(function(){

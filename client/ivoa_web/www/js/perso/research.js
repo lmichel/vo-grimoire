@@ -111,6 +111,7 @@ function emptycontainers(){
 }
 
 function formQuery(exec) {
+    $("#query_status").text("fetching data")
     let mailListInput = $("#mailList");
     let totalString = $("#search_bar").val();
     if (totalString === "") {
@@ -395,6 +396,7 @@ function executeQuery(query, mailList,thread) {
                 source_content_type: 'application/json'
             }
         }).then((res) => {
+            $("#query_status").text(res.data.hits.hits.length + " mails found")
             traitementMessage(res.data.hits.hits,thread);
         }).catch(function (e) {
             alert("The server did not respond, please modify your request")
@@ -407,6 +409,7 @@ function executeQuery(query, mailList,thread) {
                 source_content_type: 'application/json'
             }
         }).then((res) => {
+            $("#query_status").text(res.data.hits.hits.length + " mails found")
             traitementMessage(res.data.hits.hits,thread);
         }).catch(function (e) {
             alert("The server did not respond, please modify your request")
