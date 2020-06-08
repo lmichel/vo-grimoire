@@ -1,3 +1,4 @@
+import research from "./research";
 function highlight(content){
     let cont = JSON.stringify(content).split(/(?=\\n)/g)
     let total = ""
@@ -40,9 +41,15 @@ function escapeSlashQuote(text){
     return test.replace(/(\")/g,"\"")
 }
 
+function clickBody(){
+    console.log("CLICK BODY")
+    $("body").trigger("click")
+}
+
 export default {
     highlight,
     copyText,
     escapeBrackets,
+    clickBody,
     escapeSlashQuote,
 }
