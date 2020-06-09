@@ -72,6 +72,9 @@ function addThreadModal(refs, num) {
         )
         compteur += 1
     })
+    if (refs.length === 0){
+        $("#accordionEx" + num).append("<p>No Thread</p>")
+    }
     $(".btn_url_mails").click(function () {
         $("#url").text(this.value)
         $("#alertModal").modal("show")
