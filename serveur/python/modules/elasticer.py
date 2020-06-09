@@ -110,6 +110,8 @@ class elasticer(object):
                     if useful == 1:
                         allIds.append(item["id"])
                         allMails[message["Message-ID"]] = item
+                        if (item["numThread"] == "none"):
+                            item["numThread"] = item["id"]
                         compteur += 1
                         valides += 1
                         es.index(index=index_name, doc_type='keyword', body=item,request_timeout=30)
