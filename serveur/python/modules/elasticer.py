@@ -293,7 +293,8 @@ class elasticer(object):
             return res
         else:
             res = re.sub(r'<[^>]*>','',value)
-            return res
+            return res.split("@")[0]
+
     def hideToEmail(self,value):
         total = value.split(",")
         final = ""
