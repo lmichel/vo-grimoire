@@ -72,7 +72,7 @@
 </div>
 </div>
 <!--// FORM-->
-<form class="ml-2">
+<form class="ml-2" onsubmit="return false;">
     <div class="col-md-3 float-right">
         <img alt="ivoa_logo" class="img-fluid" height="143" src="src/ivoa.jpg" width="233">
     </div>
@@ -107,7 +107,7 @@
                     data-target="#collapseOne"
                     data-toggle="collapse"
                     type="button">
-                <i>Advanced parameters</i>
+                <i>Options and Parameters</i>
             </button>
         </span>
     </div>
@@ -139,15 +139,19 @@
                 <div class="form-group mt-2">
                     <label class="col-md-3" for="sort_method">Sort By :</label>
                     <select class="form-control line col-md-3" id="sort_method" name="or_and_method">
-                        <option value="none">Default</option>
+                        <option value="none">By Relevance</option>
                         <option value="date_asc">Date (asc)</option>
                         <option value="date_desc">Date (desc)</option>
                     </select>
                 </div>
                 <div class="form-group mt-2">
-                    <label class="col-md-3" for="inputQuerySize">Number of maximum mails returned :</label>
-                    <input class="form-control line col-md-3 align-items" id="inputQuerySize" placeholder="..."
-                           type="number">
+                    <label class="col-md-3">Number of maximum mails returned :</label>
+<!--                    <input class="form-control line col-md-3 align-items" id="inputQuerySize" placeholder="20"-->
+<!--                           type="number">-->
+                    <label class="radio-inline"><input type="radio" name='optradio' value="10">10</label>
+                    <label class="radio-inline"><input type="radio" name='optradio' value="20" checked>20</label>
+                    <label class="radio-inline"><input type="radio" name='optradio' value="50">50</label>
+                    <label class="radio-inline"><input type="radio" name='optradio' value="150">150</label>
                 </div>
                 <div class="form-group ml-3">
                     <label class="" style="max-width: 25%" for="datepicker">Period :</label>
@@ -164,6 +168,11 @@
                         <button type="button" data-target="#see_query" data-toggle="modal" class="btn btn-link"
                                 id="buttonQuery"
                                 name="buttonQuery"><i>See Query</i>
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" id="launch_query" class="btn btn-link"
+                                name="buttonQuery"><i>Execute Query</i>
                         </button>
                     </div>
                 </div>
@@ -191,7 +200,7 @@
                 </textarea>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                <button class="btn btn-secondary" id='close_see_query' data-dismiss="modal" type="button">Close</button>
                 <button class="btn btn-primary" id="modif_query" type="button" data-dismiss="modal">Save changes
                 </button>
             </div>

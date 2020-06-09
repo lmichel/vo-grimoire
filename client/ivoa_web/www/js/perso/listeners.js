@@ -34,6 +34,10 @@ $(document).ready(function(){
         research.formQuery(1)
         trackAction("Do Query")
     })
+    $("#launch_query").click(function(){
+        research.formQuery(1)
+        trackAction("Do Query(advanced parameters)")
+    })
     $("#modif_query").click(function(){
         research.executeQuery(JSON.parse($("#body_query").val()),$("#mailList").val())
         trackAction("User-Modified Query executed")
@@ -44,24 +48,28 @@ $(document).ready(function(){
             trackAction("Do Query")
         }
     });
-    $("#query_method").on("change",function(){
-        research.formQuery(1)
-        trackAction("User change query method")
-    })
-    $("#sort_method").on("change",function(){
-        research.formQuery(1)
-        trackAction("User changed sorting")
-    })
-    $("#inputQuerySize").on("change",function(){
-        research.formQuery(1)
-        trackAction("User changed query size")
-    })
-    $("#datepicker").on("blur",function(){
-        research.manageDates()
-        trackAction("Date 1 modified")
-    })
-    $("#datepicker2").on("blur",function(){
-        research.manageDates()
-        trackAction("Date 2 modified")
-    })
+    // $("#query_method").on("change",function(){
+    //     research.formQuery(1)
+    //     trackAction("User change query method")
+    // })
+    // $("#sort_method").on("change",function(){
+    //     research.formQuery(1)
+    //     trackAction("User changed sorting")
+    // })
+    // $("#inputQuerySize").on("change",function(){
+    //     research.formQuery(1)
+    //     trackAction("User changed query size")
+    // })
+    // $("#datepicker").on("blur",function(){
+    //     research.manageDates()
+    //     trackAction("Date 1 modified")
+    // })
+    // $("#datepicker2").on("blur",function(){
+    //     research.manageDates()
+    //     trackAction("Date 2 modified")
+    // })
+    // $("form").submit(function(e){
+    //     e.preventDefault()
+    //     return false
+    // })
 })
