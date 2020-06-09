@@ -2,6 +2,7 @@ import elasticsearch
 from datetime import datetime
 from modules.configManager import configManager
 import email
+from email.header import decode_header
 import json
 import mailbox
 import re
@@ -89,11 +90,14 @@ class elasticer(object):
                                 log.warn("Ignoring useless attachement")
                     item["attachements"] = json.dumps(item["attachements"])
                     if 'From' in message:
-                        item['from'] = message.get("From", failobj="None").encode('utf-8', 'ignore').decode('utf-8', 'ignore').replace("=?[^=]*?=","")
+                        #if 'bonna' in message.get("From",failobj="None"):
+                         #   decode = self.decode_mail(message.get('From',failobj='None'))
+                          #  print(decode)
+                        item['from'] = self.hideEmails(message.get("From", failobj="None"))
                     if 'Date' in message and message['Date'] is not None:
                         item['date'] = message['Date'].encode('utf-8', 'ignore').decode('utf-8', 'ignore')
                     if 'To' in message and message['To'] is not None:
-                        item['to'] = message['To']
+                        item['to'] = self.hideToEmail(message['To'])
                     if 'Subject' in message and message['Subject'] is not None:
                         try:
                             item['subject'] = message['Subject'].encode('utf-8', 'ignore').decode('utf-8', 'ignore')
@@ -265,6 +269,46 @@ class elasticer(object):
             es.indices.delete(index="ivoa_all_new_mails", ignore=[400,404])
             es.indices.put_alias(index="ivoa_all_temp_mails", name="ivoa_all")
             return 1
+
+    def decode_mail(self,value):
+        total = ''
+        for word, charset in decode_header(value):
+            if word is not None:
+                if isinstance(word,bytes):
+                    if charset is None:
+                        total += word.decode(charset,'ignore') + ' '
+                    else:
+                        total += word.decode('ascii','ignore') + ' '
+                else:
+                    total += word + ' '
+        return total
+
+    def hideEmails(self,value):
+        if '=?' in value:
+            res = re.sub(r'=?[^=]*?=',"",value)
+            res = res.replace("<","").replace(">","")
+            res = res.split("@")[0]
+            return res
+        else:
+            res = re.sub(r'<[^>]*>','',value)
+            return res
+    def hideToEmail(self,value):
+        total = value.split(",")
+        final = ""
+        for elem in total:
+            if '=?' in elem:
+                res = re.sub(r'=?[^=]*?=',"",elem)
+                res = res.replace("<","").replace(">","")
+                res = res.split("@")[0]
+                final += res
+            else:
+                res = re.sub(r'<[^>]*>','',elem)
+                final += res.replace("<","").replace(">","").split("@")[0]
+        return final
+
+
+
+
 
 
 
