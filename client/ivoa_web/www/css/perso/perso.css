@@ -47,7 +47,6 @@ body {
 }
 
 #mails_container{
-    height: 700px;
     overflow:auto;
 }
 
