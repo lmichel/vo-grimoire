@@ -22,7 +22,7 @@
     <script src="js/plugins/prism.js"></script>
     <script>
         let elastic_search_url = "http://192.168.1.48:9200/"
-        // let elastic_search_url = "http://saada.unistra.fr/elasticsearch/"
+        elastic_search_url = "http://saada.unistra.fr/elasticsearch/"
     </script>
 </head>
 
@@ -35,20 +35,24 @@
     <div class="collapse navbar-collapse ml-auto" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                <a title="Click Here to go to the IVOA home page" class="nav-link text-white" href="http://ivoa.net/" target="_blank">IVOA :</a>
+                <a title="Click Here to go to the IVOA home page" class="nav-link text-white" href="http://ivoa.net/" target="_blank">IVOA</a>
             </li>
             <li class="nav-item">
                 <a title="Click here to see the Documents & Standards of IVOA" class="nav-link text-white" href="http://ivoa.net/documents/" target="_blank">Documents</a>
             </li>
             <li class="nav-item">
-                <a title="Click here to go to the documentation search engine of IVOA" class="nav-link text-white" href="http://saada.unistra.fr/esdoc/interfacePDF.html?index=ivoa#" target="_blank">Search Documentation</a>
+                <a title="Click here to go to the documentation search engine of IVOA" class="nav-link text-white" href="http://saada.unistra.fr/esdoc/interfacePDF.html?index=ivoa#" target="_blank">SearchDoc</a>
             </li>
             <li class="nav-item">
-                <a title="Click here to go to the working groups page of IVOA" class="nav-link text-white" href="http://ivoa.net/members/index.html" target="_blank">Working Groups</a>
+                <a title="Click here to go to the working groups page of IVOA" class="nav-link text-white" href="http://ivoa.net/members/index.html" target="_blank">Mailman</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white" data-target="#credits" data-toggle="modal" target="_blank">Credits</a>
+                <a style="font-size: 0.7em;" class="nav-link text-white" data-target="#credits" data-toggle="modal" target="_blank">Credits</a>
             </li>
+            <li class="nav-item">
+                <a style="font-size: 0.7em;" class="nav-link text-white" data-target="#about" data-toggle="modal" target="_blank">About...</a>
+            </li>
+
         </ul>
     </div>
 </nav>
@@ -71,6 +75,26 @@
     </div>
 </div>
 </div>
+<!--// ABOUT-->
+<div aria-hidden="true" aria-labelledby="exampleModalCenterTitle" class="modal fade" id="about" role="dialog" tabindex="-1">
+<div class="modal-dialog modal-dialog-centered modal_ivoa" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalCenterTitle2">About</h5>
+            <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type="button">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body credits_modal_content">
+            <script>$(".credits_modal_content").load("about.html")</script>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+        </div>
+    </div>
+</div>
+</div>
+
 <!--// FORM-->
 <form class="ml-2" onsubmit="return false;">
     <div class="col-md-3 float-right">
