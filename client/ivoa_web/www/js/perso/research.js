@@ -45,10 +45,12 @@ function traitementMessage(hits,thread) {
             "<i>&emsp; DATE : </i>" + date + "<br>" +
             "<br><pre>" + texts.highlight(hits[i]["_source"]["body"]) + "</pre><br>" +
             "</div>" + "" +
-            "<button class=\"btn btn-link closeThread\" aria-controls=\"collapseOne1\" aria-expanded=\"true\" data-toggle=\"collapse\" href=\"#result" + i + "\">" +
-            "Close Mail" +
+            "<div class='m-2 p-1'>" +
+            "<div class='btn' style='cursor:default;border:1px solid; color:#6c757d;'>"+
+            "<button style='border-color: transparent' class=\"btn btn-outline-danger\" aria-controls=\"collapseOne1\" aria-expanded=\"true\" data-toggle=\"collapse\" href=\"#result" + i + "\">" +
+            "<i class=\"fa fa-window-close\" aria-hidden=\"true\">  Close Mail</i>" +
             "</button>" +
-            "<div>" +
+            "</div>"+
             "</div>" +
             "</div>" +
             "</fieldset>")

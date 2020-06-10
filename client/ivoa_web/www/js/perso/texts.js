@@ -2,7 +2,7 @@
 function highlight(content){
     let cont = JSON.stringify(content).split(/(?=\\n)/g)
     let total = ""
-    // console.log(JSON.stringify(content))
+    console.log(JSON.stringify(content))
     cont.forEach(elem => {
         if(elem.replace(/ /g,"").includes(">")){
             if(elem.replace(/ /g,"").includes(">>")){
@@ -19,7 +19,9 @@ function highlight(content){
                 total += "<span class='gthan'>"+elem.replace(/\\n/g,"")+"</span>"+"\n"
             }
         }else{
-            total += elem.replace(/\\n/g,"") + "\n"
+            // if(elem !== ""){
+                total += elem.replace(/\\n/g,"") + "\n"
+            // }
         }
     })
     return total.toString().substring(1,(total.toString().length)-2).replace(/\\t/g,"")

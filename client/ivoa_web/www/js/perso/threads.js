@@ -50,7 +50,7 @@ function addThreadModal(refs, num) {
             "<fieldset class=\"field-modal\" style=\"margin-left:" + compteur + "%\">" +
             "<legend class=\"lef-modal\">" +
             "<a aria-controls=\"collapseOne1\" aria-expanded=\"true\" class=\"lienLegend\" data-toggle=\"collapse\" href=\"#result_" + compteur + "\">" + total +
-            "<strong>N°:" + compteur + " </strong>" + date + "<strong> From : </strong> " + texts.escapeBrackets(elem["_source"]["from"]) + "" +
+            "<strong>N°:" + compteur + " </strong>" + date + "<strong> -"+elem["_source"]["maillist"].toUpperCase()+"- </strong>" +"<strong> From : </strong> " + texts.escapeBrackets(elem["_source"]["from"]) + "" +
             "<strong> Subject : </strong>" + elem["_source"]["subject"] +
             "</a>" +
             "</legend>" +

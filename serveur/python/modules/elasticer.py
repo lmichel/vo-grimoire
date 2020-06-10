@@ -75,7 +75,8 @@ class elasticer(object):
                         if 'text/plain' in part.get_content_type() and first_plain_present == 0:
                             try:
                                 temp = part.get_payload(decode=True).decode('utf-8','ignore').replace("\t","").replace("\n\r","\n").replace("\r\n","\n")
-                                item["body"] = re.sub(r'\\n*','\n',temp)
+                                    #print(re.sub(r'(\\n){2,}','\n',repr(temp)).replace("\\n","\n"))
+                                item["body"] = temp
                             except LookupError:
                                 item["body"] = "Cannot decode the message"
                                 encodingErrors += 1
@@ -131,7 +132,7 @@ class elasticer(object):
     # This method build a dictionnary
     # Each key is a string with multiple message Id
     # Each element is a number of Thread
-    def addThreads(self,allIds, mailList, es_url):
+    def addThreads(self,allIds, mailList, es_url, list):
         es = elasticsearch.Elasticsearch([es_url])
         compteur = 0
         threads = {}
@@ -142,8 +143,19 @@ class elasticer(object):
             else:
                 queryCourant = {
                     "query": {
-                        "match_phrase": {
-                            "id": id
+                        "bool":{
+                            "must":[
+                                {
+                                    "term":{
+                                        "maillist":{"value":list}
+                                    }
+                                },
+                                {
+                                    "match_phrase":{
+                                        "id":id
+                                    }
+                                }
+                            ]
                         }
                     }
                 }

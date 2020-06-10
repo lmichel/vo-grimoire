@@ -25,12 +25,12 @@ class percevaler(object):
             if configManager.globalIndex() == 1:
                 allIds=elastic.saveMailsToElastic(mbox,mList["index_name"], configManager.elastic_search_uri(),mList["prefix"],index)
                 time.sleep(5)
-                compteur = elastic.addThreads(allIds[0], index, configManager.elastic_search_uri())
+                compteur = elastic.addThreads(allIds[0], index, configManager.elastic_search_uri(),mList["index_name"])
             else:
                 allIds = elastic.saveMailsToElastic(mbox, mList["index_name"], configManager.elastic_search_uri(),
                                                   mList["prefix"],'none')
                 time.sleep(5)
-                elastic.addThreads(allIds[0], allIds[1], configManager.elastic_search_uri())
+                elastic.addThreads(allIds[0], allIds[1], configManager.elastic_search_uri(),mList["index_name"])
                 elastic.mergeIndex(configManager.elastic_search_uri(), mList["index_name"], allIds[1])
         if configManager.globalIndex() == 1:
             elastic.newMergeIndex(configManager.elastic_search_uri(),index)
