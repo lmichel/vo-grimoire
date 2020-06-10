@@ -10,7 +10,14 @@
       <li>09/06/2020: Update (mail addresses hidden + cosmetics + others VO feedbacks)</li>
       <li>08/06/2020: First public release</li>
     </ul>
-    <p>Based on ElsaticSearch Bootstrap</p>
-    <p>Contact: laurent.michel __at__ astro.unistra.fr</p>
+    <p>The ingestion process is the following
+    <ul>
+        <li>Mail archives are downaloaded fron the IVOA site.</li>
+        <li>They are serialized as JSON strings.</li>
+        <li>JSON elements are formatted and en/decoded to be readable by Elastic Search.</li>
+        <li>JSON strings are indexed by Elastic Search.</li>
+    </ul>
+    <p>The whole operation takes about 6 minutes</p>
+    <p>The Web application is simple ElasticSearch frontend with an advanced layout based on BootStrap.</p>
 </body>
 </html>
