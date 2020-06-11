@@ -64,7 +64,7 @@ function addAttachements(attachements,numMail){
 
 function addImageAttachementModal(type,encode,nom,value,fullName,id){
     return "<button onclick='trackAction(\"See Image Attachement\")' style='border-color: transparent;display: inline-block' title='Display in a modal box "+fullName+"' type=\"button\" class=\"btn btn-outline-secondary btn_url_mails\" data-target=\"#"+id+"\" data-toggle=\"modal\">" +
-        "<span class=\"fa fa-eye\"> Show "+fullName+"</span>" +
+        "<span class=\"fa fa-eye\"> Show "+/*fullName+*/"</span>" +
         "</button>" +
         "<div aria-hidden=\"true\" class=\"modal fade\" id=\""+id+"\" role=\"dialog\" tabindex=\"-1\">" +
         "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">" +
