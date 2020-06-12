@@ -85,7 +85,7 @@ class elasticer(object):
                             try:
                                 if filename is not None:
                                     item["attachements"][part.get_content_type() + "__" + encode + "__" + filename] = part.get_payload()
-                                    item["attachements_name"] += " " + filename.split(".")[1]
+                                    item["attachements_name"] += " " + filename.split(".")[1] + " " + part.get_content_type()
                                 id_part += 1
                             except IndexError as e:
                                 log.warn("Ignoring useless attachement")
