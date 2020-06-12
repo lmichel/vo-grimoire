@@ -2,7 +2,7 @@
 function highlight(content){
     let cont = JSON.stringify(content).split(/(?=\\n)/g)
     let total = ""
-    console.log(JSON.stringify(content))
+    // console.log(JSON.stringify(content))
     cont.forEach(elem => {
         if(elem.replace(/ /g,"").includes(">")){
             if(elem.replace(/ /g,"").includes(">>")){

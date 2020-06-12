@@ -60,14 +60,14 @@ $(document).ready(function(){
     //     research.formQuery(1)
     //     trackAction("User changed query size")
     // })
-    // $("#datepicker").on("blur",function(){
-    //     research.manageDates()
-    //     trackAction("Date 1 modified")
-    // })
-    // $("#datepicker2").on("blur",function(){
-    //     research.manageDates()
-    //     trackAction("Date 2 modified")
-    // })
+    $("#datepicker").on("blur",function(){
+        research.manageDates()
+        trackAction("Date 1 modified")
+    })
+    $("#datepicker2").on("blur",function(){
+        research.manageDates()
+        trackAction("Date 2 modified")
+    })
     // $("form").submit(function(e){
     //     e.preventDefault()
     //     return false

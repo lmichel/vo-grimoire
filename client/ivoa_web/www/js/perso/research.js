@@ -98,11 +98,23 @@ function formQuery(exec) {
         let totalString = $("#search_bar").val();
         let mailList = ""
         mailList = mailListInput.val()
+        let startTimestamp = 0;
+        let endTimestamp = 0;
+        let startPeriodInput = $("#datepicker");
+        let endPeriodInput = $("#datepicker2");
         if (totalString === "") {
             if (mailList !== "" && mailList !== "ivoa_all") {
                 // query["sort"] = [
                 //     {"timestamp": {"order": "asc"}},
                 // ]
+                if (startPeriodInput.val() != null) {
+                    startTimestamp = new Date(startPeriodInput.val()).getTime()
+                    if (isNaN(startTimestamp)) startTimestamp = 0;
+                }
+                if (endPeriodInput.val() != null) {
+                    endTimestamp = new Date(endPeriodInput.val()).getTime()
+                    if (isNaN(endTimestamp)) endTimestamp = 0;
+                }
                 let query_all = {
                     "size": 20,
                     "query": {
@@ -122,15 +134,63 @@ function formQuery(exec) {
                         "timestamp":{"order":"asc"}
                     }
                 }
+                if (startTimestamp !== 0 && endTimestamp !== 0) {
+                    query_all["query"]["bool"]["must"] = {
+                        "range": {
+                            "timestamp": {
+                                "gte": startTimestamp / 1000,
+                                "lte": endTimestamp / 1000,
+                            }
+                        }
+                    }
+                }
                 if (exec === 1) {
                     executeQuery(query_all, mailList)
                 }
                 return query_all
             }else{
-                $("#query_status").text("Error : you need to specify a current list and not 'All' for empty search field query")
-                texts.redClass()
-                end_query = true
-                return 0
+                if (startPeriodInput.val() != null) {
+                    startTimestamp = new Date(startPeriodInput.val()).getTime()
+                    if (isNaN(startTimestamp)) startTimestamp = 0;
+                }
+                if (endPeriodInput.val() != null) {
+                    endTimestamp = new Date(endPeriodInput.val()).getTime()
+                    if (isNaN(endTimestamp)) endTimestamp = 0;
+                }
+                let query_all = {
+                    "size": 20,
+                    "sort":{
+                        "timestamp":{"order":"asc"}
+                    }
+                }
+                }
+                if (startTimestamp !== 0 && endTimestamp !== 0) {
+                    let query_all = {
+                        "size": 20,
+                        "query":{
+                            "bool":{
+                                "must":{
+                                    "range": {
+                                        "timestamp": {
+                                            "gte": startTimestamp / 1000,
+                                            "lte": endTimestamp / 1000,
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "sort":{
+                            "timestamp":{"order":"asc"}
+                        }
+                }
+                if (exec === 1) {
+                    executeQuery(query_all, mailList)
+                }
+                return query_all
+                // $("#query_status").text("Error : you need to specify a current list and not 'All' for empty search field query")
+                // texts.redClass()
+                // end_query = true
+                // return 0
             }
         }
         let attachementsRes = totalString.match(attachementsReg)
@@ -145,15 +205,11 @@ function formQuery(exec) {
         totalString = totalString.replace(attachementsReg, "")
         totalString = totalString.trim()
         let numberInput = $("#inputQuerySize");
-        let startPeriodInput = $("#datepicker");
-        let endPeriodInput = $("#datepicker2");
         let querySize = $("input[name='optradio']:checked").val()
         // let querySize = 20
         // if (numberInput.val() != null && numberInput.val() > 0 && numberInput.val() <= 110) {
         //     querySize = numberInput.val();
         // }
-        let startTimestamp = 0;
-        let endTimestamp = 0;
         if (startPeriodInput.val() != null) {
             startTimestamp = new Date(startPeriodInput.val()).getTime()
             if (isNaN(startTimestamp)) startTimestamp = 0;
@@ -456,7 +512,6 @@ function manageDates(){
     if (d2.val() !== "" && d1.val() === ""){
         d1.val(d2.val())
     }
-    formQuery(1)
 }
 
 function getUrlVars(){

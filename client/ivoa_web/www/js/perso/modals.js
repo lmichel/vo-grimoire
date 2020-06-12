@@ -63,7 +63,7 @@ function addAttachements(attachements,numMail){
 }
 
 function addImageAttachementModal(type,encode,nom,value,fullName,id){
-    return "<button onclick='trackAction(\"See Image Attachement\")' style='border-color: transparent;display: inline-block' title='Display in a modal box "+fullName+"' type=\"button\" class=\"btn btn-outline-secondary btn_url_mails\" data-target=\"#"+id+"\" data-toggle=\"modal\">" +
+    return "<button onclick='trackAction(\"See Image Attachement\")' style='border-color: transparent;display: inline-block' title='Display in a modal box "+fullName+"' type=\"button\" class=\"btn btn-outline-secondary \" data-target=\"#"+id+"\" data-toggle=\"modal\">" +
         "<span class=\"fa fa-eye\"> Show "+fullName+"</span>" +
         "</button>" +
         "<div aria-hidden=\"true\" class=\"modal fade\" id=\""+id+"\" role=\"dialog\" tabindex=\"-1\">" +
@@ -87,7 +87,7 @@ function addImageAttachementModal(type,encode,nom,value,fullName,id){
 }
 
 function addPdfAttachementModal(type,encode,nom,value,fullName,id){
-    return "<button onclick='trackAction(\"See Pdf Attachement\")' title='Display in a modal box "+fullName+"' type=\"button\" style='border-color: transparent;' class=\"btn btn-outline-secondary btn_url_mails\" style='display: inline-block' data-target=\"#"+id+"\" data-toggle=\"modal\">" +
+    return "<button onclick='trackAction(\"See Pdf Attachement\")' title='Display in a modal box "+fullName+"' type=\"button\" style='border-color: transparent;' class=\"btn btn-outline-secondary\" style='display: inline-block' data-target=\"#"+id+"\" data-toggle=\"modal\">" +
         "<span class=\"fa fa-eye\"> Show </span>" +
         "</button>" +
         "<div aria-hidden=\"true\" class=\"modal fade\" id=\""+id+"\" role=\"dialog\" tabindex=\"-1\">" +
@@ -129,7 +129,7 @@ function addTextAttachementModal(type,encode,nom,value,fullName,id){
         }
     }
     let id2 = id + "_prism"
-    return ["<button onclick='trackAction(\"See Pdf Attachement\")' style='border-color: transparent;display: inline-block' title='Display in a modal box "+fullName+"' type=\"button\" class=\"btn btn-outline-secondary btn_url_mails\" data-target=\"#"+id+"\" data-toggle=\"modal\">" +
+    return ["<button onclick='trackAction(\"See Pdf Attachement\")' style='border-color: transparent;display: inline-block' title='Display in a modal box "+fullName+"' type=\"button\" class=\"btn btn-outline-secondary \" data-target=\"#"+id+"\" data-toggle=\"modal\">" +
     "<span class=\"fa fa-eye\"> Show "+fullName+"</span>" +
     "</button>" +
     "<div aria-hidden=\"true\" class=\"modal fade\" id=\""+id+"\" role=\"dialog\" tabindex=\"-1\">" +
