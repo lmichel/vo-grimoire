@@ -1,6 +1,7 @@
 import threads from "./threads.js"
 import modals from "./modals.js"
 import texts from "./texts.js"
+
 let fromReg = new RegExp("\\(From:[^)]*\\)", 'g')
 let toReg = new RegExp("\\(To:[^)]*\\)", 'g')
 let attachementsReg = new RegExp("\\(Attachements:[^)]*\\)", 'g')
@@ -9,7 +10,7 @@ let contentReg = new RegExp("\\(Content:[^)]*\\)", 'g')
 let global_index = 1
 let end_query = true
 
-function traitementMessage(hits,thread) {
+function traitementMessage(hits, thread) {
     for (let i = 0; i < hits.length; i++) {
         let timestamp = new Date(hits[i]["_source"]["timestamp"] * 1000)
         let date = moment(timestamp).format("DD/MM/YYYY")
@@ -22,22 +23,22 @@ function traitementMessage(hits,thread) {
             "<legend class=\"leg-mails\">" +
             "<a aria-controls=\"collapseOne1\" aria-expanded=\"false\" class=\"lienLegend\" data-toggle=\"collapse\" href=\"#result" + i + "\">" +
             "<strong>N°:" + (i + 1) + "/" + hits.length + " </strong>" +
-            date + " <i><strong>-"+mailList.toUpperCase()+"-</strong></i> " + "<strong>From</strong> : " + texts.escapeBrackets(hits[i]["_source"]["from"]) +
+            date + " <i><strong>-" + mailList.toUpperCase() + "-</strong></i> " + "<strong>From</strong> : " + texts.escapeBrackets(hits[i]["_source"]["from"]) +
             " <strong>Subject</strong> : " + texts.escapeBrackets(hits[i]["_source"]["subject"]) + "" +
             "</a>" +
             "</legend>" +
             "<div aria-labelledby=\"headingOne1\" class=\"collapse\" data-parent=\"#accordionEx\" id=\"result" + i + "\"" + " role=\"tabpanel\">" +
             "<div class='m-2 p-1'>" +
-            "<div class='btn' style='cursor:default;border:1px solid; color:#6c757d;'>"+
+            "<div class='btn' style='cursor:default;border:1px solid; color:#6c757d;'>" +
             "<button style='border-color: transparent' type=\"button\" class=\"btn btn-outline-secondary\" title='Click here to view all the mails of a thread'>" +
             "<span class=\"fa fa-list\" data-target=\"#edu_result_" + i + "\" onclick='trackAction(\"User clicked View Thread\")' data-toggle=\"modal\" type=\"button\"> View Thread</span>" +
             "</button>" +
             "<button style='border-color:transparent' type=\"button\" onclick='trackAction(\"User clicked Copy URL\")' class=\"btn btn-outline-secondary btn_url_mails\" value='" + url + "' title='Click here to copy the url of the mail to your clipboard'>" +
             "<span class=\"fa fa-files-o\"> Display Mail URL</span>" +
             "</button>" +
-            "</div>"+
+            "</div>" +
             res[0] +
-            "</div>"+
+            "</div>" +
             "<div class=\"m-2 card-body p-1 contenuMails result_body_" + i + "\">" +
             "<i>FROM : </i>" + texts.escapeBrackets(hits[i]["_source"]["from"]) +
             "<i>&emsp; TO : </i>" + texts.escapeBrackets(hits[i]["_source"]["to"]) + "<br>" +
@@ -46,11 +47,11 @@ function traitementMessage(hits,thread) {
             "<br><pre>" + texts.highlight(hits[i]["_source"]["body"]) + "</pre><br>" +
             "</div>" + "" +
             "<div class='m-2 p-1'>" +
-            "<div class='btn' style='cursor:default;border:1px solid; color:#6c757d;'>"+
+            "<div class='btn' style='cursor:default;border:1px solid; color:#6c757d;'>" +
             "<button style='border-color: transparent' class=\"btn btn-outline-danger\" aria-controls=\"collapseOne1\" aria-expanded=\"true\" data-toggle=\"collapse\" href=\"#result" + i + "\">" +
             "<i class=\"fa fa-window-close\" aria-hidden=\"true\">  Close Mail</i>" +
             "</button>" +
-            "</div>"+
+            "</div>" +
             "</div>" +
             "</div>" +
             "</fieldset>")
@@ -82,14 +83,24 @@ function addSearchAttribute(input) {
     search_bar.prop('selectionEnd', cursorPos - 2)
 }
 
-function emptycontainers(){
+function emptycontainers() {
     $("#modal_container").empty()
     $("#accordionEx").empty()
 }
 
+function return_timestamp(elem) {
+    // console.log("TIMESTAMP : "  + elem)
+    let temp = 0
+    if (elem !== null) {
+        temp = new Date(elem).getTime()
+        if (isNaN(temp)) temp = 0
+    }
+    return temp
+}
+
 function formQuery(exec) {
-    if (end_query === true){
-        if (exec == 1){
+    if (end_query === true) {
+        if (exec === 1) {
             end_query = false
             $("#query_status").text("Fetching data")
             texts.orangeClass()
@@ -98,23 +109,13 @@ function formQuery(exec) {
         let totalString = $("#search_bar").val();
         let mailList = ""
         mailList = mailListInput.val()
-        let startTimestamp = 0;
-        let endTimestamp = 0;
-        let startPeriodInput = $("#datepicker");
-        let endPeriodInput = $("#datepicker2");
+        let startTimestamp = return_timestamp($("#datepicker").val());
+        let endTimestamp = return_timestamp($("#datepicker2").val());
+        // console.log("DEBUT : " + startTimestamp)
+        // console.log("FIN : " + endTimestamp)
+        if (endTimestamp === 0) endTimestamp = 9999999999999
         if (totalString === "") {
             if (mailList !== "" && mailList !== "ivoa_all") {
-                // query["sort"] = [
-                //     {"timestamp": {"order": "asc"}},
-                // ]
-                if (startPeriodInput.val() != null) {
-                    startTimestamp = new Date(startPeriodInput.val()).getTime()
-                    if (isNaN(startTimestamp)) startTimestamp = 0;
-                }
-                if (endPeriodInput.val() != null) {
-                    endTimestamp = new Date(endPeriodInput.val()).getTime()
-                    if (isNaN(endTimestamp)) endTimestamp = 0;
-                }
                 let query_all = {
                     "size": 20,
                     "query": {
@@ -130,11 +131,11 @@ function formQuery(exec) {
                             ]
                         }
                     },
-                    "sort":{
-                        "timestamp":{"order":"asc"}
+                    "sort": {
+                        "timestamp": {"order": "asc"}
                     }
                 }
-                if (startTimestamp !== 0 && endTimestamp !== 0) {
+                if (startTimestamp >= 0 && endTimestamp !== 0) {
                     query_all["query"]["bool"]["must"] = {
                         "range": {
                             "timestamp": {
@@ -148,40 +149,32 @@ function formQuery(exec) {
                     executeQuery(query_all, mailList)
                 }
                 return query_all
-            }else{
-                if (startPeriodInput.val() != null) {
-                    startTimestamp = new Date(startPeriodInput.val()).getTime()
-                    if (isNaN(startTimestamp)) startTimestamp = 0;
-                }
-                if (endPeriodInput.val() != null) {
-                    endTimestamp = new Date(endPeriodInput.val()).getTime()
-                    if (isNaN(endTimestamp)) endTimestamp = 0;
-                }
+            } else {
                 let query_all = {
                     "size": 20,
-                    "sort":{
-                        "timestamp":{"order":"asc"}
+                    "sort": {
+                        "timestamp": {"order": "asc"}
                     }
                 }
-                }
-                if (startTimestamp !== 0 && endTimestamp !== 0) {
-                    let query_all = {
-                        "size": 20,
-                        "query":{
-                            "bool":{
-                                "must":{
-                                    "range": {
-                                        "timestamp": {
-                                            "gte": startTimestamp / 1000,
-                                            "lte": endTimestamp / 1000,
-                                        }
+            }
+            if (startTimestamp >= 0 && endTimestamp !== 0) {
+                let query_all = {
+                    "size": 20,
+                    "query": {
+                        "bool": {
+                            "must": {
+                                "range": {
+                                    "timestamp": {
+                                        "gte": startTimestamp / 1000,
+                                        "lte": endTimestamp / 1000,
                                     }
                                 }
                             }
-                        },
-                        "sort":{
-                            "timestamp":{"order":"asc"}
                         }
+                    },
+                    "sort": {
+                        "timestamp": {"order": "asc"}
+                    }
                 }
                 if (exec === 1) {
                     executeQuery(query_all, mailList)
@@ -210,14 +203,6 @@ function formQuery(exec) {
         // if (numberInput.val() != null && numberInput.val() > 0 && numberInput.val() <= 110) {
         //     querySize = numberInput.val();
         // }
-        if (startPeriodInput.val() != null) {
-            startTimestamp = new Date(startPeriodInput.val()).getTime()
-            if (isNaN(startTimestamp)) startTimestamp = 0;
-        }
-        if (endPeriodInput.val() != null) {
-            endTimestamp = new Date(endPeriodInput.val()).getTime()
-            if (isNaN(endTimestamp)) endTimestamp = 0;
-        }
         let query = ""
         if ($("#query_method").val() === "and") {
             query = {
@@ -228,18 +213,18 @@ function formQuery(exec) {
                     }
                 }
             }
-            if (global_index === 1){
-                if (mailList !== "ivoa_all"){
+            if (global_index === 1) {
+                if (mailList !== "ivoa_all") {
                     query["query"]["bool"]["must"].push({
-                        "term" : {"maillist":{"value":mailList}}
+                        "term": {"maillist": {"value": mailList}}
                     })
                 }
             }
             if (fromRes !== null) fromRes.forEach(element => {
                 let all = element.replace("(From:", "").replace(")", "").trim().toLowerCase().split(" ")
                 let should = {
-                    "bool":{
-                        "should":[]
+                    "bool": {
+                        "should": []
                     }
                 }
                 all.forEach(second_element => {
@@ -252,8 +237,8 @@ function formQuery(exec) {
             if (attachementsRes !== null) attachementsRes.forEach(element => {
                 let all = element.replace("(Attachements:", "").replace(")", "").trim().toLowerCase().split(" ")
                 let should = {
-                    "bool":{
-                        "should":[]
+                    "bool": {
+                        "should": []
                     }
                 }
                 all.forEach(second_element => {
@@ -266,8 +251,8 @@ function formQuery(exec) {
             if (toRes !== null) toRes.forEach(element => {
                 let all = element.replace("(To:", "").replace(")", "").trim().toLowerCase().split(" ")
                 let should = {
-                    "bool":{
-                        "should":[]
+                    "bool": {
+                        "should": []
                     }
                 }
                 all.forEach(second_element => {
@@ -280,8 +265,8 @@ function formQuery(exec) {
             if (subjectRes !== null) subjectRes.forEach(element => {
                 let all = element.replace("(Subject:", "").replace(")", "").trim().toLowerCase().split(" ")
                 let should = {
-                    "bool":{
-                        "should":[]
+                    "bool": {
+                        "should": []
                     }
                 }
                 all.forEach(second_element => {
@@ -294,8 +279,8 @@ function formQuery(exec) {
             if (contentRes !== null) contentRes.forEach(element => {
                 let all = element.replace("(Content:", "").replace(")", "").trim().toLowerCase().split(" ")
                 let should = {
-                    "bool":{
-                        "should":[]
+                    "bool": {
+                        "should": []
                     }
                 }
                 all.forEach(second_element => {
@@ -305,7 +290,7 @@ function formQuery(exec) {
                 })
                 query["query"]["bool"]["must"].push(should)
             })
-            if (totalString.replace(/\s*/g,"") !== "") totalString.split(" ").forEach(element => {
+            if (totalString.replace(/\s*/g, "") !== "") totalString.split(" ").forEach(element => {
                 query["query"]["bool"]["must"].push({
                     "bool": {
                         "should": [
@@ -317,7 +302,7 @@ function formQuery(exec) {
                     }
                 })
             })
-            if (startTimestamp !== 0 && endTimestamp !== 0) {
+            if (startTimestamp >= 0 && endTimestamp !== 0) {
                 query["query"]["bool"]["must"].push({
                     "range": {
                         "timestamp": {
@@ -336,18 +321,18 @@ function formQuery(exec) {
                     }
                 }
             }
-            if (global_index === 1){
-                if (mailList !== "ivoa_all"){
+            if (global_index === 1) {
+                if (mailList !== "ivoa_all") {
                     query["query"]["bool"]["must"].push({
-                        "term" : {"maillist":{"value":mailList}}
+                        "term": {"maillist": {"value": mailList}}
                     })
                 }
             }
             if (fromRes !== null) fromRes.forEach(element => {
                 let all = element.replace("(From:", "").replace(")", "").trim().toLowerCase().split(" ")
                 let should = {
-                    "bool":{
-                        "should":[]
+                    "bool": {
+                        "should": []
                     }
                 }
                 all.forEach(second_element => {
@@ -360,8 +345,8 @@ function formQuery(exec) {
             if (attachementsRes !== null) attachementsRes.forEach(element => {
                 let all = element.replace("(Attachements:", "").replace(")", "").trim().toLowerCase().split(" ")
                 let should = {
-                    "bool":{
-                        "should":[]
+                    "bool": {
+                        "should": []
                     }
                 }
                 all.forEach(second_element => {
@@ -374,8 +359,8 @@ function formQuery(exec) {
             if (toRes !== null) toRes.forEach(element => {
                 let all = element.replace("(To:", "").replace(")", "").trim().toLowerCase().split(" ")
                 let should = {
-                    "bool":{
-                        "should":[]
+                    "bool": {
+                        "should": []
                     }
                 }
                 all.forEach(second_element => {
@@ -388,8 +373,8 @@ function formQuery(exec) {
             if (subjectRes !== null) subjectRes.forEach(element => {
                 let all = element.replace("(Subject:", "").replace(")", "").trim().toLowerCase().split(" ")
                 let should = {
-                    "bool":{
-                        "should":[]
+                    "bool": {
+                        "should": []
                     }
                 }
                 all.forEach(second_element => {
@@ -402,8 +387,8 @@ function formQuery(exec) {
             if (contentRes !== null) contentRes.forEach(element => {
                 let all = element.replace("(Content:", "").replace(")", "").trim().toLowerCase().split(" ")
                 let should = {
-                    "bool":{
-                        "should":[]
+                    "bool": {
+                        "should": []
                     }
                 }
                 all.forEach(second_element => {
@@ -413,7 +398,7 @@ function formQuery(exec) {
                 })
                 query["query"]["bool"]["should"].push(should)
             })
-            if (totalString.replace(/\s*/g,"") !== "") totalString.split(" ").forEach(element => {
+            if (totalString.replace(/\s*/g, "") !== "") totalString.split(" ").forEach(element => {
                 query["query"]["bool"]["should"].push({
                     "bool": {
                         "should": [
@@ -425,7 +410,7 @@ function formQuery(exec) {
                     }
                 })
             })
-            if (startTimestamp !== 0 && endTimestamp !== 0) {
+            if (startTimestamp >= 0 && endTimestamp !== 0) {
                 query["query"]["bool"]["must"] = {
                     "range": {
                         "timestamp": {
@@ -452,16 +437,16 @@ function formQuery(exec) {
             executeQuery(query, mailList)
         }
         return query
-    }else{
-     alert("Please Wait the end of current request before executing new one.")
-     return 0
+    } else {
+        alert("Please Wait the end of current request before executing new one.")
+        return 0
     }
 }
 
-function executeQuery(query, mailList,thread) {
+function executeQuery(query, mailList, thread) {
     emptycontainers()
     let query_status = $("#query_status")
-    if (global_index === 1){
+    if (global_index === 1) {
         return axios.get(elastic_search_url + "ivoa_all/_search", {
             params: {
                 source: JSON.stringify(query),
@@ -470,7 +455,7 @@ function executeQuery(query, mailList,thread) {
         }).then((res) => {
             query_status.text(res.data.hits.hits.length + " mails found")
             texts.greenClass()
-            traitementMessage(res.data.hits.hits,thread);
+            traitementMessage(res.data.hits.hits, thread);
         }).catch(function (e) {
             alert("The server did not respond, please modify your request")
             query_status.text("ERROR : " + e)
@@ -478,7 +463,7 @@ function executeQuery(query, mailList,thread) {
             console.log(e)
             end_query = true
         })
-    }else{
+    } else {
         return axios.get(elastic_search_url + mailList + "/_search", {
             params: {
                 source: JSON.stringify(query),
@@ -487,7 +472,7 @@ function executeQuery(query, mailList,thread) {
         }).then((res) => {
             query_status.text(res.data.hits.hits.length + " mails found")
             texts.greenClass()
-            traitementMessage(res.data.hits.hits,thread);
+            traitementMessage(res.data.hits.hits, thread);
         }).catch(function (e) {
             end_query = true
             alert("The server did not respond, please modify your request")
@@ -503,22 +488,21 @@ function seeQuery() {
     $("#body_query").val(JSON.stringify(query, null, 2))
 }
 
-function manageDates(){
+function manageDates() {
     let d1 = $("#datepicker")
     let d2 = $("#datepicker2")
-    if (d1.val() !== "" && d2.val() === ""){
+    if (d1.val() !== "" && d2.val() === "") {
         d2.val(d1.val())
     }
-    if (d2.val() !== "" && d1.val() === ""){
+    if (d2.val() !== "" && d1.val() === "") {
         d1.val(d2.val())
     }
 }
 
-function getUrlVars(){
+function getUrlVars() {
     var vars = [], hash;
     var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-    for(var i = 0; i < hashes.length; i++)
-    {
+    for (var i = 0; i < hashes.length; i++) {
         hash = hashes[i].split('=');
         vars.push(hash[0]);
         vars[hash[0]] = hash[1];
@@ -526,34 +510,34 @@ function getUrlVars(){
     return vars;
 }
 
-function defaultQuery(){
+function defaultQuery() {
     let params = getUrlVars()
-    if (params["num"] !== undefined){
+    if (params["num"] !== undefined) {
         let query = {
-            "query":{
-                "term":{
-                    "num":{
-                        "value" : params["num"]
+            "query": {
+                "term": {
+                    "num": {
+                        "value": params["num"]
                     }
                 }
             }
         }
-        executeQuery(query,params["num"].split("_")[0])
-    }else if (params["thread"] !== undefined){
+        executeQuery(query, params["num"].split("_")[0])
+    } else if (params["thread"] !== undefined) {
         let query = {
-            "query":{
-                "term":{
-                    "numThread":{
+            "query": {
+                "term": {
+                    "numThread": {
                         "value": params["thread"]
                     }
                 }
             },
-            "sort":{
+            "sort": {
                 "timestamp": {"order": "asc"}
             },
             "size": 1
         }
-        executeQuery(query,params["thread"].split("_")[0],"thread")
+        executeQuery(query, params["thread"].split("_")[0], "thread")
     }
 }
 
