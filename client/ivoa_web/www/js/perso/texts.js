@@ -1,4 +1,4 @@
-
+let regexMail = new RegExp(/<[^>]*>/, 'g')
 function highlight(content){
     let cont = JSON.stringify(content).split(/(?=\\n)/g)
     let total = ""
@@ -8,23 +8,28 @@ function highlight(content){
             if(elem.replace(/ /g,"").includes(">>")){
                 if (elem.replace(/ /g,"").includes(">>>")){
                     if(elem.replace(/ /g,"").includes(">>>>")){
-                        total += "<span class='ggggthan'>"+elem.replace(/\\n/g,"")+"</span>"+"\n"
+                        total += "<span class='ggggthan'>"+supMails(elem.replace(/\\n/g,""))+"</span>"+"\n"
                     }else{
-                        total += "<span class='gggthan'>"+elem.replace(/\\n/g,"")+"</span>"+"\n"
+                        total += "<span class='gggthan'>"+supMails(elem.replace(/\\n/g,""))+"</span>"+"\n"
                     }
                 }else{
-                    total += "<span class='ggthan'>"+elem.replace(/\\n/g,"")+"</span>"+"\n"
+                    total += "<span class='ggthan'>"+supMails(elem.replace(/\\n/g,""))+"</span>"+"\n"
                 }
             }else{
-                total += "<span class='gthan'>"+elem.replace(/\\n/g,"")+"</span>"+"\n"
+                total += "<span class='gthan'>"+supMails(elem.replace(/\\n/g,""))+"</span>"+"\n"
             }
         }else{
             // if(elem !== ""){
-                total += elem.replace(/\\n/g,"") + "\n"
+                total += supMails(elem.replace(/\\n/g,"")) + "\n"
             // }
         }
     })
     return total.toString().substring(1,(total.toString().length)-2).replace(/\\t/g,"")
+}
+
+function supMails(val){
+    // let res = val
+    return res.replace("@","__AT__")
 }
 
 function copyText(url){
