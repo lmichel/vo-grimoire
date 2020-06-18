@@ -26,8 +26,8 @@ class downloader(object):
             if os.path.exists(mbox_path + '/' + mailList) is False:
                 os.mkdir(mbox_path + '/' + mailList)
             log.warn("Downloading the mbox file from " + uri + url)
-            urllib.request.urlretrieve(uri + url, mbox_path + '/' + mailList + '/' + mailList + '.mbox',
-                                       reporthook=self.showProgress)
+            urllib.request.urlretrieve(uri + url, mbox_path + '/' + mailList + '/' + mailList + '.mbox')
+            #,                                                    reporthook=self.showProgress
             print("")
             log.warn("Download Finished !")
             log.warn("The archive is located at : " + mbox_path + '/' + mailList + '/' + mailList + '.mbox')
