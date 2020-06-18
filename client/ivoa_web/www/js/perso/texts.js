@@ -8,19 +8,19 @@ function highlight(content){
             if(elem.replace(/ /g,"").includes(">>")){
                 if (elem.replace(/ /g,"").includes(">>>")){
                     if(elem.replace(/ /g,"").includes(">>>>")){
-                        total += "<span class='ggggthan'>"+supMails(elem.replace(/\\n/g,""))+"</span>"+"\n"
+                        total += "<span class='ggggthan'>"+escapeSlashQuote(supMails(elem.replace(/\\n/g,"")))+"</span>"+"\n"
                     }else{
-                        total += "<span class='gggthan'>"+supMails(elem.replace(/\\n/g,""))+"</span>"+"\n"
+                        total += "<span class='gggthan'>"+escapeSlashQuote(supMails(elem.replace(/\\n/g,"")))+"</span>"+"\n"
                     }
                 }else{
-                    total += "<span class='ggthan'>"+supMails(elem.replace(/\\n/g,""))+"</span>"+"\n"
+                    total += "<span class='ggthan'>"+escapeSlashQuote(supMails(elem.replace(/\\n/g,"")))+"</span>"+"\n"
                 }
             }else{
-                total += "<span class='gthan'>"+supMails(elem.replace(/\\n/g,""))+"</span>"+"\n"
+                total += "<span class='gthan'>"+escapeSlashQuote(supMails(elem.replace(/\\n/g,"")))+"</span>"+"\n"
             }
         }else{
             // if(elem !== ""){
-                total += supMails(elem.replace(/\\n/g,"")) + "\n"
+                total += escapeSlashQuote(supMails(elem.replace(/\\n/g,""))) + "\n"
             // }
         }
     })
@@ -45,9 +45,9 @@ function escapeBrackets(text){
     return text.replace(/</g,"&lt").replace(/>/g,"&gt")
 }
 
-// function escapeSlashQuote(text){
-//     return text.replace(/(")/g,"\"")
-// }
+function escapeSlashQuote(text){
+    return text.replace('\\"',"\"")
+}
 
 function redClass(){
     $("#query_status").toggleClass("red")

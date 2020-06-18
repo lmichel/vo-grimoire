@@ -64,7 +64,7 @@ function addAttachements(attachements,numMail){
 
 function addImageAttachementModal(type,encode,nom,value,fullName,id){
     return "<button onclick='trackAction(\"See Image Attachement\")' style='border-color: transparent;display: inline-block' title='Display in a modal box "+fullName+"' type=\"button\" class=\"btn btn-outline-secondary \" data-target=\"#"+id+"\" data-toggle=\"modal\">" +
-        "<span class=\"fa fa-eye\"> Show "+fullName+"</span>" +
+        "<span class=\"fa fa-eye\"> Show </span>" +
         "</button>" +
         "<div aria-hidden=\"true\" class=\"modal fade\" id=\""+id+"\" role=\"dialog\" tabindex=\"-1\">" +
         "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">" +
@@ -130,7 +130,7 @@ function addTextAttachementModal(type,encode,nom,value,fullName,id){
     }
     let id2 = id + "_prism"
     return ["<button onclick='trackAction(\"See Pdf Attachement\")' style='border-color: transparent;display: inline-block' title='Display in a modal box "+fullName+"' type=\"button\" class=\"btn btn-outline-secondary \" data-target=\"#"+id+"\" data-toggle=\"modal\">" +
-    "<span class=\"fa fa-eye\"> Show "+fullName+"</span>" +
+    "<span class=\"fa fa-eye\"> Show </span>" +
     "</button>" +
     "<div aria-hidden=\"true\" class=\"modal fade\" id=\""+id+"\" role=\"dialog\" tabindex=\"-1\">" +
     "    <div class=\"modal-dialog modal-dialog-centered modal_ivoa\" role=\"document\">" +
