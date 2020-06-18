@@ -29,7 +29,7 @@ function highlight(content){
 
 function supMails(val){
     // let res = val
-    return res.replace("@","__AT__")
+    return val.replace("@","__AT__")
 }
 
 function copyText(url){
