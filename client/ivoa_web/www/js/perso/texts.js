@@ -46,7 +46,7 @@ function escapeBrackets(text){
 }
 
 function escapeSlashQuote(text){
-    return text.replace('\\"',"\"")
+    return text.replace(/\\"/g,"\"")
 }
 
 function redClass(){
