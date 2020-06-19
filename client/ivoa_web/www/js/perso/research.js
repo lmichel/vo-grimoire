@@ -33,7 +33,7 @@ function traitementMessage(hits, thread) {
             "<button style='border-color: transparent' type=\"button\" class=\"btn btn-outline-secondary\" title='Click here to view all the mails of a thread'>" +
             "<span class=\"fa fa-list\" data-target=\"#edu_result_" + i + "\" onclick='trackAction(\"User clicked View Thread\")' data-toggle=\"modal\" type=\"button\"> View Thread</span>" +
             "</button>" +
-            "<button style='border-color:transparent' type=\"button\" onclick='trackAction(\"User clicked Copy URL\")' class=\"btn btn-outline-secondary btn_url_mails\" value='" + url + "' title='Click here to copy the url of the mail to your clipboard'>" +
+            "<button style='border-color:transparent' type=\"button\" onclick='trackAction(\"User clicked Copy URL\")' class=\"btn btn-outline-secondary btn_url_mails\" value='" + url + "___" + hits[i]["_source"]["pipermail"] + "' title='Click here to copy the url of the mail to your clipboard'>" +
             "<span class=\"fa fa-files-o\"> Display Mail URL</span>" +
             "</button>" +
             "</div>" +
@@ -66,8 +66,8 @@ function traitementMessage(hits, thread) {
         threads.findThread(mailList, hits[i]["_source"]["numThread"], i)
     }
     $(".btn_url_mails").click(function () {
-        texts.copyText(this.value)
-        $("#url").text(this.value)
+        $("#url").html(this.value.split("___")[0] + "<br><br>" + this.value.split("___")[1])
+        console.log(this.value.split("___")[0] + "\n\n" + this.value.split("___")[1])
         $("#alertModal").modal("show")
     })
     end_query = true

@@ -58,6 +58,7 @@ class elasticer(object):
                             'maillist': mailList.encode('utf-8', 'ignore').decode('utf-8', 'ignore'),
                             'numThread': "none",
                             'attachements_name': "",
+                            'pipermail': self.makePipermailURL(self.returnTimestamp(message),prefix,prefix_name),
                             'attachements': {},}
                     id_part = 0
                     first_plain_present = 0
@@ -164,7 +165,7 @@ class elasticer(object):
                 for mes in es_result_id_courant["hits"]["hits"]:
                     refs = mes["_source"]["references"]
                     reply = mes["_source"]["in-reply-to"]
-                    resps = self.findResponders(id, mailList, es_url)
+                    resps = self.findResponders(id, mailList, es_url,list)
                     total += refs + reply + resps + "\n"
                 threads[total] = compteur
                 self.modifyThreads(mailList, id, compteur, es_url)
@@ -173,14 +174,21 @@ class elasticer(object):
         return compteur
 
     # This method returns a string of all message id who contains the id of a certain mail
-    def findResponders(self,id, mailList, es_url):
+    def findResponders(self,id, mailList, es_url,list):
         es = elasticsearch.Elasticsearch([es_url])
         query = {
             "query": {
                 "bool": {
-                    "should": [
-                        {"match_phrase": {"in-reply-to": id}},
-                        {"match_phrase": {"references": id}}
+                    "must":[
+                        {"term": {
+                            "mailList":{"value":list}
+                        }},
+                        {"bool":{
+                            "should": [
+                                {"match_phrase": {"in-reply-to": id}},
+                                {"match_phrase": {"references": id}}
+                            ]
+                        }}
                     ]
                 }
             }
@@ -321,6 +329,15 @@ class elasticer(object):
                 final += res.replace("<","").replace(">","").split("@")[0]
         return final
 
+    def makePipermailURL(self,date,compteur,liste):
+        date = datetime.fromtimestamp(date)
+        zeros = 6 - len(str(compteur))
+        num = ""
+        for i in range(0,zeros):
+            num += "0"
+        num += str(compteur-1)
+        res = "http://mail.ivoa.net/pipermail/" + liste.replace("_","") + "/" + str(date.year) + "-" + date.strftime("%B")
+        return res
 
 
 

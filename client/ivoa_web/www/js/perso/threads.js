@@ -57,7 +57,7 @@ function addThreadModal(refs, num) {
             "<div aria-labelledby=\"headingOne1\" class=\"collapse\" data-parent=\"#accordionEx" + num + "\" id=\"result_" + compteur + "\" role=\"tabpanel\" style=\"\">" +
             "<div class=\"m-2 card-body p-1\">" +
             "<div class='btn' style='cursor:default;border:1px solid; color:#6c757d;'>"+
-            "<button style='border-color:transparent' type=\"button\" onclick='trackAction(\"User clicked Copy URL\")' class=\"btn btn-outline-secondary btn_url_mails\" value='" + url + "' title='Click here to copy the url of the mail to your clipboard'>" +
+            "<button style='border-color:transparent' type=\"button\" onclick='trackAction(\"User clicked Copy URL\")' class=\"btn btn-outline-secondary btn_url_mails\" value='" + url + "___" + elem["_source"]["pipermail"] + "' title='Click here to copy the url of the mail to your clipboard'>" +
             "<span class=\"fa fa-files-o\"> Display Mail URL</span>" +
             "</button>" +
             "</div>"+
@@ -75,10 +75,10 @@ function addThreadModal(refs, num) {
     if (refs.length === 0){
         $("#accordionEx" + num).append("<p>No Thread</p>")
     }
-    $(".btn_url_mails").click(function () {
-        $("#url").text(this.value)
-        $("#alertModal").modal("show")
-    })
+    // $(".btn_url_mails").click(function () {
+    //     $("#url").innerHTML = this.value.split("___")[0] + "<br><br>" + this.value.split("___")[1]
+    //     $("#alertModal").modal("show")
+    // })
     return [total, compteur]
 }
 
