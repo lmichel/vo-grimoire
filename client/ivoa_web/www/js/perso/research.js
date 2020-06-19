@@ -136,14 +136,14 @@ function formQuery(exec) {
                     }
                 }
                 if (startTimestamp >= 0 && endTimestamp !== 0) {
-                    query_all["query"]["bool"]["must"] = {
+                    query_all["query"]["bool"]["must"].push({
                         "range": {
                             "timestamp": {
                                 "gte": startTimestamp / 1000,
                                 "lte": endTimestamp / 1000,
                             }
                         }
-                    }
+                    })
                 }
                 if (exec === 1) {
                     executeQuery(query_all, mailList)
