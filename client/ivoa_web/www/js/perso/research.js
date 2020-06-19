@@ -66,7 +66,7 @@ function traitementMessage(hits, thread) {
         threads.findThread(mailList, hits[i]["_source"]["numThread"], i)
     }
     $(".btn_url_mails").click(function () {
-        $("#url").html(this.value.split("___")[0] + "<br><br>" + this.value.split("___")[1])
+        $("#url").html(this.value.split("___")[0] + "<br><br>" + "<a href='"+this.value.split("___")[1]+"' target='_blank'>Pipermail URL</a>")
         console.log(this.value.split("___")[0] + "\n\n" + this.value.split("___")[1])
         $("#alertModal").modal("show")
     })
