@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<!-- Generated from https://stackedit.io/ -->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome file</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h3 id="default-search">Default Search</h3>
+<p>By default, keywords typed in the search bar are searched in all fields<br>
+The following query:</p>
+<pre><code>provenance
+</code></pre>
+<p>will return all messages containing the word <code>provenance</code> either in <code>From</code>, <code>To</code>, <code>Subject</code> or <code>Content</code> or with an <code>attachement</code> which mine type contains that keyword.</p>
+<p>The following query:</p>
+<pre><code>pdf
+</code></pre>
+<p>will return all messages containing the word <code>provenance</code> either in <code>From</code>, <code>To</code>, <code>Subject</code> or <code>Content</code> or with a <code>PDF</code> attachement.</p>
+<h3 id="search-by-name">Search by name</h3>
+<p>Email addresses have been hidden, they cannot be used as search keyword, the full name must be used instead.<br>
+The following query:</p>
+<pre><code>(From:morris) 
+</code></pre>
+<p>Will return all messages being sent by people with a name containing <code>morris</code></p>
+<h3 id="multi-criteria-searches">Multi Criteria Searches</h3>
+<p>Search criteria are <code>ANDED</code>. This can be changed by opening the <em>Options and Parameters</em> panel.<br>
+The following query:</p>
+<pre><code>(From:morris)  (Subject:draft) 
+</code></pre>
+<p>Will return all messages being sent by people with a name containing <code>morris</code> and with a subject containing <code>draft</code>.</p>
+<h3 id="result-size">Result Size</h3>
+<p>Result sizes are limited to 20 items by default.<br>
+This value can be changed by opening the <em>Options and Parameters</em> panel.</p>
+</div>
+</body>
+
+</html>
+
+

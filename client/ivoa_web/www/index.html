@@ -25,7 +25,7 @@
     <script src="js/plugins/prism.js"></script>
     <script>
         let elastic_search_url = "http://192.168.1.48:9200/"
-        // elastic_search_url = "http://saada.unistra.fr/elasticsearch/"
+        elastic_search_url = "http://saada.unistra.fr/elasticsearch/"
     </script>
 </head>
 
@@ -50,6 +50,9 @@
                 <a title="Click here to go to the working groups page of IVOA" class="nav-link text-white" href="http://ivoa.net/members/index.html" target="_blank">Mailman</a>
             </li>
             <li class="nav-item">
+                <a style="font-size: 0.7em;" class="nav-link text-white" data-target="#tips" data-toggle="modal" target="_blank">Tips</a>
+            </li>
+            <li class="nav-item">
                 <a style="font-size: 0.7em;" class="nav-link text-white" data-target="#credits" data-toggle="modal" target="_blank">Credits</a>
             </li>
             <li class="nav-item">
@@ -59,6 +62,26 @@
         </ul>
     </div>
 </nav>
+<!--// TIPS-->
+<div aria-hidden="true" aria-labelledby="exampleModalCenterTitle" class="modal fade" id="tips" role="dialog" tabindex="-1">
+<div class="modal-dialog modal-dialog-centered modal_ivoa" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalCenterTitle3">Tips</h5>
+            <button aria-label=\"Close\" class=\"close\" data-dismiss=\"modal\" type="button">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body tips_modal_content">
+            <script>$(".tips_modal_content").load("tips.html")</script>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+        </div>
+    </div>
+</div>
+</div>
+
 <!--// CREDITS-->
 <div aria-hidden="true" aria-labelledby="exampleModalCenterTitle" class="modal fade" id="credits" role="dialog" tabindex="-1">
 <div class="modal-dialog modal-dialog-centered modal_ivoa" role="document">
@@ -88,8 +111,8 @@
             <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        <div class="modal-body credits_modal_content">
-            <script>$(".credits_modal_content").load("about.html")</script>
+        <div class="modal-body about__modal_content">
+            <script>$(".about__modal_content").load("about.html")</script>
         </div>
         <div class="modal-footer">
             <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
