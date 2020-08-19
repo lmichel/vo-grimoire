@@ -181,7 +181,7 @@ class elasticer(object):
                 "bool": {
                     "must":[
                         {"term": {
-                            "mailList":{"value":list}
+                            "maillist":{"value":list}
                         }},
                         {"bool":{
                             "should": [
