@@ -58,8 +58,10 @@ function addThreadModal(refs, num) {
             "<div class=\"m-2 card-body p-1\">" +
             "<div class='btn' style='cursor:default;border:1px solid; color:#6c757d;'>"+
             "<button style='border-color:transparent' type=\"button\" onclick='trackAction(\"User clicked Copy URL\")' class=\"btn btn-outline-secondary btn_url_mails\" value='" + url + "___" + elem["_source"]["pipermail"] + "' title='Click here to copy the url of the mail to your clipboard'>" +
-            "<span class=\"fa fa-files-o\"> Display Mail URL</span>" +
+            "<span class=\"fa\"> Mail URL</span>" +
             "</button>" +
+            "<a title='Open a new tab on the IVOA pipermail page' target='blank' href='" + elem["_source"]["pipermail"] + "' style='color: #6c757d;'><span class=\"fa\">IVOA Pipermail Page</span></a>" +
+
             "</div>"+
             modals.addThreadAttachements(elem["_source"]["attachements"],num)[0] +"<br>"+
             "<i>From : </i>" + texts.escapeBrackets(elem["_source"]["from"]) +

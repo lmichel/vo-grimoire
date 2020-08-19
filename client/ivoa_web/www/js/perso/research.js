@@ -34,8 +34,10 @@ function traitementMessage(hits, thread) {
             "<span class=\"fa fa-list\" data-target=\"#edu_result_" + i + "\" onclick='trackAction(\"User clicked View Thread\")' data-toggle=\"modal\" type=\"button\"> View Thread</span>" +
             "</button>" +
             "<button style='border-color:transparent' type=\"button\" onclick='trackAction(\"User clicked Copy URL\")' class=\"btn btn-outline-secondary btn_url_mails\" value='" + url + "___" + hits[i]["_source"]["pipermail"] + "' title='Click here to copy the url of the mail to your clipboard'>" +
-            "<span class=\"fa fa-files-o\"> Display Mail URL</span>" +
+            "<span class=\"fa\"> Mail URL</span>" +
             "</button>" +
+            "<a title='Open a new tab on the IVOA pipermail page' target='blank' href='" + hits[i]["_source"]["pipermail"] + "' style='color: #6c757d;'><span class=\"fa\">IVOA Pipermail Page</span></a>" +
+
             "</div>" +
             res[0] +
             "</div>" +
@@ -453,7 +455,12 @@ function executeQuery(query, mailList, thread) {
                 source_content_type: 'application/json'
             }
         }).then((res) => {
-            query_status.text(res.data.hits.hits.length + " mails found")
+            let size = res.data.hits.hits.length;
+            let trunc_msg = "";
+            if( size == 10 || size == 20 || size == 50 || size == 150 ){
+		trunc_msg = "(truncated)";
+            }
+            query_status.text(res.data.hits.hits.length + " mails found " + trunc_msg)
             texts.greenClass()
             traitementMessage(res.data.hits.hits, thread);
         }).catch(function (e) {
@@ -470,7 +477,11 @@ function executeQuery(query, mailList, thread) {
                 source_content_type: 'application/json'
             }
         }).then((res) => {
-            query_status.text(res.data.hits.hits.length + " mails found")
+            let trunc_msg = "";
+            if( size == 10 || size == 20 || size == 50 || size == 150 ){
+                trunc_msg = "(truncated)";
+            }
+            query_status.text(res.data.hits.hits.length + " mails found " + trunc_msg)
             texts.greenClass()
             traitementMessage(res.data.hits.hits, thread);
         }).catch(function (e) {
