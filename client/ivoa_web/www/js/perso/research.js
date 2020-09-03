@@ -533,7 +533,9 @@ function defaultQuery() {
                 }
             }
         }
-        executeQuery(query, params["num"].split("_")[0])
+        let group =  params["num"].split("_")[0];
+		$('#mailList').val(group);
+        executeQuery(query,group)
     } else if (params["thread"] !== undefined) {
         let query = {
             "query": {
@@ -548,7 +550,12 @@ function defaultQuery() {
             },
             "size": 1
         }
-        executeQuery(query, params["thread"].split("_")[0], "thread")
+        let group =  params["thread"].split("_")[0];
+		$('#mailList').val(group);
+        executeQuery(query, group, "thread")
+    } else if (params["search"] !== undefined) {
+	    $('#search_bar').val(decodeURIComponent(params["search"].replace(/\+/g, ' ')));
+        formQuery(1)
     }
 }
 
