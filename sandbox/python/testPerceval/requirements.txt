@@ -36,7 +36,7 @@ MarkupSafe==1.1.1
 mccabe==0.6.1
 more-itertools==8.2.0
 networkx==2.4
-numpy==1.18.2
+numpy==1.22.0
 pandas==0.22.0
 pbr==5.4.5
 perceval==0.12.24
