@@ -1,7 +1,7 @@
 {
   "download_uri" : "http://mail.ivoa.net/pipermail/",
   "elastic_search_url" : "http://localhost:9200",
-  "mbox_dir": "/rawdata/documentBase/mails",
+  "mbox_dir": "/data-local/dbvolumes/mail_indexation",
   "reset_index": 0,
   "global_index": 1,
   "limit_request": 150,
@@ -25,10 +25,10 @@
       "download_mbox": "apps.mbox/apps.mbox"
     },
     {
-      "label": "Grid and Web Services",
-      "index_name": "grid",
-      "prefix": "grid_",
-      "download_mbox": "grid.mbox/grid.mbox"
+      "label": "Distributed Services and Protocols",
+      "index_name": "dsp",
+      "prefix": "dsp_",
+      "download_mbox": "dsp.mbox/dsp.mbox"
     },
     {
       "label": "Regsitry",
