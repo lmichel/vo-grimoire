@@ -116,7 +116,9 @@ class elasticer(object):
                             item["numThread"] = item["id"]
                         compteur += 1
                         valides += 1
-                        es.index(index=index_name, doc_type='keyword', body=item,request_timeout=30)
+                        #es.index(index=index_name, doc_type='keyword', body=item,request_timeout=30)
+                        es.index(index=index_name, body=item,request_timeout=30)
+
                     else:
                         uselessMails += 1
                         useful = 1
@@ -211,7 +213,9 @@ class elasticer(object):
         }
         es_result = es.search(index=mailList, body=query)
         if len(es_result["hits"]["hits"]) > 0:
-            es.update(index=mailList, doc_type='keyword', id=es_result["hits"]["hits"][0]["_id"],
+           # es.update(index=mailList, doc_type='keyword', id=es_result["hits"]["hits"][0]["_id"],
+           #           body={"doc": {"numThread": es_result["hits"]["hits"][0]["_source"]["maillist"] + "_" +str(numThread)}})
+           es.update(index=mailList, id=es_result["hits"]["hits"][0]["_id"],
                       body={"doc": {"numThread": es_result["hits"]["hits"][0]["_source"]["maillist"] + "_" +str(numThread)}})
 
     # This method delete all the index in Elastic Search
